@@ -1,0 +1,9 @@
+[submodule "server/library/aliyun-oss-php-sdk"]
+	path = server/library/aliyun-oss-php-sdk
+	url = https://github.com/aliyun/aliyun-oss-php-sdk.git
+[submodule "server/library/phpMailer"]
+	path = server/library/phpMailer
+	url = https://github.com/PHPMailer/PHPMailer.git
+[submodule "website/static/appsiteJS"]
+	path = website/static/appsiteJS
+	url = https://gitee.com/donsee/appsiteJS.git

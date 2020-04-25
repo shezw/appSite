@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * 中文语言
+ * zh-CN.lang  PHP Array
+ */
+
+return [
+
+    'Sample_i18n' => '示例本地化',
+
+    'Sample_i18n_scope' => [
+
+        'zh-CN' => '中文',
+        'en-WW' => '英文-国际',
+        'en-US' => '英文-美国'
+
+    ]
+];
