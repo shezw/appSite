@@ -1,0 +1,152 @@
+
+<div id="app">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand mr-5" href="#">
+                <img src="{{constants.StaticPath}}appsite/images/logo480.png" width="30" height="30" alt="">
+                {i18n{ website.appName }i18n}
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link mx-1" href="/">{i18n{ website.home }i18n} <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-1" href="http://doc.appsite.cn">{i18n{ website.documentation }i18n}</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-md-auto">
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            [if[::constants.Lang=zh-CN::Language]if]
+                            [if[::constants.Lang=en-WW::语言]if]
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="&i18n=en-WW">English</a>
+                            <a class="dropdown-item" href="&i18n=zh-CN">中文</a>
+                        </div>
+                    </li>
+                </ul>
+                [not[::userData.isVerified::<button data-toggle="modal" data-target="#loginModal" class="btn btn-primary mx-1 my-sm-0" type="button">{i18n{website.login}i18n}</button>]not]
+                [not[::userData.isVerified::<button data-toggle="modal" data-target="#registModal"  class="btn btn-success mx-1 my-sm-0" type="button">{i18n{website.regist}i18n}</button>]not]
+                [if[::userData.isVerified::<button class="btn btn-outline-light mx-1 my-sm-0" type="button">{i18n{website.logout}i18n}</button>]if]
+            </div>
+
+        </div>
+    </nav>
+
+    <main class="bd-masthead" id="content" role="main">
+        <div class="container">
+            <div class="row mt-5 mb-5">
+                <div class="col-6 mx-auto col-md-6 order-md-2">
+                    <img src="{{constants.ThemePath}}assets/images/illustration.jpg" alt="..." class="img-fluid mb-4" style="max-width: 480px;">
+                </div>
+                <div class="col-md-6 order-md-1 text-center text-md-left pr-md-5">
+                    <h1 class="mb-3 bd-text-purple-bright">AppSite</h1>
+                    <p class="lead">
+                        {i18n{website.home_title}i18n}
+                    </p>
+                    <p class="lead mb-4">
+                        {i18n{website.home_introduce}i18n}
+                    </p>
+                    <div class="row mx-n2">
+                        <div class="col-md px-2">
+                            <a href="" class="btn btn-lg btn-outline-primary w-100 mb-3" onclick="ga('send', 'event', 'Jumbotron actions', 'Get started', 'Get started');">{i18n{ website.GetStart }i18n}</a>
+                        </div>
+                        <div class="col-md px-2">
+                            <a href="" class="btn btn-lg btn-outline-secondary w-100 mb-3" onclick="ga('send', 'event', 'Jumbotron actions', 'Download', 'Download 4.4.1');">{i18n{ website.Download }i18n}</a>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">
+                        v2.0.0
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+
+    <footer class="navbar navbar-expand-lg navbar-light bg-light mt-3">
+        <div class="container">
+        </div>
+    </footer>
+</div>
+
+
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">登录</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">账号:</label>
+                        <input type="text" class="form-control username" placeholder="请输入账号">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">密码:</label>
+                        <input type="password" class="form-control password" placeholder="请输入密码">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" onclick="login();" class="btn btn-primary">登录</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-success btn-lg btn-block">使用微信登录</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registModal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">注册新用户</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">账户类型:</label>
+                        <select class="form-control accountType">
+                            <option value="user">我要找工作</option>
+                            <option value="company">我要招人</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">账号:</label>
+                        <input type="text" class="form-control username" placeholder="可包含英文和数字 6-20位">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">密码:</label>
+                        <input type="password" class="form-control password" placeholder="可包含英文和数字 6-20位">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">确认密码:</label>
+                        <input type="password" class="form-control repassword" placeholder="可包含英文和数字 6-20位">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" onclick="regist();" class="btn btn-primary">成为新用户</button>
+            </div>
+        </div>
+    </div>
+</div>

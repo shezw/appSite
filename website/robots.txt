@@ -1,0 +1,7 @@
+User-agent: *
+
+Disallow: /manager/
+Disallow: /server/
+Disallow: /api/
+
+Allow: /
