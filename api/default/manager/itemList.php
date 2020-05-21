@@ -22,10 +22,11 @@ class itemList extends \APS\ASAPI{
     private $filters   = ['status'=>'enabled'];
     private $page = 1;
     private $size = 20;
-    private $sort   = 'createtime DESC';
+    private $order   = 'createtime DESC';
 
     protected static $groupCharacterRequirement = ['super','manager','editor'];
     protected static $groupLevelRequirement = 40000;
+    public  $mode = 'JSON';
 
     public function run(): ASResult
     {
@@ -33,10 +34,10 @@ class itemList extends \APS\ASAPI{
         $this->filters   = $this->params['filters'] ?? ['status'=>'enabled'] ;
         $this->page      = $this->params['page'] ?? 1;
         $this->size      = $this->params['size'] ?? 10;
-        $this->sort      = $this->params['sort'] ?? 'createtime DESC';
+        $this->order      = $this->params['order'] ?? 'createtime DESC';
 
         $getCount =  ($this->itemClass)::common()->count( $this->filters ) ?? ASResult::shared();
-        $getList  =  ($this->itemClass)::common()->list( $this->filters, $this->page, $this->size, $this->sort ) ?? ASResult::shared();
+        $getList  =  ($this->itemClass)::common()->list( $this->filters, $this->page, $this->size, $this->order ) ?? ASResult::shared();
 
         $list = [];
         $maxPage = (int)(($getCount->getContent() - 1 )/ $this->size + 1);

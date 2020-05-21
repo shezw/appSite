@@ -49,6 +49,7 @@ abstract class ASAPI extends ASObject{
 
     protected $params;
 
+    public $mode = 'ASAPI';
 
     function __construct( $params = null, User $user = null ){
 

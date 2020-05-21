@@ -139,6 +139,7 @@ abstract class ASModel extends ASBase {
 	public function add( array $data )
 	{
 		$data = Filter::purify($data,static::$addFields,static::$depthStruct); // 使用字段数据进行过滤
+        $data = Filter::removeInvalid($data);
 
 		if (count($data)<1) { return $this->error(603,i18n('SYS_PARA_REQ'),static::$table.'->add'); }
 
@@ -199,6 +200,7 @@ abstract class ASModel extends ASBase {
 			if(count($list[$i])>=1){
 
 				$data = Filter::purify($list[$i],static::$addFields); // 使用字段数据进行过滤
+                $data = Filter::removeInvalid($data);
 				$data[static::$primaryid] = isset($list[$i][static::$primaryid]) ? $list[$i][static::$primaryid] : Encrypt::shortId(8);
 				$data['status'] = $list[$i]['status'] ? $list[$i]['status'] : 'enabled';
 				$dataList[] = $data;

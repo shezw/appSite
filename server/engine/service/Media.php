@@ -18,7 +18,7 @@ class Media extends ASModel{
      */
     public function delete( string $mediaid ){
 
-        $url = $this->detail($mediaid)['content']['url'];
+        $url = $this->detail($mediaid)->getContent()['url'];
 
         $removeFile = AliyunOSS::common()->removeFile($url);
         /*

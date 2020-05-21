@@ -4,9 +4,9 @@ namespace APS;
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-include SERVER_DIR."/library/phpMailer/src/PHPMailer.php";
-include SERVER_DIR."/library/phpMailer/src/SMTP.php";
-include SERVER_DIR."/library/phpMailer/src/Exception.php";
+include SERVER_DIR."library/phpMailer/src/PHPMailer.php";
+include SERVER_DIR."library/phpMailer/src/SMTP.php";
+include SERVER_DIR."library/phpMailer/src/Exception.php";
 
 /**
  * SMTP mail

@@ -24,6 +24,7 @@ use APS\User;
 class regist extends \APS\ASAPI{
 
     protected $scope = 'public';
+    public  $mode = 'JSON';
 
     public function run(): ASResult
     {

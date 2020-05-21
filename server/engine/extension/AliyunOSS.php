@@ -5,7 +5,7 @@ namespace APS;
 use OSS\Core\OssException;
 use OSS\OssClient;
 
-include SERVER_DIR."/library/aliyun-oss-php-sdk/autoload.php";
+include SERVER_DIR."library/aliyun-oss-php-sdk/autoload.php";
 
 
 /**
@@ -64,9 +64,9 @@ class AliyunOSS extends ASModel{
 
         $host = getConfig('CUSTOM_OSS_DOMAIN','ALIYUN')
             ? getConfig('CUSTOM_OSS_DOMAIN','ALIYUN')
-            : getConfig('HOST_HTTPS') . getConfig('OSS_BUCKET','ALIYUN') . '.' . getConfig('OSS_ENDPOINT','ALIYUN');
+            : 'https://' . getConfig('OSS_BUCKET','ALIYUN') . '.' . getConfig('OSS_ENDPOINT','ALIYUN');
 
-        $callbackUrl = getConfig('API_PATH') . "aliyunoss/callback";
+        $callbackUrl = getConfig('API_PATH') . "aliyun/OSSCallback";
 
         $callback_param = [
             'callbackUrl' => $callbackUrl,
@@ -370,7 +370,6 @@ class AliyunOSS extends ASModel{
         if( !$ossClient->isSucceed() ){ return $ossClient; }
 
         $file = static::getFileName($fileURL);
-
         try {
             $this->ossClient->deleteObject($bucket, $file);
         } catch (OssException $e) {
@@ -394,11 +393,18 @@ class AliyunOSS extends ASModel{
      */
     public static function getFileName(string $fullUrl, string $bucket = null)
     {
+        if( getConfig('CUSTOM_OSS_DOMAIN','ALIYUN') ){
+            $fullUrl = str_replace(getConfig('CUSTOM_OSS_DOMAIN','ALIYUN'),'',$fullUrl );
+        }
 
         $url = str_replace("http://", "", $fullUrl);
         $url = str_replace("https://", "", $url);
         $url = str_replace(getConfig('OSS_BUCKET','ALIYUN') . ".", "", $url);
         $url = str_replace($bucket ?? getConfig('OSS_ENDPOINT','ALIYUN') . "/", "", $url);
+
+        $url = '&/'.$url;
+        $url = str_replace('&//','',$url);
+        $url = str_replace('&/','',$url);
 
         return $url;
     }

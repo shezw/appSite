@@ -12,3 +12,43 @@
 
 
 <body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand mr-5" href="#">
+            <img src="{{constants.StaticPath}}appsite/images/logo480.png" width="30" height="30" alt="">
+            {i18n{ website.appName }i18n}
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link mx-1" href="/">{i18n{ website.home }i18n} <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link mx-1" href="http://doc.appsite.cn">{i18n{ website.documentation }i18n}</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-md-auto">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        [if[::constants.Lang=zh-CN::Language]if]
+                        [if[::constants.Lang=en-WW::语言]if]
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="&i18n=en-WW">English</a>
+                        <a class="dropdown-item" href="&i18n=zh-CN">中文</a>
+                    </div>
+                </li>
+            </ul>
+            [not[::userData.isVerified::<button data-toggle="modal" data-target="#loginModal" class="btn btn-primary mx-1 my-sm-0" type="button">{i18n{website.login}i18n}</button>]not]
+            [not[::userData.isVerified::<button data-toggle="modal" data-target="#registModal"  class="btn btn-success mx-1 my-sm-0" type="button">{i18n{website.regist}i18n}</button>]not]
+            [if[::userData.isVerified::<button class="btn btn-outline-light mx-1 my-sm-0" type="button">{i18n{website.logout}i18n}</button>]if]
+        </div>
+
+    </div>
+</nav>

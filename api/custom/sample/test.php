@@ -11,6 +11,7 @@ use APS\ASAPI;
 class test extends ASAPI
 {
     protected $scope = 'public';
+    public  $mode = 'JSON';
 
     public function run(): \APS\ASResult
     {

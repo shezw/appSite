@@ -4,7 +4,7 @@ namespace APS;
 
 use AipOcr;
 
-include SERVER_DIR."/library/baidu_ocr/autoload.php";
+include SERVER_DIR."library/baidu_ocr/autoload.php";
 
 /**
  * 百度文字识别

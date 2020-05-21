@@ -373,6 +373,7 @@ class Website extends ASRoute {
 
         $this->setSubData('constants',$this->constants);
         $this->setSubData('userData',$this->userData);
+        $this->setSubData('timeDuration', floor((microtime(true) - TIME_START )*1000) );
         $this->result = ASResult::shared(0,'Website Rend',Mixer::mix($this->data,$this->html_template));
         $this->export();
     }

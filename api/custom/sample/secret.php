@@ -13,7 +13,7 @@ class secret extends ASAPI
 {
 
     protected $scope = 'system';
-
+    public  $mode = 'JSON';
 
     public function run(): \APS\ASResult
     {

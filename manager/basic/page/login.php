@@ -33,8 +33,10 @@ if( isset($_SESSION['banLogin']) && $_SESSION['banLogin'] > time() ){
     if ( isset($_SESSION['loginError'])){
         $website->setSubData('error',$_SESSION['loginError']);
         $_SESSION['currentLoginErrorTimes']++;
-        $website->setSubData('maxErrorTimes',$maxLoginErrorTimes);
-        $website->setSubData('errorTimes',$_SESSION['currentLoginErrorTimes']);
+        if( $_SESSION['currentLoginErrorTimes'] > 3 ){
+            $website->setSubData('maxErrorTimes',$maxLoginErrorTimes);
+            $website->setSubData('errorTimes',$_SESSION['currentLoginErrorTimes']);
+        }
         $_SESSION['loginError'] = null;
 
         if( $_SESSION['currentLoginErrorTimes'] >= $maxLoginErrorTimes ){
@@ -46,6 +48,6 @@ if( isset($_SESSION['banLogin']) && $_SESSION['banLogin'] > time() ){
 //var_dump($website);
 
 
-$website->appendTemplateByFile(THEME_DIR.'common/footer.html');
+$website->appendTemplateByFile(THEME_DIR.'common/footer/home.html');
 
 $website->rend();

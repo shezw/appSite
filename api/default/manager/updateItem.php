@@ -18,6 +18,7 @@ class updateItem extends ASAPI
     private $data   = [];
 
     protected $scope = 'public';
+    public  $mode = 'JSON';
 
     protected static $groupCharacterRequirement = ['super','manager','editor'];
     protected static $groupLevelRequirement = 40000;

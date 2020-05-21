@@ -18,6 +18,7 @@ use APS\User;
 class loginByCodeVerify extends ASAPI
 {
     protected $scope = 'public';
+    public  $mode = 'JSON';
 
     public function run(): ASResult
     {

@@ -71,7 +71,8 @@ return [
     'video'         => 'Video',
     'text'          => 'Text',
     'doc'           => 'Document',
-    'link'          => 'Document',
+    'document'      => 'Document',
+    'link'          => 'Link',
     'room'          => 'Active room',
 
     'system'          => 'System',
@@ -603,7 +604,9 @@ return [
         /* common */
         'cover'=>'Cover',
         'title'=>'Title',
+        'description'=>'Description',
         'type'=>'Type',
+        'size'=>'Size',
         'viewtimes'=>'Viewtimes',
         'author'=>'Author',
         'createtime'=>'Createtime',
@@ -612,11 +615,15 @@ return [
         'operation'=>'Operation',
         'more'=>'More',
 
+        'trash'=>'Trash',
+        'accept'=>'Accept',
+        'delete'=>'Delete',
         'isFeatured'=>'Is Featured',
         'feature'=>'Feature',
         'unFeature'=>'Cancel Feature',
-        'sortDesc'=>'Desc',
-        'sortAsc'=>'Asc',
+        'sort'=>'Sort',
+        'sortDESC'=>'Desc',
+        'sortASC'=>'Asc',
 
         'sizePerPage'=>'Size Per Page',
 
@@ -736,6 +743,10 @@ return [
         'sidebar_systemSettingConfig'=>'Config Manage',
         'sidebar_systemSettingDatabase'=>'Database Manage',
         'sidebar_systemSettingApiTest'=>'API Test',
+
+        'sidebar_AppsiteJS'=>'AppSiteJS',
+        'sidebar_AppsiteJSFormer'=>'Form',
+        'sidebar_AppsiteJSGUI'=>'GUI',
 
         'sidebar_operationManage'=>'Operation Management',
         'sidebar_user'=>'User',

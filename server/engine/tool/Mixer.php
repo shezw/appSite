@@ -49,6 +49,8 @@ class Mixer{
         # 遍历所有字段
         # Mix all key fields
 
+        Mixer::revertVue( $module );
+
         return $module;
     }
 
@@ -161,6 +163,15 @@ class Mixer{
         }
         return $struct;
     }
+
+    public static function revertVue( & $module ){
+
+        if( strstr($module,'{v{') ){
+            $module = str_replace('{v{','{{',$module);
+            $module = str_replace('}v}','}}',$module);
+        }
+    }
+
 
     /**
      * 混合判断条件

@@ -13,6 +13,7 @@ use APS\User;
 class passwordLogin extends ASAPI{
 
     protected $scope = 'public';
+    public  $mode = 'JSON';
 
     public function run(): ASResult
     {

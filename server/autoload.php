@@ -37,4 +37,4 @@ if( file_exists( SERVER_DIR.'custom/autoload.php' ) ){
 //\APS\ASSetting::common()->set('regist',['title'=>'系统奖励','description'=>'注册平台用户成功','value'=>100,'limit'=>1],'注册平台用户成功','POINTBONUS_RULES');
 
 //_ASRedis()->flush();
-//_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' , true );
+_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' , true );

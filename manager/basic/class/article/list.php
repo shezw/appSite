@@ -29,7 +29,7 @@ $website->setSubData('random',\APS\Encrypt::shortId(8));
 
 $website->appendTemplateByFile(THEME_DIR.'common/header.html');
 
-$website->setMenuActive(['content','article','articleList']);
+$website->setMenuActive(['content','article',$website->params['status']=='trash' ? 'articleListTrash' : 'articleList']);
 $website->appendTemplateByFile(THEME_DIR.'common/sidebar.html');
 $website->blendMenuAccessByFile(SITE_DIR.'basic/menu/sidebar.php');
 

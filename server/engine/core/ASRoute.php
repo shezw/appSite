@@ -120,7 +120,7 @@ class ASRoute extends ASObject{
         $this->querys = $this->buildQuery($this->params); # Querys 保持原文格式
 
         foreach ($this->params as $key => $value) {
-            if(strstr($value,',')){
+            if( gettype($value) === 'string' && strstr($value,',')){
                 if(!strstr($value, ']]')){
                     $this->params[$key] = "[[IN]]".$value;
                 }
@@ -183,6 +183,8 @@ class ASRoute extends ASObject{
 
         $apiClass = '\\'.$this->route['namespace'].'\\'.$this->route['class'];
         $apiInstance = new $apiClass( $this->params, $user ) ?? new \sample\test();
+
+        $this->mode   = $apiInstance->mode ?? $this->mode;
         $this->result = $apiInstance->runAPI();
 
         $this->export();

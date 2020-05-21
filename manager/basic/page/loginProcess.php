@@ -4,6 +4,8 @@
  * welcome.php
  */
 
+$website->appendTemplateByFile(THEME_DIR.'common/header.html');
+
 $loginParams = \APS\Filter::purify( $website->params, ['account','password'] );
 
 $loginAPI    = \APS\ASAPI::systemInit( '\account\passwordLogin', $loginParams );
@@ -43,7 +45,6 @@ if ( $userLogin->isSucceed() ){
 }
 
 
-$website->appendTemplateByFile(THEME_DIR.'common/header.html');
 $website->appendTemplateByFile(THEME_DIR.'common/footer.html');
 
 $website->rend();

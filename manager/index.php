@@ -25,7 +25,7 @@ $website = new \APS\Management(getConfig('MANAGER_ROUTE_FORMAT') ?? 'manager/cla
 /** 设定网站本地化语言
  *  Set i18n Code for website
  */
-_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' ,true );
+//_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' ,true );
 //_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN'  );
 
 
