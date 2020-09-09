@@ -11,36 +11,36 @@ class CommerceStock extends ASModel{
 
 
     public static $table     = "commerce_stock";  // 表
-    public static $primaryid = "stockid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
 
     public static $addFields = [
-        'stockid','productid','authorid',
+        'uid','productid','authorid',
         'type','mode','title','cover','description','stock',
         'sort','featured','status',
         'createtime','lasttime',
     ];
 
     public static $updateFields = [
-        'stockid','productid','authorid',
+        'uid','productid','authorid',
         'type','mode','title','cover','description','stock',
         'sort','featured','status',
         'createtime','lasttime',
     ];
     public static $detailFields  = ["*"];
     public static $overviewFields  = [
-        'stockid','productid','authorid',
+        'uid','productid','authorid',
         'type','mode','title','cover','description','stock',
         'sort','featured','status',
         'createtime','lasttime',
     ];
     public static $listFields  = [
-        'stockid','productid','authorid',
+        'uid','productid','authorid',
         'type','mode','title','cover','description','stock',
         'sort','featured','status',
         'createtime','lasttime',
     ];
     public static $countFilters  = [
-        'stockid','productid','authorid',
+        'uid','productid','authorid',
         'type','mode','title','cover','description','stock',
         'sort','featured','status',
         'createtime','lasttime',

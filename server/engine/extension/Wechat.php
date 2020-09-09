@@ -317,7 +317,7 @@ class Wechat extends ASObject{
 
         $options = [
             'body'             => $order->title,
-            'out_trade_no'     => $order->orderid,
+            'out_trade_no'     => $order->uid,
             'total_fee'        => Filter::priceToInt($order->amount),
             'openid'           => $openid,
 

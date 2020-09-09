@@ -74,8 +74,8 @@ class Relation extends ASModel{
     }
 
     // 解除
-    public function unBind( string $combineid ){
-        return static::common()->remove($combineid);
+    public function unBind( string $uid ){
+        return static::common()->remove($uid);
     }
 
     /**
@@ -136,9 +136,9 @@ class Relation extends ASModel{
 
 
     public static $table     = "relation_combine";
-    public static $primaryid = "combineid";
+    public static $primaryid = "uid";
     public static $addFields = [
-        'combineid',
+        'uid',
         'itemid',
         'itemtype',
         'relationid',
@@ -154,7 +154,7 @@ class Relation extends ASModel{
     ];
     public static $detailFields = "*";
     public static $overviewFields = [
-        'combineid',
+        'uid',
         'itemid',
         'itemtype',
         'relationid',
@@ -164,7 +164,7 @@ class Relation extends ASModel{
         'sort',
     ];
     public static $listFields = [
-        'combineid',
+        'uid',
         'itemid',
         'itemtype',
         'relationid',
@@ -174,7 +174,7 @@ class Relation extends ASModel{
         'sort',
     ];
     public static $countFilters = [
-        'combineid',
+        'uid',
         'itemid',
         'itemtype',
         'relationid',

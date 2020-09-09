@@ -427,7 +427,7 @@ class User extends ASModel{
     public function getGroupId():?string {
 
         $this->acquire();
-        return $this->detail['group']['groupid'];
+        return $this->detail['group']['uid'];
     }
 
     /**
@@ -559,7 +559,7 @@ class User extends ASModel{
 
         $this->acquire();
 
-        return $this->detail['group']['groupid'] == $groupid;
+        return $this->detail['group']['uid'] == $groupid;
     }
 
 

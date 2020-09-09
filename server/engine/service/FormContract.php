@@ -14,7 +14,7 @@ class FormContract extends ASModel{
 
 
     public static $table     = "form_contract";  // 表
-    public static $primaryid = "contractid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields  = [
         'userid','targetid','itemid','itemtype',
         'title','description','cover','terms','information','attachments',
@@ -31,7 +31,7 @@ class FormContract extends ASModel{
         'sort','featured',
     ];
     public static $detailFields  = [
-        'contractid','userid','targetid','itemid','itemtype',
+        'uid','userid','targetid','itemid','itemtype',
         'title','description','cover','terms','information','attachments',
         'signa','signb',
         'price','paytype','time','payduration','custompay','payoffset','payments',
@@ -40,7 +40,7 @@ class FormContract extends ASModel{
         'sort','featured','createtime','lasttime'
     ];
     public static $overviewFields  = [
-        'contractid','userid','targetid','itemid','itemtype',
+        'uid','userid','targetid','itemid','itemtype',
         'title','description','cover',
         'signa','signb',
         'price','paytype','time','payduration','payoffset','payments',
@@ -49,7 +49,7 @@ class FormContract extends ASModel{
         'sort','featured','createtime','lasttime'
     ];
     public static $listFields  = [
-        'contractid','userid','targetid','itemid','itemtype',
+        'uid','userid','targetid','itemid','itemtype',
         'title','description','cover','information',
         'signa','signb',
         'price','paytype','time','payduration','custompay','payoffset',
@@ -58,7 +58,7 @@ class FormContract extends ASModel{
         'sort','featured','createtime','lasttime'
     ];
     public static $countFilters  = [
-        'contractid','userid','targetid','itemid','itemtype',
+        'uid','userid','targetid','itemid','itemtype',
         'price','paytype','time','payduration',
         'starttime','endtime',
         'status',

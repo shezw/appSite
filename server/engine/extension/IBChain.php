@@ -66,7 +66,7 @@ class IBChain extends ASModel {
 
         $condition = isset($blockIndex) ? ['id'=>'[[<=]]'.$blockIndex] : [];
 
-        $listChain = $this->list(array_merge($condition,['blockid'=>$blockID]),1,3,'createtime DESC');
+        $listChain = $this->list(array_merge($condition,['uid'=>$blockID]),1,3,'createtime DESC');
 
         if( !$listChain->isSucceed() ){ return $listChain; }
 
@@ -247,7 +247,7 @@ class IBChain extends ASModel {
      * @var array
      */
     public static $addFields = [
-        'id','blockid','saasid','userid','itemid','itemtype',
+        'id','uid','saasid','userid','itemid','itemtype',
         'content','hash','status'
     ];
 
@@ -264,7 +264,7 @@ class IBChain extends ASModel {
      * @var array
      */
     public static $detailFields = [
-        'id','blockid','saasid','userid','itemid','itemtype',
+        'id','uid','saasid','userid','itemid','itemtype',
         'content','hash','status','createtime','lasttime',
     ];
 
@@ -273,7 +273,7 @@ class IBChain extends ASModel {
      * @var array
      */
     public static $publicDetailFields = [
-        'id','blockid','saasid','userid','itemid','itemtype',
+        'id','uid','saasid','userid','itemid','itemtype',
         'content','hash','status','createtime','lasttime',
     ];
 
@@ -282,7 +282,7 @@ class IBChain extends ASModel {
      * @var array
      */
     public static $overviewFields = [
-        'id','blockid','saasid','userid','itemid','itemtype',
+        'id','uid','saasid','userid','itemid','itemtype',
         'content','hash','status','createtime','lasttime',
     ];
 
@@ -291,7 +291,7 @@ class IBChain extends ASModel {
      * @var array
      */
     public static $listFields = [
-        'id','blockid','saasid','userid','itemid','itemtype',
+        'id','uid','saasid','userid','itemid','itemtype',
         'content','hash','status','createtime','lasttime',
     ];
 
@@ -300,7 +300,7 @@ class IBChain extends ASModel {
      * @var array
      */
     public static $publicListFields = [
-        'id','blockid','saasid','userid','itemid','itemtype',
+        'id','uid','saasid','userid','itemid','itemtype',
         'content','hash','status','createtime','lasttime',
     ];
 
@@ -309,7 +309,7 @@ class IBChain extends ASModel {
      * @var array
      */
     public static $countFilters = [
-        'id','blockid','saasid','userid','itemid','itemtype','hash','status','createtime','lasttime',
+        'id','uid','saasid','userid','itemid','itemtype','hash','status','createtime','lasttime',
     ];
 
     /**

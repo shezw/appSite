@@ -11,10 +11,10 @@ class CommerceProduct extends ASModel{
 
 
     public static $table     = "commerce_product";  // 表
-    public static $primaryid = "productid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
 
     public static $addFields = [
-        'productid','categoryid','authorid',
+        'uid','categoryid','authorid',
         'type','mode','title','cover','gallery','video','link','tags','description','introduce','details',
         'price','sale','isvirtual','features','stock',
         'viewtimes','sort','featured','status',
@@ -29,19 +29,19 @@ class CommerceProduct extends ASModel{
     ];
     public static $detailFields  = ["*"];
     public static $overviewFields  = [
-        'productid','categoryid','authorid',
+        'uid','categoryid','authorid',
         'type','mode','title','cover','gallery','video','link','tags','description','introduce','details',
         'price','sale','isvirtual','features','stock',
         'viewtimes','sort','featured','status','createtime','lasttime'
     ];
     public static $listFields  = [
-        'productid','categoryid','authorid',
+        'uid','categoryid','authorid',
         'type','mode','title','cover','description','link','tags',
         'price','sale','isvirtual','stock',
         'viewtimes','sort','featured','status','createtime','lasttime'
     ];
     public static $countFilters  = [
-        'productid','categoryid','authorid',
+        'uid','categoryid','authorid',
         'type','mode','title','keyword',
         'price','sale','isvirtual','stock',
         'viewtimes','sort','featured','status','createtime','lasttime'

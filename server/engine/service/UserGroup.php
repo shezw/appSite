@@ -16,9 +16,9 @@ class UserGroup extends ASModel
     private $userid;
 
     public static $table     = "user_group";
-    public static $primaryid = "groupid";
+    public static $primaryid = "uid";
     public static $addFields = [
-        'groupid',
+        'uid',
         'type',
         'parentid',
         'level',
@@ -39,7 +39,7 @@ class UserGroup extends ASModel
         'status',
     ];
     public static $detailFields = [
-        'groupid',
+        'uid',
         'type',
         'parentid',
         'level',
@@ -50,7 +50,7 @@ class UserGroup extends ASModel
         'status',
     ];
     public static $overviewFields = [
-        'groupid',
+        'uid',
         'type',
         'parentid',
         'level',
@@ -61,7 +61,7 @@ class UserGroup extends ASModel
         'status',
     ];
     public static $listFields = [
-        'groupid',
+        'uid',
         'type',
         'parentid',
         'level',
@@ -74,7 +74,7 @@ class UserGroup extends ASModel
         'lasttime',
     ];
     public static $countFilters = [
-        'groupid',
+        'uid',
         'type',
         'parentid',
         'level',
@@ -98,42 +98,42 @@ class UserGroup extends ASModel
     /**
      * 通过组名获取id
      * getNameById
-     * @param  string  $groupid
+     * @param  string  $uid
      * @return \APS\ASResult
      */
-    public function getNameById( string $groupid ){
+    public function getNameById( string $uid ){
 
-        return $this->get('groupname',$groupid);
+        return $this->get('groupname',$uid);
     }
 
 
     /**
      * 获取子组
      * getChild
-     * @param  string  $groupid
+     * @param  string  $uid
      * @param  int     $page
      * @param  int     $size
      * @param  string  $sort
      * @return \APS\ASResult
      */
-    public function getChild( string $groupid, int $page=1, int $size=100, string $sort = 'sort DESC, level DESC, createtime DESC' ){
+    public function getChild( string $uid, int $page=1, int $size=100, string $sort = 'sort DESC, level DESC, createtime DESC' ){
 
-        if (!$this->hasChild($groupid)) {
+        if (!$this->hasChild($uid)) {
             return $this->error(400,i18n('SYS_NON'),'USERGROUP->getChild');
         }
 
-        return $this->list(['parentid'=>$groupid],$page,$size,$sort);
+        return $this->list(['parentid'=>$uid],$page,$size,$sort);
     }
 
     /**
      * 是否拥有子组
      * hasChild
-     * @param  string  $groupid
+     * @param  string  $uid
      * @return bool
      */
-    public function hasChild( string $groupid ){
+    public function hasChild( string $uid ){
 
-        return $this->count(['parentid'=>$groupid])->getContent() > 0;
+        return $this->count(['parentid'=>$uid])->getContent() > 0;
     }
 
 

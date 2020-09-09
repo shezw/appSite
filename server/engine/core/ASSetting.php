@@ -90,7 +90,7 @@ class ASSetting extends ASModel{
         if(!$getFirst->isSucceed()){
             return $this->error(10086,i18n('SYS_NON'),'Setting->getSettingid');
         }else{
-            return $this->take($getFirst->getContent()[0]['settingid'])->success(i18n('SYS_GET_SUC'),'Setting->getSettingid');
+            return $this->take($getFirst->getContent()[0]['uid'])->success(i18n('SYS_GET_SUC'),'Setting->getSettingid');
         }
     }
 
@@ -169,9 +169,9 @@ class ASSetting extends ASModel{
 
 
     public static $table     = "system_setting";  // 表
-    public static $primaryid = "settingid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
-        'settingid',
+        'uid',
         'keyid',
         'description',
         'content',
@@ -187,7 +187,7 @@ class ASSetting extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $overviewFields = [
-        'settingid',
+        'uid',
         'keyid',
         'description',
         'content',
@@ -195,7 +195,7 @@ class ASSetting extends ASModel{
         'status',
     ]; // 概览支持字段
     public static $listFields = [
-        'settingid',
+        'uid',
         'keyid',
         'description',
         'content',
@@ -203,7 +203,7 @@ class ASSetting extends ASModel{
         'status',
     ];     // 列表支持字段
     public static $countFilters = [
-        'settingid',
+        'uid',
         'keyid',
         'status',
         'scope',

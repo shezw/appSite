@@ -6,7 +6,7 @@ namespace APS;
  * 财务 - 交易
  * CommerceDeal
  *
-    dealid  交易ID
+    uid  交易ID
     payer   支付方ID
     payee   收款方ID
     type    交易类型 默认 佣金     commission 佣金 transmission 转账 bonus 系统奖励...
@@ -202,7 +202,7 @@ class FinanceDeal extends ASModel{
     protected static $record_enabled = true;
 
     public static $table     = "finance_deal";  // 表
-    public static $primaryid = "dealid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
         'payer',
         'payee',
@@ -218,7 +218,7 @@ class FinanceDeal extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $publicDetailFields = [
-        'dealid',
+        'uid',
         'payer',
         'payee',
         'type',
@@ -231,7 +231,7 @@ class FinanceDeal extends ASModel{
         'lasttime',
     ]; // 概览支持字段
     public static $overviewFields = [
-        'dealid',
+        'uid',
         'payer',
         'payee',
         'type',
@@ -244,7 +244,7 @@ class FinanceDeal extends ASModel{
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'dealid',
+        'uid',
         'payer',
         'payee',
         'type',
@@ -256,7 +256,7 @@ class FinanceDeal extends ASModel{
         'lasttime',
     ];     // 列表支持字段
     public static $publicListFields = [
-        'dealid',
+        'uid',
         'payer',
         'payee',
         'type',
@@ -268,7 +268,7 @@ class FinanceDeal extends ASModel{
         'lasttime',
     ];     // 开放接口列表支持字段
     public static $countFilters = [
-        'dealid',
+        'uid',
         'payer',
         'payee',
         'type',

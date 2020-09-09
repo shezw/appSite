@@ -110,7 +110,7 @@ class UserCollect extends ASModel{
         if( !$getCollectList->isSucceed() ){
             return $this->error(400,i18n('SYS_GET_FAL'));
         }
-        return $this->take($getCollectList->getContent()[0]['collectid'])->success();
+        return $this->take($getCollectList->getContent()[0]['uid'])->success();
     }
 
 /** Favorite 收藏功能 */
@@ -308,7 +308,7 @@ class UserCollect extends ASModel{
 
 
     public static $table     = "user_collect";  // 表
-    public static $primaryid = "collectid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
         'userid',
         'type',
@@ -327,6 +327,7 @@ class UserCollect extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $overviewFields = [
+        'uid',
         'userid',
         'type',
         'itemid',
@@ -341,6 +342,7 @@ class UserCollect extends ASModel{
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
+        'uid',
         'userid',
         'type',
         'itemid',
@@ -355,6 +357,7 @@ class UserCollect extends ASModel{
         'lasttime',
     ];     // 列表支持字段
     public static $countFilters = [
+        'uid',
         'userid',
         'type',
         'itemid',

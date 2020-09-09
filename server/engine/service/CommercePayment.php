@@ -71,9 +71,9 @@ class CommercePayment extends  ASModel{
         $orderid   = $paydata['orderid'];
 
         $order = CommerceOrder::instance($orderid);
-        $order->status( $order->orderid,'needcall' );
+        $order->status( $order->uid,'needcall' );
 
-        $callback = $order->payback( $order->orderid );
+        $callback = $order->payback( $order->uid );
 
         if(!$callback->isSucceed()){
 
@@ -99,7 +99,7 @@ class CommercePayment extends  ASModel{
 
 
     public static $table     = "commerce_payment";  // 表
-    public static $primaryid = "paymentid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
         'orderid',
         'payment',

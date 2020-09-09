@@ -9,26 +9,26 @@ namespace APS;
  */
 class Area extends ASModel{
 
-    public function listChild( array $params , string $areaid , int $page = 1, int $size = 15, string $sort = null ){
+    public function listChild( array $params , string $uid , int $page = 1, int $size = 15, string $sort = null ){
 
-        $params['parentid'] = $areaid;
+        $params['parentid'] = $uid;
 
         return $this->list($params,$page,$size,$sort);
     }
 
     // 查询对应的下级
-    public function countChild( array $params , string $areaid ){
+    public function countChild( array $params , string $uid ){
 
-        $params['parentid'] = $areaid;
+        $params['parentid'] = $uid;
 
         return $this->count($params);
     }
 
-    public function getParents( string $areaid, array $tmp = null ){
+    public function getParents( string $uid, array $tmp = null ){
 
         $parents = $tmp ?? [];
 
-        $area = $this->detail($areaid)->getContent();
+        $area = $this->detail($uid)->getContent();
 
         if( isset($area['parentid']) ){
 
@@ -41,9 +41,9 @@ class Area extends ASModel{
 
 
     public static $table     = "item_area";  // 表
-    public static $primaryid = "areaid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
-        'areaid',
+        'uid',
         'authorid',
         'parentid',
         'title',
@@ -85,7 +85,7 @@ class Area extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $overviewFields = [
-        'areaid',
+        'uid',
         'authorid',
         'parentid',
         'title',
@@ -108,7 +108,7 @@ class Area extends ASModel{
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'areaid',
+        'uid',
         'authorid',
         'parentid',
         'title',
@@ -131,7 +131,7 @@ class Area extends ASModel{
         'lasttime',
     ];     // 列表支持字段
     public static $countFilters = [
-        'areaid',
+        'uid',
         'authorid',
         'parentid',
         'title',

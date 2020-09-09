@@ -90,11 +90,11 @@ class ShieldWord extends ASModel{
 
 
     public static $table     = "system_shieldword";  // 表
-    public static $primaryid = "shieldwordid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
         'title',
         'authorid',
-        'shieldwordid',
+        'uid',
         'status',
     ];      // 添加支持字段
     public static $updateFields = [
@@ -105,13 +105,13 @@ class ShieldWord extends ASModel{
     public static $overviewFields = [
         'title',
         'authorid',
-        'shieldwordid',
+        'uid',
         'status',
     ]; // 概览支持字段
     public static $listFields = [
         'title',
         'authorid',
-        'shieldwordid',
+        'uid',
         'status',
     ];     // 列表支持字段
     public static $countFilters = [

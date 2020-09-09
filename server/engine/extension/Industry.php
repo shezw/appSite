@@ -10,37 +10,37 @@ namespace APS;
 class Industry extends ASModel{
 
     public static $table     = "item_industry";
-    public static $primaryid = "industryid";
+    public static $primaryid = "uid";
     public static $addFields  = [
-        'industryid','parentid',
+        'uid','parentid',
         'title','cover','description','level',
         'sort','featured','status',
     ];
     public static $updateFields  = [
-        'industryid','parentid',
+        'uid','parentid',
         'title','cover','description','level',
         'sort','featured','status',
     ];
     public static $detailFields  = [
-        'industryid','parentid',
+        'uid','parentid',
         'title','cover','description','level',
         'sort','featured','status',
         'createtime','lasttime',
     ];
     public static $overviewFields  = [
-        'industryid','parentid',
+        'uid','parentid',
         'title','cover','description','level',
         'sort','featured','status',
         'createtime','lasttime',
     ];
     public static $listFields  = [
-        'industryid','parentid',
+        'uid','parentid',
         'title','cover','description','level',
         'sort','featured','status',
         'createtime','lasttime',
     ];
     public static $countFilters  = [
-        'industryid','parentid',
+        'uid','parentid',
         'sort','featured','status',
         'createtime','lasttime',
     ];

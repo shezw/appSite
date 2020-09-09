@@ -70,7 +70,7 @@ return [
 	[
 		['table'=>'分组'],
 
-		['name'=>'groupid',     'type'=>'varchar',  'len'=>8,     'dft'=>'',    'unq'=>1,  'cmt'=>'组唯一ID'],
+		['name'=>'uid',     'type'=>'varchar',  'len'=>8,     'dft'=>'',    'unq'=>1,  'cmt'=>'组唯一ID'],
 		['name'=>'type',        'type'=>'varchar',  'len'=>16,     'dft'=>'character',     'cmt'=>'组类型 character 角色 department 部门'],
 		['name'=>'parentid',    'type'=>'varchar',  'len'=>8,     'dft'=>'NULL',           'cmt'=>'父级ID'],
 		['name'=>'level',       'type'=>'mediumint','len'=>5,     'dft'=>0,                'cmt'=>'权限级别'],
@@ -86,7 +86,7 @@ return [
 	[
 		['table'=>'评论'],
 
-		['name'=>'commentid',     'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1,     'cmt'=>'评论ID' ],
+		['name'=>'uid',     'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1,     'cmt'=>'评论ID' ],
 		['name'=>'userid',        'type'=>'varchar',  'len'=>8,	'dft'=>'',     'idx'=>1,     'cmt'=>'用户ID' ],
 		['name'=>'itemid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL', 'idx'=>1, 'cmt'=>'回复ID ' ],
 		['name'=>'itemtype',     'type'=>'varchar',  'len'=>32,	    'dft'=>'NULL', 'idx'=>1, 'cmt'=>'回复类型' ],
@@ -106,7 +106,7 @@ return [
 
 		['table'=>'收藏'],
 
-		['name'=>'collectid',      'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1, 'cmt'=>'主ID'], 
+		['name'=>'uid',      'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1, 'cmt'=>'主ID'], 
 		['name'=>'userid',         'type'=>'varchar',  'len'=>8,	'dft'=>'',     'idx'=>1, 'cmt'=>'用户ID'], 
 		['name'=>'type',           'type'=>'varchar',  'len'=>16,	'dft'=>'NULL', 'idx'=>1, 'cmt'=>'类型 '], 
 		['name'=>'itemid',         'type'=>'varchar',  'len'=>8,	'dft'=>'NULL', 'idx'=>1, 'cmt'=>'回复ID '], 
@@ -126,7 +126,7 @@ return [
 	[
 		['table'=>'偏好/个人设置'],
 
-		['name'=>'preferenceid',   'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1, 'cmt'=>'主ID' ],
+		['name'=>'uid',   'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1, 'cmt'=>'主ID' ],
 		['name'=>'userid',         'type'=>'varchar',  'len'=>8,	'dft'=>'',     'idx'=>1, 'cmt'=>'用户ID' ],
 		['name'=>'keyid',          'type'=>'varchar',  'len'=>16,	'dft'=>'',     'idx'=>1, 'cmt'=>'查询key' ],
 		['name'=>'description',    'type'=>'varchar',  'len'=>255,  'dft'=>'NULL',           'cmt'=>'描述 120字以内' ],
@@ -153,7 +153,7 @@ return [
 	[
 		['table'=>'行业'],
 
-		['name'=>'industryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'行业ID' ],
+		['name'=>'uid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'行业ID' ],
 		['name'=>'parentid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'上一级ID'],
 		['name'=>'level',         'type'=>'tinyint', 'len'=>3,    'dft'=>'NULL', 'cmt'=>'区域级别' ],
 
@@ -170,7 +170,7 @@ return [
 	[
 		['table'=>'地域'],
 
-		['name'=>'regionid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'地域ID' ],
+		['name'=>'uid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'地域ID' ],
 		['name'=>'parentid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'idx'=>1,  'cmt'=>'上一级ID' ],
 
 		//基础字段
@@ -188,7 +188,7 @@ return [
 
 		['table'=>'地铁'],
 
-		['name'=>'subwayid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'地铁ID'],
+		['name'=>'uid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'地铁ID'],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,   	'dft'=>'NULL',  'idx'=>1,   'cmt'=>'创建人ID'],
 		['name'=>'parentid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'上一级ID'],
 		['name'=>'regionid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'地域ID'],
@@ -211,7 +211,7 @@ return [
 
 		['table'=>'商圈'],
 
-		['name'=>'bsdistrictid',  'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'商圈ID'],
+		['name'=>'uid',  'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'商圈ID'],
 		['name'=>'regionid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'地域ID'],
 		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'地区ID'],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,   	'dft'=>'NULL',  'idx'=>1,   'cmt'=>'创建人ID'],
@@ -236,7 +236,7 @@ return [
 	[
 		['table'=>'地区'],
 
-		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'分类ID'],
+		['name'=>'uid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'分类ID'],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,   	'dft'=>'NULL',  'idx'=>1,   'cmt'=>'创建人ID'],
 		['name'=>'parentid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'上一级ID'],
 
@@ -265,7 +265,7 @@ return [
 	[
 		['table'=>'企业'],
 
-		['name'=>'companyid',    'type'=>'varchar',   'len'=>8,      'dft'=>'',     'cmt'=>'索引ID',   'unq'=>1, ],
+		['name'=>'uid',    'type'=>'varchar',   'len'=>8,      'dft'=>'',     'cmt'=>'索引ID',   'unq'=>1, ],
 		['name'=>'regionid',     'type'=>'varchar',   'len'=>8,      'dft'=>'NULL', 'cmt'=>'所属地域',  'idx'=>1, ],
 		['name'=>'areaid',       'type'=>'varchar',   'len'=>8,      'dft'=>'NULL', 'cmt'=>'所属地区',  'idx'=>1, ],
 		['name'=>'subwayid',     'type'=>'varchar',   'len'=>8,      'dft'=>'NULL', 'cmt'=>'地铁ID',   'idx'=>1, ],
@@ -303,7 +303,7 @@ return [
 	[
 		['table'=>'分类'],
 
-		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'分类ID' ],
+		['name'=>'uid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'分类ID' ],
 		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',                 'cmt'=>'分类名' ],
 
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'创建人ID' ],
@@ -321,7 +321,7 @@ return [
 	[
 		['table'=>'媒体'],
 
-		['name'=>'mediaid',       'type'=>'varchar',  'len'=>8,	'dft'=>'',  'unq'=>1,   'cmt'=>'图像ID'],
+		['name'=>'uid',       'type'=>'varchar',  'len'=>8,	'dft'=>'',  'unq'=>1,   'cmt'=>'图像ID'],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1, 'cmt'=>'分类ID'],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1, 'cmt'=>'所有者 '],
 		
@@ -347,7 +347,7 @@ return [
 	[
 		['table'=>'场馆'],
 
-		['name'=>'venueid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'场馆ID'  ],
+		['name'=>'uid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'场馆ID'  ],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'分类ID'  ],
 		['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',              'cmt'=>'类型 lesson, vip...'  ],
 		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'地区ID'  ],
@@ -385,7 +385,7 @@ return [
 	[
 		['table'=>'活动室'],
 
-		['name'=>'roomid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场馆ID' ],
+		['name'=>'uid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场馆ID' ],
 		['name'=>'venueid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'分类ID' ],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'分类ID' ],
 		['name'=>'authorid',        'type'=>'varchar',  'len'=>8,	'dft'=>'NULL',  'idx'=>1,  'cmt'=>'创建人ID' ],
@@ -422,7 +422,7 @@ return [
 	[
 		['table'=>'活动室场次'],
 
-		['name'=>'roomroundid', 'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场次ID' ],
+		['name'=>'uid', 'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场次ID' ],
 		['name'=>'roomid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'idx'=>1,  'cmt'=>'活动室ID' ],
 
 		['name'=>'opens',       'type'=>'text',     'len'=>-1,   'dft'=>'NULL',             'cmt'=>'活动室开放信息 ' ],
@@ -448,7 +448,7 @@ return [
 	[
 		['table'=>'活动'],
 
-		['name'=>'activeid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'活动ID' ],
+		['name'=>'uid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'活动ID' ],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'分类ID' ],
 		['name'=>'venueid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'场馆ID' ],
 		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'地区ID' ],
@@ -507,7 +507,7 @@ return [
 	[
 		['table'=>'座位模版'],
 
-		['name'=>'seatsid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',        'unq'=>1, 'cmt'=>'索引ID'],
+		['name'=>'uid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',        'unq'=>1, 'cmt'=>'索引ID'],
 		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',                  'cmt'=>'标签名'],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',    'idx'=>1, 'cmt'=>'创建人ID'],
 		['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',              'cmt'=>'类型 '], 
@@ -526,7 +526,7 @@ return [
 	[
 		['table'=>'活动场次'],
 
-		['name'=>'activeroundid', 'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场次ID' ],
+		['name'=>'uid', 'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场次ID' ],
 		['name'=>'activeid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'idx'=>1,  'cmt'=>'活动ID' ],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'创建人ID' ],
 		['name'=>'seats',         'type'=>'text',     'len'=>-1,    'dft'=>'NULL',             'cmt'=>'座位数' ],
@@ -555,7 +555,7 @@ return [
 	[
 		['table'=>'资讯'],
 
-		['name'=>'articleid',     'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'索引ID' ],
+		['name'=>'uid',     'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'索引ID' ],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'分类ID' ],
         ['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',            'cmt'=>'类型 text,cover,video,gallery...' ],
         ['name'=>'mode',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',            'cmt'=>'模式' ],
@@ -587,7 +587,7 @@ return [
 	[
 		['table'=>'社团/团队'],
 
-		['name'=>'communityid',   'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'唯一ID'],
+		['name'=>'uid',   'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'唯一ID'],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'分类ID'],
 		['name'=>'type',          'type'=>'varchar',  'len'=>12,	'dft'=>'NULL',             'cmt'=>'类型'],
 		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'地区ID'],
@@ -620,7 +620,7 @@ return [
 	[
 		['table'=>'社团成员'],
 
-		['name'=>'communitymemberid', 'type'=>'varchar',  'len'=>8,   'dft'=>'',    'unq'=>1,  'cmt'=>'成员ID' ],
+		['name'=>'uid', 'type'=>'varchar',  'len'=>8,   'dft'=>'',    'unq'=>1,  'cmt'=>'成员ID' ],
 		['name'=>'communityid',   'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'社团ID' ],
 		['name'=>'userid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'用户ID' ],
 		['name'=>'name',          'type'=>'varchar',  'len'=>32,	'dft'=>'',      'ngr'=>1,  'cmt'=>'成员名称' ],
@@ -639,7 +639,7 @@ return [
 	'vote'=>
 	[
 
-		['name'=>'voteid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',   'unq'=>1,    'cmt'=>'问题ID' ],
+		['name'=>'uid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',   'unq'=>1,    'cmt'=>'问题ID' ],
 		['name'=>'areaid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'地区ID' ],
 		['name'=>'authorid',     'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'创建人ID' ],
 		['name'=>'title',        'type'=>'varchar',  'len'=>255,	'dft'=>'',      'ngr'=>1, 'cmt'=>'题目' ],
@@ -658,7 +658,7 @@ return [
 	// banner设置
 	'banner' =>
 	[
-		['name'=>'bannerid',      'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,      'cmt'=>'轮播图ID' ], 
+		['name'=>'uid',      'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,      'cmt'=>'轮播图ID' ], 
 		['name'=>'cover',         'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',          'cmt'=>'封面 大图' ], 
 		['name'=>'position',      'type'=>'varchar',  'len'=>64,	'dft'=>'NULL',          'cmt'=>'banner位置' ], 
 		['name'=>'title',         'type'=>'varchar',  'len'=>64,	'dft'=>'',   'ngr'=>1,  'cmt'=>'标题32字以内 分词' ], 
@@ -689,7 +689,7 @@ return [
 	[
 		['table'=>'通用标签'],
 
-		['name'=>'tagid',         'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'标签ID' ],
+		['name'=>'uid',         'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'标签ID' ],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'创建人ID' ],
 
 		['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',             'cmt'=>'添加type时 即为特定类型下的标签' ],
@@ -706,7 +706,7 @@ return [
 	// 邮件
 	'mail' =>
 	[
-		['name'=>'mailid',        'type'=>'varchar',  'len'=>8,	'dft'=>'',  'unq'=>1, 'cmt'=>'唯一id' ],
+		['name'=>'uid',        'type'=>'varchar',  'len'=>8,	'dft'=>'',  'unq'=>1, 'cmt'=>'唯一id' ],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	'dft'=>'',  'idx'=>1, 'cmt'=>'作者id' ],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	'dft'=>'NULL',        'cmt'=>'分类id' ],
 		
@@ -723,7 +723,7 @@ return [
 	// 短信
 	'sms' =>
 	[
-		['name'=>'smsid',         'type'=>'varchar',  'len'=>8,	'dft'=>'',  'unq'=>1,        'cmt'=>'唯一id' ],
+		['name'=>'uid',         'type'=>'varchar',  'len'=>8,	'dft'=>'',  'unq'=>1,        'cmt'=>'唯一id' ],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	'dft'=>'NULL',               'cmt'=>'作者id' ],
 		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	'dft'=>'NULL',               'cmt'=>'分类id' ],
 		
@@ -752,7 +752,7 @@ return [
 	[
 		['table'=>'关系绑定'],
 
-		['name'=>'combineid',      'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1, 'cmt'=>'主ID' ],
+		['name'=>'uid',      'type'=>'varchar',  'len'=>8,	'dft'=>'',     'unq'=>1, 'cmt'=>'主ID' ],
 		['name'=>'itemid',         'type'=>'varchar',  'len'=>8,	'dft'=>'',     'idx'=>1, 'cmt'=>'单位ID' ],
 		['name'=>'itemtype',       'type'=>'varchar',  'len'=>24,	'dft'=>'',     'idx'=>1, 'cmt'=>'单位类型' ],
 		['name'=>'relationid',     'type'=>'varchar',  'len'=>8,	'dft'=>'',     'idx'=>1, 'cmt'=>'关联对象ID' ],
@@ -774,7 +774,7 @@ return [
 	[
 		['table'=>'申请表单'],
 
-		['name'=>'requestid',  'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,  'cmt'=>'索引ID' ],
+		['name'=>'uid',  'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,  'cmt'=>'索引ID' ],
 
 		['name'=>'areaid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1, 'cmt'=>'区域ID' ],
 		['name'=>'userid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1, 'cmt'=>'用户ID' ],
@@ -798,7 +798,7 @@ return [
 	[
 		['table'=>'认证表单'],
 
-		['name'=>'verifyid',  'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,       'cmt'=>'索引ID' ],
+		['name'=>'uid',  'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,       'cmt'=>'索引ID' ],
 
 		['name'=>'areaid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1,  'cmt'=>'区域ID' ],
 		['name'=>'userid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1,  'cmt'=>'用户ID' ],
@@ -818,7 +818,7 @@ return [
 	[
 		['table'=>'合约表单'],
 
-		['name'=>'contractid', 'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,    'cmt'=>'索引ID' ],
+		['name'=>'uid', 'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,    'cmt'=>'索引ID' ],
 		['name'=>'userid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1,   'cmt'=>'用户ID' ],
 		['name'=>'targetid',   'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1,   'cmt'=>'合约方ID' ],
 		['name'=>'itemid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1,   'cmt'=>'目标ID' ],
@@ -857,7 +857,7 @@ return [
 	[
 		['table'=>'内区块链'],
 
-		['name'=>'blockid',    'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,    'cmt'=>'索引ID' ],
+		['name'=>'uid',    'type'=>'varchar',  'len'=>8,	'dft'=>'',   'unq'=>1,    'cmt'=>'索引ID' ],
 		['name'=>'userid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1,  'cmt'=>'用户ID' ],
 		['name'=>'itemtype',   'type'=>'varchar',  'len'=>32,	'dft'=>'NULL','idx'=>1,  'cmt'=>'目标类别' ],
 		['name'=>'itemid',     'type'=>'varchar',  'len'=>8,	'dft'=>'NULL','idx'=>1, 'cmt'=>'目标ID' ],
@@ -884,7 +884,7 @@ return [
 	[
 		['table'=>'订单'],
 
-		['name'=>'orderid',       'type'=>'varchar',  'len'=>32,	'dft'=>'',     'unq'=>1,  'cmt'=>'订单ID' ],
+		['name'=>'uid',       'type'=>'varchar',  'len'=>32,	'dft'=>'',     'unq'=>1,  'cmt'=>'订单ID' ],
 		['name'=>'userid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'',     'idx'=>1,  'cmt'=>'用户ID' ],
 		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'地区ID' ],
 
@@ -928,7 +928,7 @@ return [
 	[
 		['table'=>'支付'],
 
-		['name'=>'paymentid',      'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'unq'=>1, 'cmt'=>'支付ID',  ],
+		['name'=>'uid',      'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'unq'=>1, 'cmt'=>'支付ID',  ],
 		['name'=>'orderid',        'type'=>'varchar',  'len'=>32,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'订单ID',  ],
 		['name'=>'payment',        'type'=>'varchar',  'len'=>16,   'dft'=>'NULL',            'cmt'=>'支付方式 如 wechat alipay...',  ],
 		['name'=>'paymenttype',    'type'=>'varchar',  'len'=>16,   'dft'=>'NULL',            'cmt'=>'支付方式 如 jsapi qrcode h5 web ...',  ],
@@ -952,7 +952,7 @@ return [
         [
             ['table'=>'物流'],
 
-            ['name'=>'shippingid',     'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'索引ID',  ],
+            ['name'=>'uid',     'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'索引ID',  ],
             ['name'=>'orderid',        'type'=>'varchar',  'len'=>32,  'dft'=>'',      'idx'=>1, 'cmt'=>'订单ID',  ],
             ['name'=>'userid',         'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'用户ID',  ],
             ['name'=>'details',        'type'=>'text',     'len'=>-1,   'dft'=>'NULL',              'cmt'=>'详情记录 ASJson',  ],
@@ -966,7 +966,7 @@ return [
 
             ['table'=>'核销'],
 
-            ['name'=>'writeoffid',     'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'支付ID',  ],
+            ['name'=>'uid',     'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'支付ID',  ],
             ['name'=>'orderid',        'type'=>'varchar',  'len'=>32,  'dft'=>'',      'idx'=>1, 'cmt'=>'订单ID',  ],
             ['name'=>'itemid',         'type'=>'varchar',  'len'=>32,  'dft'=>'NULL',  'idx'=>1, 'cmt'=>'对象ID',  ],
             ['name'=>'targetid',       'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'核销绑定ID',  ],
@@ -989,7 +989,7 @@ return [
 
         ['table'=>'公告'],
 
-        ['name'=>'announcementid', 'type'=>'varchar', 'len'=>8,   'dft'=>'',   'unq'=>1,  'cmt'=>'公告ID' ],
+        ['name'=>'uid', 'type'=>'varchar', 'len'=>8,   'dft'=>'',   'unq'=>1,  'cmt'=>'公告ID' ],
         ['name'=>'authorid',       'type'=>'varchar', 'len'=>8,   'dft'=>'',   'idx'=>1,  'cmt'=>'作者ID' ],
         ['name'=>'status',         'type'=>'varchar', 'len'=>24,   'dft'=>'send',         'cmt'=>'状态' ],
         // eg: sent 已发送 received 已接收 read 已读
@@ -1010,7 +1010,7 @@ return [
 
 		['table'=>'消息通知'],
 
-		['name'=>'notificationid', 'type'=>'varchar', 'len'=>8,   'dft'=>'',   'unq'=>1,  'cmt'=>'通知ID' ],
+		['name'=>'uid', 'type'=>'varchar', 'len'=>8,   'dft'=>'',   'unq'=>1,  'cmt'=>'通知ID' ],
 		['name'=>'senderid',       'type'=>'varchar', 'len'=>8,   'dft'=>'',   'idx'=>1,  'cmt'=>'发送方ID' ],
 		['name'=>'receiverid',     'type'=>'varchar', 'len'=>8,   'dft'=>'',   'idx'=>1,  'cmt'=>'接收方ID' ],
 		['name'=>'replyid',        'type'=>'varchar', 'len'=>8,   'dft'=>'NULL',          'cmt'=>'回复到ID' ],
@@ -1030,7 +1030,7 @@ return [
 
         ['table'=>'用户聊天'],
 
-        ['name'=>'chatid',         'type'=>'varchar', 'len'=>8,   'dft'=>'',   'unq'=>1,  'cmt'=>'消息ID' ],
+        ['name'=>'uid',         'type'=>'varchar', 'len'=>8,   'dft'=>'',   'unq'=>1,  'cmt'=>'消息ID' ],
         ['name'=>'senderid',       'type'=>'varchar', 'len'=>8,   'dft'=>'',   'idx'=>1,  'cmt'=>'发送方ID' ],
         ['name'=>'receiveid',      'type'=>'varchar', 'len'=>8,   'dft'=>'',   'idx'=>1,  'cmt'=>'接收放ID' ],
         ['name'=>'atuserid',       'type'=>'varchar', 'len'=>8,   'dft'=>'NULL',          'cmt'=>'提示到用户ID' ],
@@ -1058,7 +1058,7 @@ return [
 	[
         ['table'=>'单位权限'],
 
-        ['name'=>'permissionid','type'=>'varchar', 'len'=>8,  'dft'=>'',   'unq'=>1,  'cmt'=>'索引ID'],
+        ['name'=>'uid','type'=>'varchar', 'len'=>8,  'dft'=>'',   'unq'=>1,  'cmt'=>'索引ID'],
 		['name'=>'userid',    'type'=>'varchar', 'len'=>8,    'dft'=>'',   'idx'=>1,  'cmt'=>'用户ID'],
 		['name'=>'itemid',    'type'=>'varchar', 'len'=>8,    'dft'=>'',   'idx'=>1,  'cmt'=>'单品ID'],
 	    ['name'=>'itemtype',  'type'=>'varchar', 'len'=>16,   'dft'=>'',              'cmt'=>'单品类型'],
@@ -1072,7 +1072,7 @@ return [
 	[
         ['table'=>'操作权限'],
 
-        ['name'=>'operationid','type'=>'varchar', 'len'=>8,    'dft'=>'',   'unq'=>1,  'cmt'=>'索引ID'],
+        ['name'=>'uid','type'=>'varchar', 'len'=>8,    'dft'=>'',   'unq'=>1,  'cmt'=>'索引ID'],
         ['name'=>'parentid',   'type'=>'varchar', 'len'=>8,    'dft'=>'',   'idx'=>1,  'cmt'=>'父级ID'],
         ['name'=>'mergeparents','type'=>'varchar','len'=>128,  'dft'=>'NULL',          'cmt'=>'合并父级 120字符以内（用于快速迭代查询）JSON' ],
 	    ['name'=>'title',      'type'=>'varchar', 'len'=>24,   'dft'=>'',              'cmt'=>'权限名称'],
@@ -1118,7 +1118,7 @@ return [
 	[
 		['table'=>'交易'],
 
-		['name'=>'dealid',     'type'=>'varchar', 'len'=>8,	    'dft'=>'',   'idx'=>1,     'cmt'=>'交易ID' ],
+		['name'=>'uid',     'type'=>'varchar', 'len'=>8,	    'dft'=>'',   'idx'=>1,     'cmt'=>'交易ID' ],
 		['name'=>'payer',      'type'=>'varchar', 'len'=>8,  	'dft'=>'',   'idx'=>1,     'cmt'=>'支付方ID' ],
 		['name'=>'payee',      'type'=>'varchar', 'len'=>8,  	'dft'=>'',   'idx'=>1,     'cmt'=>'收款方ID' ],
 
@@ -1140,7 +1140,7 @@ return [
 	[
 		['table'=>'提现'],
 
-		['name'=>'withdrawid', 'type'=>'varchar', 'len'=>8,	'dft'=>'',   'unq'=>1,       'cmt'=>'提现申请ID' ],
+		['name'=>'uid', 'type'=>'varchar', 'len'=>8,	'dft'=>'',   'unq'=>1,       'cmt'=>'提现申请ID' ],
 		['name'=>'userid',     'type'=>'varchar', 'len'=>8,	'dft'=>'',   'idx'=>1,       'cmt'=>'收款方ID' ],
 
 		['name'=>'type',       'type'=>'varchar', 'len'=>16,    'dft'=>'wechat_pocket',  'cmt'=>'提现类型 ' ],
@@ -1239,7 +1239,7 @@ return [
 	[
 		['table'=>'系统设置'],
 		
-		['name'=>'settingid',  'type'=>'varchar', 'len'=>32,	 'dft'=>'',   'unq'=>1, 'cmt'=>'设置ID' ],
+		['name'=>'uid',  'type'=>'varchar', 'len'=>32,	 'dft'=>'',   'unq'=>1, 'cmt'=>'设置ID' ],
 		['name'=>'keyid',      'type'=>'varchar', 'len'=>32,	 'dft'=>'',   'idx'=>1, 'cmt'=>'查询key' ],
 		['name'=>'description','type'=>'varchar', 'len'=>255,    'dft'=>'NULL',         'cmt'=>'描述 120字以内' ],
 		['name'=>'content',    'type'=>'text',    'len'=>-1,     'dft'=>'',             'cmt'=>'设置内容 k-v json' ],
@@ -1253,7 +1253,7 @@ return [
 	[
 		['table'=>'屏蔽词'],
 		
-		['name'=>'shieldwordid',  'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'主ID' ],
+		['name'=>'uid',  'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'主ID' ],
 		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',                'cmt'=>'标签名' ],
 		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'创建人ID' ],
 

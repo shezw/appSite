@@ -98,8 +98,8 @@ class UserComment extends ASModel{
 
     /**
      * 查询回复列表 根据comment查询回复内容
-     * replyList by commentid
-     * @param  string      $commentid
+     * replyList by uid
+     * @param  string      $uid
      * @param  int         $page
      * @param  int         $size
      * @param  null        $sort
@@ -111,16 +111,16 @@ class UserComment extends ASModel{
      *                                 lasttime
      * @return \APS\ASResult
      */
-    public function replyList( string $commentid , $page=1, $size=25 , $sort = null, array $moreFilters = null ){
+    public function replyList( string $uid , $page=1, $size=25 , $sort = null, array $moreFilters = null ){
 
         $filter = $moreFilters ?? [];
-        $filter['itemid'] = $commentid;
+        $filter['itemid'] = $uid;
         $filter['itemtype'] = static::$table;
 
         if ( $this->count($filter)>0 ) {
             return $this->list($filter,$page,$size,$sort??'featured DESC, createtime DESC');
         }else{
-            return $this->take($commentid)->error(400,i18n('SYS_NON'),'UserComment->replyList');
+            return $this->take($uid)->error(400,i18n('SYS_NON'),'UserComment->replyList');
         }
 
     }
@@ -128,7 +128,7 @@ class UserComment extends ASModel{
     /**
      * 回复计数
      * countReply
-     * @param  string      $commentid
+     * @param  string      $uid
      * @param  array|null  $moreFilters
      *                                 userid
      *                                 status
@@ -137,10 +137,10 @@ class UserComment extends ASModel{
      *                                 lasttime
      * @return \APS\ASResult
      */
-    public function countReply( string $commentid, array $moreFilters = null ){
+    public function countReply( string $uid, array $moreFilters = null ){
 
         $filter = $moreFilters ?? [];
-        $filter['itemid'] = $commentid;
+        $filter['itemid'] = $uid;
         $filter['itemtype'] = static::$table;
 
         return $this->count($filter);
@@ -150,13 +150,13 @@ class UserComment extends ASModel{
     /**
      * 是否被回复
      * isReplied
-     * @param  string      $commentid
+     * @param  string      $uid
      * @param  array|null  $moreFilters
      * @return bool
      */
-    public function isReplied( string $commentid , array $moreFilters = null ){
+    public function isReplied( string $uid , array $moreFilters = null ){
 
-        return $this->countReply( $commentid,$moreFilters )->getContent() > 0;
+        return $this->countReply( $uid,$moreFilters )->getContent() > 0;
     }
 
 
@@ -223,65 +223,65 @@ class UserComment extends ASModel{
     /**
      * 我的回复列表
      * myReplyList
-     * @param  string      $commentid
+     * @param  string      $uid
      * @param  int         $page
      * @param  int         $size
      * @param  null        $sort
      * @param  array|null  $moreFilters
      * @return \APS\ASResult
      */
-    public function myReplyList( string $commentid , $page=1, $size=25 , $sort = null, array $moreFilters = null ){
+    public function myReplyList( string $uid , $page=1, $size=25 , $sort = null, array $moreFilters = null ){
 
         if( isset($this->userid) ){ return $this->error(150,'Need Userid instance','UserComment->myCommentList'); }
 
         $moreFilters = $moreFilters ?? [];
         $moreFilters['userid'] = $this->userid;
 
-        return $this->replyList( $commentid,$page,$size,$sort, $moreFilters );
+        return $this->replyList( $uid,$page,$size,$sort, $moreFilters );
     }
 
     /**
      * 我的回复 计数
      * countMyReply
-     * @param  string      $commentid
+     * @param  string      $uid
      * @param  array|null  $moreFilters
      * @return \APS\ASResult
      */
-    public function countMyReply( string $commentid, array $moreFilters = null ){
+    public function countMyReply( string $uid, array $moreFilters = null ){
 
         if( isset($this->userid) ){ return $this->error(150,'Need Userid instance','UserComment->myCommentList'); }
 
         $moreFilters = $moreFilters ?? [];
         $moreFilters['userid'] = $this->userid;
 
-        return $this->countReply($commentid,$moreFilters);
+        return $this->countReply($uid,$moreFilters);
     }
 
     /**
      * 是否回复某评论
      * hasRepliedTo specific comment
-     * @param  string  $commentid
+     * @param  string  $uid
      * @param  array   $moreFilters
      * @return \APS\ASResult|bool
      */
-    public function hasRepliedTo( string $commentid, array $moreFilters){
+    public function hasRepliedTo( string $uid, array $moreFilters){
 
         if( isset($this->userid) ){ return $this->error(150,'Need Userid instance','UserComment->myCommentList'); }
 
         $moreFilters = $moreFilters ?? [];
         $moreFilters['userid'] = $this->userid;
 
-        return $this->countReply( $commentid,$moreFilters )->getContent() > 0;
+        return $this->countReply( $uid,$moreFilters )->getContent() > 0;
 
     }
 
 
     public static $table     = "user_comment";  // 表
-    public static $primaryid = "commentid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
         'title',
         'userid',
-        'commentid',
+        'uid',
         'content',
         'itemid',
         'featured',
@@ -295,7 +295,7 @@ class UserComment extends ASModel{
     public static $overviewFields = [
         'title',
         'userid',
-        'commentid',
+        'uid',
         'content',
         'itemid',
         'featured',
@@ -306,7 +306,7 @@ class UserComment extends ASModel{
     public static $listFields = [
         'title',
         'userid',
-        'commentid',
+        'uid',
         'content',
         'itemid',
         'featured',
@@ -316,7 +316,7 @@ class UserComment extends ASModel{
     ];     // 列表支持字段
     public static $countFilters = [
         'userid',
-        'commentid',
+        'uid',
         'itemid',
         'itemtype',
         'featured',

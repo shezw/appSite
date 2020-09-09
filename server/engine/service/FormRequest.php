@@ -194,8 +194,9 @@ class FormRequest extends ASModel{
 
 
     public static $table     = "form_request";  // 表
-    public static $primaryid = "requestid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
+        'uid',
         'areaid',
         'userid',
         'itemtype',
@@ -219,7 +220,7 @@ class FormRequest extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $overviewFields = [
-        'requestid',
+        'uid',
         'areaid',
         'userid',
         'itemtype',
@@ -232,7 +233,7 @@ class FormRequest extends ASModel{
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'requestid',
+        'uid',
         'areaid',
         'userid',
         'itemtype',
@@ -245,7 +246,7 @@ class FormRequest extends ASModel{
         'lasttime',
     ];     // 列表支持字段
     public static $countFilters = [
-        'requestid',
+        'uid',
         'areaid',
         'userid',
         'itemtype',

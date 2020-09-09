@@ -10,9 +10,9 @@ namespace APS;
 class FinanceWithdraw extends ASModel{
 
     public static $table     = "finance_withdraw";  // 表
-    public static $primaryid = "withdrawid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
-        'withdrawid',
+        'uid',
         'userid',
         'type',
         'target',
@@ -25,7 +25,7 @@ class FinanceWithdraw extends ASModel{
         'callback',
     ];   // 更新支持字段
     public static $detailFields = [
-        'withdrawid',
+        'uid',
         'userid',
         'type',
         'target',
@@ -34,7 +34,7 @@ class FinanceWithdraw extends ASModel{
         'callback',
     ];   // 详情支持字段
     public static $publicDetailFields = [
-        'withdrawid',
+        'uid',
         'userid',
         'type',
         'target',
@@ -42,7 +42,7 @@ class FinanceWithdraw extends ASModel{
         'status',
     ];   // 详情支持字段
     public static $overviewFields = [
-        'withdrawid',
+        'uid',
         'userid',
         'type',
         'target',
@@ -50,7 +50,7 @@ class FinanceWithdraw extends ASModel{
         'status',
     ]; // 概览支持字段
     public static $listFields = [
-        'withdrawid',
+        'uid',
         'userid',
         'type',
         'target',
@@ -58,7 +58,7 @@ class FinanceWithdraw extends ASModel{
         'status',
     ];     // 列表支持字段
     public static $publicListFields = [
-        'withdrawid',
+        'uid',
         'userid',
         'type',
         'target',
@@ -66,7 +66,7 @@ class FinanceWithdraw extends ASModel{
         'status',
     ];     // 开放接口列表支持字段
     public static $countFilters = [
-        'withdrawid',
+        'uid',
         'userid',
         'type',
         'amount',

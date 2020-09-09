@@ -21,8 +21,8 @@ namespace APS;
 class AccessOperation extends ASModel{
 
     public static $table         = 'access_operation';
-    public static $primaryid     = 'operationid';
-    public static $addFields     = ['operationid','title','description','scope','parentid','mergeparents'];
+    public static $primaryid     = 'uid';
+    public static $addFields     = ['uid','title','description','scope','parentid','mergeparents'];
     public static $countFilters  = ['title','parentid','scope','status'];
     public static $searchFilters = ['title','description'];
 
@@ -59,15 +59,15 @@ class AccessOperation extends ASModel{
 
     /**
      * 检查是否具有对应权限（包含父级对象检测）
-     * Check if you have corresponding permissions (including parent group detection) by operationid
+     * Check if you have corresponding permissions (including parent group detection) by uid
      * @param  string  $groupid
-     * @param  string  $operationid
+     * @param  string  $uid
      * @return bool
      */
-    public function can( string $groupid, string $operationid ):bool{
+    public function can( string $groupid, string $uid ):bool{
 
-        $operations = $this->detail($operationid)['mergeparents'];
-        $operations[] = $operationid;
+        $operations = $this->detail($uid)['mergeparents'];
+        $operations[] = $uid;
 
         return Relation::common()->has([
             'itemid'=>$groupid,
@@ -87,10 +87,10 @@ class AccessOperation extends ASModel{
      */
     public function canBy( string $groupid, string $operation, string $scope = 'common' ):bool{
 
-        $queryOperationid = $this->find( $operation,$scope );
+        $queryuid = $this->find( $operation,$scope );
 
-        if( !$queryOperationid->isSucceed() ){ return false; }
-        return $this->can( $groupid, $queryOperationid->getContent() );
+        if( !$queryuid->isSucceed() ){ return false; }
+        return $this->can( $groupid, $queryuid->getContent() );
 
     }
 
@@ -106,19 +106,19 @@ class AccessOperation extends ASModel{
 
         $list = $this->list(['title'=>$operation,'scope'=>$scope]);
 
-        return $list->isSucceed() ? $this->take($list->getContent()[0]['operationid'])->success() : $list;
+        return $list->isSucceed() ? $this->take($list->getContent()[0]['uid'])->success() : $list;
     }
 
     /**
      * 取消权限
      * Cancel operation access of group
      * @param  string  $groupid
-     * @param  string  $operationid
+     * @param  string  $uid
      * @return \APS\ASResult
      */
-    public function ban( string $groupid, string $operationid ):ASResult{
+    public function ban( string $groupid, string $uid ):ASResult{
 
-        $combineId = Relation::common()->getBindId($groupid,UserGroup::$table,$operationid,static::$table);
+        $combineId = Relation::common()->getBindId($groupid,UserGroup::$table,$uid,static::$table);
 
         return $combineId->isSucceed() ? Relation::common()->unBind($combineId->getContent()) : $combineId ;
     }
@@ -128,12 +128,12 @@ class AccessOperation extends ASModel{
      * 授予权限
      * grant operation access to group
      * @param  string  $groupid
-     * @param  string  $operationid
+     * @param  string  $uid
      * @return \APS\ASResult
      */
-    public function grant( string $groupid, string $operationid ){
+    public function grant( string $groupid, string $uid ){
 
-        return Relation::common()->bind($groupid,UserGroup::$table,$operationid,static::$table);
+        return Relation::common()->bind($groupid,UserGroup::$table,$uid,static::$table);
     }
 
 }

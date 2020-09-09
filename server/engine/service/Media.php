@@ -13,12 +13,12 @@ class Media extends ASModel{
     /**
      * 彻底删除媒体文件
      * Remove media form server && OSS
-     * @param  string  $mediaid  [媒体ID]
+     * @param  string  $uid  [媒体ID]
      * @return \APS\ASResult
      */
-    public function delete( string $mediaid ){
+    public function delete( string $uid ){
 
-        $url = $this->detail($mediaid)->getContent()['url'];
+        $url = $this->detail($uid)->getContent()['url'];
 
         $removeFile = AliyunOSS::common()->removeFile($url);
         /*
@@ -27,19 +27,19 @@ class Media extends ASModel{
 
         if(!$removeFile->isSucceed()){ return $removeFile; }
 
-        return $this->remove($mediaid);
+        return $this->remove($uid);
     }
 
 
     /**
      * 查询链接地址
-     * Get media URL by mediaid
-     * @param  string  $mediaid  媒体ID
+     * Get media URL by uid
+     * @param  string  $uid  媒体ID
      * @return \APS\ASResult
      */
-    public function getUrl( string $mediaid ){
+    public function getUrl( string $uid ){
 
-        $getDetail = $this->detail($mediaid);
+        $getDetail = $this->detail($uid);
 
         if(!$getDetail->isSucceed()){ return $getDetail; }
 
@@ -48,9 +48,9 @@ class Media extends ASModel{
 
 
     public static $table     = "item_media";  // 表
-    public static $primaryid = "mediaid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
-        'mediaid', 'categoryid', 'authorid',
+        'uid', 'categoryid', 'authorid',
         'type', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
@@ -63,21 +63,21 @@ class Media extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $overviewFields = [
-        'mediaid', 'categoryid', 'authorid',
+        'uid', 'categoryid', 'authorid',
         'type', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
         'createtime', 'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'mediaid', 'categoryid', 'authorid',
+        'uid', 'categoryid', 'authorid',
         'type', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
         'createtime', 'lasttime',
     ];     // 列表支持字段
     public static $countFilters = [
-        'mediaid', 'categoryid', 'authorid',
+        'uid', 'categoryid', 'authorid',
         'type', 'url',
         'sort', 'featured', 'status',
         'createtime', 'lasttime',

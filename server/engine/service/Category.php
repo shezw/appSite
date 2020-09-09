@@ -10,9 +10,9 @@ namespace APS;
 class Category extends ASModel {
 
     public static $table     = "item_category";  // 表
-    public static $primaryid = "categoryid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
-        'categoryid',
+        'uid',
         'authorid',
         'parentid',
         'type',
@@ -36,7 +36,7 @@ class Category extends ASModel {
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $overviewFields = [
-        'categoryid',
+        'uid',
         'authorid',
         'parentid',
         'type',
@@ -50,7 +50,7 @@ class Category extends ASModel {
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'categoryid',
+        'uid',
         'authorid',
         'parentid',
         'type',
@@ -64,7 +64,7 @@ class Category extends ASModel {
         'lasttime',
     ];     // 列表支持字段
     public static $countFilters = [
-        'categoryid',
+        'uid',
         'authorid',
         'parentid',
         'type',
@@ -85,17 +85,17 @@ class Category extends ASModel {
     /**w
      * 查询子分类
      * Get child category list
-     * @param  string      $categoryid
+     * @param  string      $uid
      * @param  int         $page
      * @param  int         $size
      * @param  null        $sort
      * @param  array|null  $moreFilters
      * @return \APS\ASResult
      */
-    public function listChild( string $categoryid, $page = 1, $size = 50, $sort = null, array $moreFilters = null ){
+    public function listChild( string $uid, $page = 1, $size = 50, $sort = null, array $moreFilters = null ){
 
         $moreFilters = $moreFilters ?? [];
-        $moreFilters['parentid'] = $categoryid;
+        $moreFilters['parentid'] = $uid;
 
         return $this->list($moreFilters,$page,$size,$sort);
     }
@@ -103,14 +103,14 @@ class Category extends ASModel {
     /**
      * 查询子分类 计数
      * count Child category
-     * @param  string      $categoryid
+     * @param  string      $uid
      * @param  array|null  $moreFilters
      * @return \APS\ASResult
      */
-    public function countChild( string $categoryid, array $moreFilters = null ){
+    public function countChild( string $uid, array $moreFilters = null ){
 
         $moreFilters = $moreFilters ?? [];
-        $moreFilters['parentid'] = $categoryid;
+        $moreFilters['parentid'] = $uid;
 
         return $this->count($moreFilters);
     }

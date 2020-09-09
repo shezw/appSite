@@ -11,9 +11,9 @@ class CommerceWriteOff extends ASModel
 {
 
     public static $table     = "commerce_writeoff";  // 表
-    public static $primaryid = "writeoffid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields  = [
-        'writeoffid',
+        'uid',
         'orderid',
         'targetid',
         'itemid',
@@ -25,7 +25,7 @@ class CommerceWriteOff extends ASModel
     ];
     public static $detailFields  = ["*"];
     public static $overviewFields  = [
-        'writeoffid',
+        'uid',
         'orderid',
         'targetid',
         'itemid',
@@ -37,7 +37,7 @@ class CommerceWriteOff extends ASModel
         'featured',
     ];
     public static $listFields  = [
-        'writeoffid',
+        'uid',
         'orderid',
         'targetid',
         'itemid',
@@ -50,7 +50,7 @@ class CommerceWriteOff extends ASModel
 
     ];
     public static $countFilters  = [
-        'writeoffid',
+        'uid',
         'orderid',
         'targetid',
         'itemid',

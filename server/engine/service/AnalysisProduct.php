@@ -14,9 +14,9 @@ class AnalysisProduct extends ASModel
 {
 
     public static $table     = "analysis_product";  // 表
-    public static $primaryid = "productid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
-        'productid',
+        'uid',
         'userid',
         'cover',
         'title',
@@ -26,7 +26,7 @@ class AnalysisProduct extends ASModel
         'total',
     ];      // 添加支持字段
     public static $updateFields = [
-        'productid',
+        'uid',
         'userid',
         'cover',
         'title',
@@ -37,7 +37,7 @@ class AnalysisProduct extends ASModel
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $overviewFields = [
-        'productid',
+        'uid',
         'userid',
         'cover',
         'title',
@@ -49,7 +49,7 @@ class AnalysisProduct extends ASModel
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'productid',
+        'uid',
         'userid',
         'cover',
         'title',
@@ -61,7 +61,7 @@ class AnalysisProduct extends ASModel
         'lasttime',
     ];     // 列表支持字段
     public static $countFilters = [
-        'productid',
+        'uid',
         'userid',
         'cover',
         'title',

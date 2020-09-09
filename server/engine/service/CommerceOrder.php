@@ -59,7 +59,7 @@ class CommerceOrder extends ASModel{
     /**
      * @var string
      */
-    public $orderid;
+    public $uid;
     /**
      * @var string
      */
@@ -174,13 +174,13 @@ class CommerceOrder extends ASModel{
     /**
      * 实例化
      * instance
-     * @param $orderid
+     * @param $uid
      * @return \APS\CommerceOrder
      */
-    public static function instance( string $orderid ){
+    public static function instance( string $uid ){
 
         $order = static::common();
-        $order->initDetail($orderid);
+        $order->initDetail($uid);
         return $order;
     }
 
@@ -188,17 +188,17 @@ class CommerceOrder extends ASModel{
     /**
      * 实例化数据
      * initDetail
-     * @param  string  $orderid
+     * @param  string  $uid
      * @return \APS\ASResult
      */
-    public function initDetail( string $orderid ):ASResult{
+    public function initDetail( string $uid ):ASResult{
         if( $this->instantiated ){ return $this->success(); }
-        $getDetail = $this->detail( $orderid );
+        $getDetail = $this->detail( $uid );
         if( !$getDetail->isSucceed() ){ return $getDetail; }
 
         $detailArray = $getDetail->getContent();
 
-        $this->orderid = $detailArray['orderid'];
+        $this->uid = $detailArray['uid'];
         $this->userid = $detailArray['userid'];
         $this->areaid = $detailArray['areaid'];
         $this->title = $detailArray['title'];
@@ -261,7 +261,7 @@ class CommerceOrder extends ASModel{
 
         if( !$getList->isSucceed() ){ return $this->error(400,i18n('ORD_TGET_NON'),'CommerceOrder->getOrderByTicket'); }
 
-        return $this->detail( $getList->getContent()[0]['orderid'], $publicMode );
+        return $this->detail( $getList->getContent()[0]['uid'], $publicMode );
     }
 
     /**
@@ -318,22 +318,22 @@ class CommerceOrder extends ASModel{
     /**
      * 核销订单
      * writeOff
-     * @param  string  $orderid
+     * @param  string  $uid
      * @return \APS\ASResult
      */
-    public function writeOff( string $orderid ){
+    public function writeOff( string $uid ){
 
-        $call = $this->successCall( $orderid );
+        $call = $this->successCall( $uid );
 
         if( !$call->isSucceed() ){
             return $this->error(788,i18n('SYS_CALL_FAL'));
         }
 
-        $this->update(['writeoff'=>1,'status'=>'done'],$orderid);
+        $this->update(['writeoff'=>1,'status'=>'done'],$uid);
 
-        $this->record('ORDER_WRITEOFF','CommerceOrder->writeOff',$orderid);
+        $this->record('ORDER_WRITEOFF','CommerceOrder->writeOff',$uid);
 
-        return $this->take($orderid)->success(i18n('ORD_WOF_SUC'),'CommerceOrder->writeOff');
+        return $this->take($uid)->success(i18n('ORD_WOF_SUC'),'CommerceOrder->writeOff');
     }
 
 
@@ -358,44 +358,44 @@ class CommerceOrder extends ASModel{
     /**
      * 订单回调
      * Run callback api
-     * @param  string  $orderid
+     * @param  string  $uid
      * @param  string  $mode
      * @return \APS\ASResult
      */
-    public function callback( string $orderid, string $mode = 'callback' ){
+    public function callback( string $uid, string $mode = 'callback' ){
 
-        $callbacks = $this->detail($orderid)->getContent()[$mode];
+        $callbacks = $this->detail($uid)->getContent()[$mode];
 
         if( isset($callbacks) ){ return $this->success(i18n('ORD_CAL_SUC')); }
 
         $callResult = ASAPI::systemInit('system\innerCallback',$callbacks)->run();
 
         if( $callResult->isSucceed() ){
-            $this->clearCall( $orderid,$mode );
+            $this->clearCall( $uid,$mode );
             return $this->success();
         }else{
-            $this->update( [$mode=>$callResult->getContent()] , $orderid );
+            $this->update( [$mode=>$callResult->getContent()] , $uid );
             return $callResult;
         }
     }
 
 
     // 成功回调
-    public function successCall( string $orderid ){ return $this->callback($orderid,'callback'); }
+    public function successCall( string $uid ){ return $this->callback($uid,'callback'); }
 
     // 退款回调
-    public function refundCall( string $orderid ){ return $this->callback($orderid,'refundcallback'); }
+    public function refundCall( string $uid ){ return $this->callback($uid,'refundcallback'); }
 
     // 违约回调
-    public function breachCall( string $orderid ){ return $this->callback($orderid,'breachCallback'); }
+    public function breachCall( string $uid ){ return $this->callback($uid,'breachCallback'); }
 
     // 清空回调
-    public function clearCall( string $orderid, string $mode = 'ALL' ){
+    public function clearCall( string $uid, string $mode = 'ALL' ){
 
         $data = $mode=='ALL' ? ['callback'=>'SET_NULL','refundcallback'=>'SET_NULL','breachcallback'=>'SET_NULL'] : [$mode=>'SET_NULL'];
         $data['status'] = 'done';
 
-        return $this->update($data,$orderid);
+        return $this->update($data,$uid);
     }
 
 
@@ -405,12 +405,12 @@ class CommerceOrder extends ASModel{
     /**
      * 订单支付成功回调
      * payback order
-     * @param  string  $orderid
+     * @param  string  $uid
      * @return \APS\ASResult
      */
-    public function payback( string $orderid ){
+    public function payback( string $uid ){
 
-        $this->initDetail($orderid);
+        $this->initDetail($uid);
 
         # 检查订单状态是否needpay
         if ($this->status == 'needcall') {
@@ -419,22 +419,22 @@ class CommerceOrder extends ASModel{
 
             if (!$callback->isSucceed()) {
 
-                return $this->take($orderid)->error(305,i18n('SYS_CAL_SUC'),'CommerceOrder->payback');
+                return $this->take($uid)->error(305,i18n('SYS_CAL_SUC'),'CommerceOrder->payback');
             }
 
             _ASRecord()->add([
                 'status'  => $callback->getStatus(),
-                'itemid'  => $orderid,
+                'itemid'  => $uid,
                 'type'    => 'order',
                 'event'   => 'ORDER_PAYBACK',
                 'sign'    => 'CommerceOrder->payback:callback()'
             ]);
 
-            return $this->done($orderid);
+            return $this->done($uid);
 
         }else{
 
-            return $this->take($orderid)->success( i18n('SYS_CAL_SEC'),'CommerceOrder->payback');
+            return $this->take($uid)->success( i18n('SYS_CAL_SEC'),'CommerceOrder->payback');
         }
     }
 
@@ -442,13 +442,13 @@ class CommerceOrder extends ASModel{
     /**
      * 检查支付金额是否正确
      * Check amount is right
-     * @param  string  $orderid
+     * @param  string  $uid
      * @param  float   $paymentAmount
      * @return bool
      */
-    public function amountCheck( string $orderid, float $paymentAmount ){
+    public function amountCheck( string $uid, float $paymentAmount ){
 
-        $this->initDetail($orderid);
+        $this->initDetail($uid);
 
         return $this->amount <= $paymentAmount;
 
@@ -459,29 +459,29 @@ class CommerceOrder extends ASModel{
 
     // 退款回调
 
-    public function refund( string $orderid ){
+    public function refund( string $uid ){
 
-        $this->initDetail($orderid);
+        $this->initDetail($uid);
 
-        if( time() > $this->refundexpire ){ return $this->take($orderid)->error(650,i18n('ORD_REF_AEX'),'CommerceOrder->refund'); }
+        if( time() > $this->refundexpire ){ return $this->take($uid)->error(650,i18n('ORD_REF_AEX'),'CommerceOrder->refund'); }
 
         $REFUND = ASAPI::systemInit('system\innerCallback',$this->refundcallback)->run();
 
         if( !$REFUND->isSucceed() ){ return $REFUND; }
 
-        return $this->cancel($orderid);
+        return $this->cancel($uid);
 
     }
 
 
     // 开始退款
 
-    public function beginRefund( string $orderid ){
+    public function beginRefund( string $uid ){
 
-        if ( !$this->canRefund($orderid) ) { return $this->take($orderid)->error(650,i18n('ORD_REF_AEX'),'CommerceOrder->beginRefund'); }
+        if ( !$this->canRefund($uid) ) { return $this->take($uid)->error(650,i18n('ORD_REF_AEX'),'CommerceOrder->beginRefund'); }
 
         $data = ['status'=>'refunding'];
-        return $this->update($data,$orderid);
+        return $this->update($data,$uid);
     }
 
 
@@ -490,9 +490,9 @@ class CommerceOrder extends ASModel{
 
 
     // 是否推广订单
-    public function isPromoted( string $orderid ){
+    public function isPromoted( string $uid ){
 
-        return $this->count(['orderid'=>$orderid,'promoterid'=>'NOT_NULL'])->getContent()>0;
+        return $this->count(['uid'=>$uid,'promoterid'=>'[[NOT]]NULL'])->getContent()>0;
 
     }
 
@@ -503,34 +503,34 @@ class CommerceOrder extends ASModel{
     // 订单状态检查
 
     // 订单是否待支付
-    public function isNeedpay( string $orderid ){ return $this->isStatus($orderid,'needpay'); }
+    public function isNeedpay( string $uid ){ return $this->isStatus($uid,'needpay'); }
 
     // 订单是否完成
-    public function isDone( string $orderid ){ return $this->isStatus($orderid,'done'); }
+    public function isDone( string $uid ){ return $this->isStatus($uid,'done'); }
 
     // 订单是否付款
-    public function isPaid( string $orderid ){ return $this->isStatus($orderid,'paid'); }
+    public function isPaid( string $uid ){ return $this->isStatus($uid,'paid'); }
 
     // 订单是否退款中
-    public function isRefunding( string $orderid ){ return $this->isStatus($orderid,'paid'); }
+    public function isRefunding( string $uid ){ return $this->isStatus($uid,'paid'); }
 
     // 检查是否可以
-    public function isNeedcall( string $orderid ){ return $this->isStatus($orderid,'needcall'); }
+    public function isNeedcall( string $uid ){ return $this->isStatus($uid,'needcall'); }
 
     // 订单是否过期
-    public function isExpired( string $orderid ){
+    public function isExpired( string $uid ){
 
-        $expire = (int)$this->get('expire',$orderid)->getContent();
+        $expire = (int)$this->get('expire',$uid)->getContent();
 
-        return $expire<time() && $this->isNeedpay($orderid);
+        return $expire<time() && $this->isNeedpay($uid);
 
     }
 
     // 是否可以退款
 
-    public function canRefund( string $orderid ){
+    public function canRefund( string $uid ){
 
-        $this->initDetail($orderid);
+        $this->initDetail($uid);
 
         return $this->refundexpire > $this->refundrequesttime && $this->refundrequesttime>0;
     }
@@ -538,13 +538,13 @@ class CommerceOrder extends ASModel{
     // 订单状态更新
 
     // 已支付
-    public function paid( string $orderid ){ return $this->status($orderid,'paid'); }
+    public function paid( string $uid ){ return $this->status($uid,'paid'); }
 
     // 取消
-    public function cancel( string $orderid ){ return $this->status($orderid,'canceled'); }
+    public function cancel( string $uid ){ return $this->status($uid,'canceled'); }
 
     // 退款完成
-    public function refunded( string $orderid ){ return $this->status($orderid,'refunded'); }
+    public function refunded( string $uid ){ return $this->status($uid,'refunded'); }
 
 
 
@@ -729,7 +729,7 @@ class CommerceOrder extends ASModel{
 
 
     public static $table     = "commerce_order";  // 表
-    public static $primaryid = "orderid";     // 主字段
+    public static $primaryid = "uid";     // 主字段
     public static $addFields = [
         'userid','areaid','itemid','itemtype',
         'title','cover',
@@ -749,7 +749,7 @@ class CommerceOrder extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";   // 详情支持字段
     public static $publicDetailFields = [
-        'userid','areaid','itemid','itemtype','orderid',
+        'userid','areaid','itemid','itemtype','uid',
         'title','cover',
         'amount','quantity','payment','paymentid','promoterid','freeorder',
         'details',
@@ -773,7 +773,7 @@ class CommerceOrder extends ASModel{
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'userid','areaid','itemid','itemtype','orderid',
+        'userid','areaid','itemid','itemtype','uid',
         'title','cover',
         'amount','quantity','payment','paymentid','promoterid','freeorder',
         'details',
@@ -785,7 +785,7 @@ class CommerceOrder extends ASModel{
         'lasttime',
     ];     // 列表支持字段
     public static $publicListFields = [
-        'userid','areaid','itemid','itemtype','orderid',
+        'userid','areaid','itemid','itemtype','uid',
         'title','cover',
         'amount','quantity','payment','paymentid','promoterid','freeorder',
         'details',
@@ -797,7 +797,7 @@ class CommerceOrder extends ASModel{
         'lasttime',
     ];     // 开放接口列表支持字段
     public static $countFilters = [
-        'userid','areaid','itemid','itemtype','orderid',
+        'userid','areaid','itemid','itemtype','uid',
         'title','cover',
         'amount','quantity','payment','paymentid','promoterid','freeorder',
         'status','writeoff','ticket','idnumber','details',

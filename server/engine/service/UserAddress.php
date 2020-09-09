@@ -20,7 +20,7 @@ class UserAddress extends ASModel{
     public $userid;
 
     public static $table     = "user_address";
-    public static $primaryid = "addressid";
+    public static $primaryid = "uid";
     public static $addFields = [
         'userid',
         'type',
@@ -50,7 +50,7 @@ class UserAddress extends ASModel{
         'featured'
     ];
     public static $detailFields =[
-        'addressid',
+        'uid',
         'userid',
         'email',
         'country',
@@ -67,7 +67,7 @@ class UserAddress extends ASModel{
         'lasttime',
     ];
     public static $publicDetailFields = [
-        'addressid',
+        'uid',
         'userid',
         'country',
         'email',
@@ -84,7 +84,7 @@ class UserAddress extends ASModel{
         'lasttime',
     ];
     public static $overviewFields = [
-        'addressid',
+        'uid',
         'userid',
         'email',
         'country',
@@ -101,7 +101,7 @@ class UserAddress extends ASModel{
         'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'addressid',
+        'uid',
         'userid',
         'email',
         'country',
@@ -118,7 +118,7 @@ class UserAddress extends ASModel{
         'lasttime',
     ];
     public static $publicListFields = [
-        'addressid',
+        'uid',
         'userid',
         'email',
         'country',
@@ -135,7 +135,7 @@ class UserAddress extends ASModel{
         'lasttime',
     ];
     public static $countFilters = [
-        'addressid',
+        'uid',
         'userid',
         'email',
         'country',

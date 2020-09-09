@@ -221,16 +221,16 @@ class MessageNotification extends ASModel{
     }
 
     // 设置已读
-    public function read( string $notificationid ){
+    public function read( string $uid ){
 
-        return $this->status($notificationid,'read');
+        return $this->status($uid,'read');
 
     }
 
     // 设置已回复
-    public function replied( string $notificationid , string $replyid = null ){
+    public function replied( string $uid , string $replyid = null ){
 
-        return $this->update(['status'=>'replied','replyid'=>$replyid],$notificationid);
+        return $this->update(['status'=>'replied','replyid'=>$replyid],$uid);
 
     }
 
@@ -281,9 +281,9 @@ class MessageNotification extends ASModel{
 
 
     public static $table     = "message_notification";
-    public static $primaryid = "notificationid";
+    public static $primaryid = "uid";
     public static $addFields = [
-        'notificationid', 'senderid', 'receiverid', 'replyid',
+        'uid', 'senderid', 'receiverid', 'replyid',
         'type', 'status',
         'content', 'link', 'linkparams', 'linktype',
     ];
@@ -292,19 +292,19 @@ class MessageNotification extends ASModel{
     ];   // 更新支持字段
     public static $detailFields = "*";
     public static $overviewFields = [
-        'notificationid', 'senderid', 'receiverid', 'replyid',
+        'uid', 'senderid', 'receiverid', 'replyid',
         'type', 'status',
         'content', 'link', 'linkparams', 'linktype',
         'sort','featured','createtime', 'lasttime',
     ]; // 概览支持字段
     public static $listFields = [
-        'notificationid', 'senderid', 'receiverid', 'replyid',
+        'uid', 'senderid', 'receiverid', 'replyid',
         'type', 'status',
         'content', 'link', 'linkparams', 'linktype',
         'sort','featured','createtime', 'lasttime',
     ];     // 列表支持字段
     public static $countFilters = [
-        'notificationid', 'senderid', 'receiverid', 'replyid',
+        'uid', 'senderid', 'receiverid', 'replyid',
         'type', 'status',
         'linktype',
         'createtime',
