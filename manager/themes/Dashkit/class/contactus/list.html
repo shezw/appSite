@@ -1,0 +1,139 @@
+<div class="main-content">
+
+    <div class="header bg-white a-shadow-light-s sticky-top">
+
+        <div class="row mx-0">
+
+            <ul class="col nav nav-tabs  mt-2 px-4">
+                <li class="nav-item">
+                    <a class="py-3 nav-link [if[::constants.Params.status=send::active]if]" href="#" onclick="Aps.query.addFilter('status','send')">
+                        <span class="text-md">未读</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="py-3 nav-link [if[::constants.Params.status=read::active]if]" href="#" onclick="Aps.query.addFilter('status','read')">
+                        <span class="text-md">已读</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="py-3 nav-link [not[::constants.Params.status::active]not]" href="#" onclick="Aps.query.removeFilter('status')">
+                        <span class="text-md">全部</span>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+
+                <div class="card">
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane table-responsive active mb-0">
+                            <table class="table table-sm card-table" >
+                                <thead>
+                                <tr>
+                                    <th>邮箱</th>
+                                    <th>联系人</th>
+                                    <th>消息</th>
+                                    <th>{i18n{ manager.createtime }i18n}</th>
+                                    <th>{i18n{ manager.status }i18n}</th>
+                                    <th>操作</th>
+                                    <th>{i18n{ manager.more }i18n}</th>
+                                </tr>
+                                </thead>
+                                <tbody class="list">
+                                [not[::messageList::
+                                <tr>
+                                    <td colspan="10">
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 col-md-8 col-xl-6 py-5">
+
+                                                <h2>
+                                                    {i18n{SYS_NON}i18n}
+                                                </h2>
+
+                                                <a class="btn btn-primary lift" onclick="Aps.router.back(-1)">
+                                                    {i18n{ back }i18n}
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                ]not]
+
+                                ||loop??messageList??
+                                <tr class="col-6 col-md-4 col-lg-12">
+                                    <td class="p-2">{{linkparams.email}}</td>
+                                    <td class="p-2">{{linkparams.firstname}} {{linkparams.lastname}}</td>
+                                    <td class="p-2">{{content}}</td>
+                                    <td class="p-2">{{createtime_}}</td>
+                                    <td class="p-2 [if[::status=trash::text-muted]if]">{{status_}}</td>
+                                    <td class="p-2">
+                                        [if[::status=send::
+                                        <a onclick="MANAGER.status('{{notificationid}}','MessageNotification','read')"><span class="fe fe-check-square font-size-lg"></span> 标记已读</a>
+                                        ]if]
+                                    </td>
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" onclick="MANAGER.remove('{{notificationid}}','MessageNotification');"><span class="fe fe-delete mr-2 text-danger"></span>{i18n{ manager.delete }i18n}</a>
+                                                ]if]
+                                            </div>
+                                        </div>
+                                    </td>
+                                loop||
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+
+                        [if[::pager.first::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','1')">{i18n{ firstPage }i18n}</a></li>
+                        ]if]
+
+                        [if[::pager.prev::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.prev}}')">{i18n{ prevPage }i18n}</a></li>
+                        ]if]
+
+                        ||loop??pager.list??
+                        [if[::current:: <li class="page-item active"><a class="page-link" href="#" >{{page}}</a></li> ]if]
+                        [not[::current::<li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{page}}')">{{page}}</a></li> ]not]
+                        loop||
+
+                        [if[::pager.next::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.next}}')">{i18n{ nextPage }i18n}</a></li>
+                        ]if]
+
+                        [if[::pager.last::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.last}}')">{i18n{ lastPage }i18n} ({{pager.last}})</a></li>
+                        ]if]
+
+                    </ul>
+                </nav>
+
+
+            </div>
+        </div> <!-- / .row -->
+    </div>
+</div>

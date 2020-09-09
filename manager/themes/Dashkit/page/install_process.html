@@ -1,0 +1,119 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+
+                <div class="header mt-md-5">
+                </div>
+
+                <div class="card">
+
+                    <div class="card-body">
+                        <a class="btn-block" href="#database" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="database">
+                            [if[::databaseSuccess::<i class="fe fe-check-circle text-success"></i>]if]
+                            [not[::databaseSuccess::<i class="fe fe-x-circle text-danger"></i>]not]
+                            建立数据库
+                        </a>
+                    </div>
+
+                    <div class="collapse card-footer bg-white" id="database">
+                        <pre><code class="highlight bg-white hljs javascript">{{databaseResult}}</code></pre>
+                    </div>
+
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-body">
+                        <a class="btn-block" href="#data" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="data">
+                            [if[::dataSuccess::<i class="fe fe-check-circle text-success"></i>]if]
+                            [not[::dataSuccess::<i class="fe fe-x-circle text-danger"></i>]not]
+                            初始化系统数据
+                        </a>
+                    </div>
+
+                    <div class="collapse card-footer bg-white" id="data">
+                        <pre><code class="highlight bg-white hljs javascript">{{dataResult}}</code></pre>
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-body">
+                        <a class="btn-block" href="#custom" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="custom">
+                            [if[::customSuccess::<i class="fe fe-check-circle text-success"></i>]if]
+                            [not[::customSuccess::<i class="fe fe-x-circle text-danger"></i>]not]
+                            设定个性化配置
+                        </a>
+                    </div>
+
+                    <div class="collapse card-footer bg-white" id="custom">
+                        <pre><code class="highlight bg-white hljs javascript">{{customResult}}</code></pre>
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+
+                    <div class="card-body">
+                        <a class="btn-block" href="#config" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="config">
+                            [if[::configFileSaved=success::<i class="fe fe-check-circle text-success"></i>]if]
+                            [if[::configFileSaved=failed::<i class="fe fe-x-circle text-danger"></i>]if]
+                            创建配置文件
+                        </a>
+                        [if[::configFileSaved=success::config.php文件创建成功。]if]
+                        [if[::configFileSaved=failed::新建config.php文件失败,请手动添加文件到 server目录下。]if]
+                    </div>
+
+                    [if[::configFileSaved=failed::
+                    <div class="collapse show card-footer bg-white" id="config">
+                        <pre><code class="highlight bg-white hljs php">{{config}}</code></pre>
+                    </div>]if]
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-body">
+
+                        [not[::processSuccess::
+                        <p class="card-text">
+                            {i18n{ manager.processFailedTips }i18n}
+                        </p>
+                        <a href="?step=setConfig" class="btn btn-secondary mt-3">
+                            {i18n{ manager.processBack }i18n}
+                        </a>
+                        <a href="javascript:location.reload();" class="btn btn-secondary mt-3" onclick="javascript:location.reload();">
+                            {i18n{ manager.processRetry }i18n}
+                        </a>
+
+                        ]not]
+
+                        [if[::processSuccess::
+                        <p class="card-text">
+                            {i18n{ manager.processSuccessTips }i18n}
+                        </p>
+                        <a href="?step=done" class="btn btn-primary mt-3">
+                            {i18n{ manager.processDone }i18n}
+                        </a>
+
+                        ]if]
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

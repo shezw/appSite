@@ -1,0 +1,102 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+
+
+                <form class="my-5">
+
+
+                    <div class="row">
+
+                        <div class="col-6 col-md-6">
+
+                            <div class="form-group a-field valid require" a-field-type="input" a-field-length="32" a-field-name="title">
+
+                                <label>
+                                    商品分类名称 * 必填
+                                </label>
+
+                                <input type="text" class="form-control a-field-main" >
+
+                            </div>
+                        </div>
+
+
+                            <div class="form-group a-field require valid " a-field-type="input" a-field-length="255" a-field-name="type">
+                                <!-- <label>{i18n{ manager.type }i18n} * </label> -->
+
+                                <input type="hidden" class="form-control a-field-main" value="product" placeholder="类型">
+
+                            </div>
+
+                        <div class="col-12">
+
+                            <div class="form-group a-field valid" a-field-type="input" a-field-length="64" a-field-name="description">
+
+                                <label>
+                                    分类介绍 (可选)
+                                </label>
+
+                                <input type="text" class="form-control a-field-main" >
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="form-group a-field valid" a-field-switch="cover,gallery,video,audio" a-field-type='input' a-field-length="255" a-field-name="cover" id="uploadContainer">
+
+                        <label class="mb-1">封面 (jpg,gif,png,jpeg格式)  (可选)</label>
+
+                        <small class="form-text text-muted">
+                            建议尺寸 800x600 - 1600x1200  5M以内 最大10M
+                        </small>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="avatar avatar-xxl avatar-4by3">
+                                    <img id="imagePreview" src="https://oss.donsee.cn/appsite/logo_donsee_gray.png" alt="..." class="avatar-img rounded">
+                                </div>
+
+                                <div class="input-group my-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="cover-url">{i18n{url}i18n}:</span>
+                                    </div>
+                                    <input id="image" type="text" disabled="disabled" class="form-control a-field-main" placeholder="请点击选择图片按钮开始上传" value="" readonly aria-describedby="cover-url">
+                                </div>
+
+                                <input class="btn btn-sm btn-secondary" type="button" id="broseImage" value="选择图片">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <hr class="my-5">
+
+                    <div class="row">
+
+                        <div class="col-12 col-md-6 mb-3">
+                            <a class="btn btn-block btn-primary" onclick="MANAGER.add( null, 'Category' )">
+                                <i class="fe fe-send"></i> 发布
+                            </a>
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

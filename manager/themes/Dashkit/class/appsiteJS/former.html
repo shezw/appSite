@@ -1,0 +1,476 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+
+                <div class="header mt-md-5">
+                    <div class="header-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+
+                                <h6 class="header-pretitle">
+                                    AppsiteJS
+                                </h6>
+
+                                <h1 class="header-title">
+                                    表单组件 Former
+                                </h1>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <form class="mb-4">
+
+
+                    <div class="row">
+                        <div class="col-6">
+
+                            <div class="form-group a-field require valid a-field-switch-selector" a-field-type="select" a-field-length="16" a-field-name="type">
+                                <label>下拉选项 静态 Static Select ( 关联其他选项 )</label>
+
+                                <select class="form-control a-field-main input-c"  data-toggle="select" data-options='{"minimumResultsForSearch": -1,"placeholder":"{i18n{ manager.type }i18n}"}'>
+
+                                    <option disabled="disabled" selected="selected" value="">{i18n{ manager.type }i18n} </option>
+
+                                    <option value="cover">{i18n{ cover }i18n}</option>
+                                    <option value="gallery">{i18n{ gallery }i18n}</option>
+                                    <option value="audio">{i18n{ audio }i18n}</option>
+                                    <option value="video">{i18n{ video }i18n}</option>
+
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+
+                            <div class="form-group a-field require valid " a-field-type="select" a-field-length="16" a-field-name="categoryid">
+                                <label>下拉选项 动态生成 Dynamic select</label>
+
+                                <select class="form-control a-field-main input-c" data-toggle="select" data-options='{"placeholder":"{i18n{ manager.category }i18n}"}'>
+                                    <option disabled="disabled" selected="selected" value="">{i18n{ manager.category }i18n} </option>
+
+                                    ||loop??categoryList??<option value='{{categoryid}}'>{{title}} {{description}}</option>loop||
+
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group a-field valid require" a-field-type="input" a-field-length="64" a-field-name="title">
+
+                        <label>
+                            短文本 Short Text input
+                        </label>
+
+                        <input type="text" class="form-control a-field-main" required>
+
+                    </div>
+
+
+                    <div class="form-group a-field valid require" a-field-type="textarea" a-field-length="256" a-field-name="description">
+
+                        <label>
+                            中短文本 Mid text input ( auto size textarea )
+                        </label>
+
+                        <textarea class="form-control a-field-main" data-toggle="autosize" rows="1" placeholder="Try typing something..."></textarea>
+
+                    </div>
+
+
+                    <div class="form-group a-field valid" a-field-type="summernote" a-field-length="100000" a-field-name="introduce">
+
+                        <label>富媒体 Rich Text </label>
+
+                        <small class="form-text text-muted">
+                            {i18n{ manager.ContentDescribe }i18n}
+                        </small>
+
+                        <div class="box m-b-md">
+                            <div id="summerNote" class='a-field-main'>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-group a-field require valid a-field-switch" a-field-switch="cover,video,audio,gallery,attachments" a-field-type='input' a-field-length="255" a-field-name='cover' id="uploadContainer">
+
+                        <label class="mb-1">封面 * (jpg,gif,png,jpeg格式)</label>
+
+                        <small class="form-text text-muted">
+                            建议尺寸 750x750 - 750x1000  5M以内 最大10M
+                        </small>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="avatar avatar-xxl avatar-4by3">
+                                    <img id="imagePreview" src="https://oss.donsee.cn/appsite/logo_donsee_gray.png" alt="..." class="avatar-img rounded">
+                                </div>
+
+                                <div class="input-group my-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="cover-url">{i18n{url}i18n}:</span>
+                                    </div>
+                                    <input a-field-name="cover" id="image" type="text" disabled="disabled" class="form-control a-field-main" placeholder="请先点图片开始上传" value="" readonly aria-describedby="cover-url">
+                                </div>
+
+                                <input class="btn btn-sm btn-secondary" type="button" id="broseImage" value="选择图片">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group a-field invalid a-field-switch" a-field-switch="audio" a-field-type='input' a-field-length="255" a-field-name='audio' id="audioContainer">
+
+                        <label class="mb-1">
+                            背景音乐 (mp3,ogg格式)
+                        </label>
+
+                        <small class="form-text text-muted">
+                            5M以内 最大不超过20M 不传就没有
+                        </small>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush pt-0 pb-3"  id="audioList">
+                                </ul>
+
+
+                                <audio controls id="audioPreview" width="100%" src="" style="width: 100%;" preload="none"></audio>
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="audio-url">{i18n{url}i18n}:</span>
+                                    </div>
+                                    <input a-field-name="audio" id="audio" type="text" disabled="disabled" class="form-control a-field-main" placeholder="请选择文件后再开始上传" value="" readonly aria-describedby="audio-url">
+                                </div>
+
+                                <input class="btn btn-sm btn-secondary" type="button" id="brosweAudio" value="选择文件">
+                                <input class="btn btn-sm btn-outline-primary" type="button" id="uploadAudio" value="上传">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group a-field invalid a-field-switch" a-field-switch="video" a-field-type='input' a-field-length="255" a-field-name='audio' id="videoContainer">
+
+                        <label class="mb-1">
+                            视频 (mp4,mov,mpg格式)
+                        </label>
+
+                        <small class="form-text text-muted">
+                            建议尺寸 1280x720  500M以内 最大不超过1G
+                        </small>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush pt-0 pb-3"  id="videoList">
+                                </ul>
+
+                                <video controls id="videoPreview" width="100%" src="" preload="none" class="bg-dark" style="max-height: 360px;">浏览器不支持视频标签，请使用现代浏览器如：Chrome,360极速,Safari,Firefox...</video>
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="video-url">{i18n{url}i18n}:</span>
+                                    </div>
+                                    <input a-field-name="audio" id="video" type="text" disabled="disabled" class="form-control a-field-main" placeholder="请选择文件后再开始上传" value="" readonly aria-describedby="video-url">
+                                </div>
+
+                                <input class="btn btn-sm btn-secondary" type="button" id="brosweVideo" value="选择文件">
+                                <input class="btn btn-sm btn-outline-primary" type="button" id="uploadVideo" value="上传">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group a-field invalid a-field-switch" a-field-switch="gallery" a-field-type='input' a-field-length="2048" a-field-name='gallery' id="galleryContainer">
+                        <div class="row"></div>
+                        <label>相册(多图展示) </label>
+
+                        <small class="form-text text-muted">
+                            建议3-5张 最多15张 建议尺寸 750x350
+                        </small>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="" id="fileList"></div>
+
+                                <div class=" pull-none-xs m-r m-b p-a-xs b-a">
+
+                                    <div id="galleryList" class="swipe list-group list-group-lg list-group-flush list ">
+
+                                    </div>
+
+                                    <input id="gallery" type="text" disabled="disabled" class="form-control a-field-main mb-3" placeholder="请先点图片开始上传" value="">
+
+                                    <input class="btn btn-sm btn-secondary" type="button" id="brosweFiles" value="选择文件">
+                                    <input class="btn btn-sm btn-outline-primary" type="button" id="uploadFiles" value="上传">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <hr class="my-5">
+
+
+                    <h4 class="header-pretitle mb-4">
+                        时间设置:
+                    </h4>
+
+                    <div class="row form-group">
+
+                        <div class="col-sm-6 a-field valid" a-field-type='input' a-field-name='starttime' a-field-length="15" >
+                            <label>活动开始时间 *</label>
+
+                            <div class="input-group input-group-merge">
+                                <input type="hidden" class="form-control a-field-main" id="datePickerStamp1" placeholder="" value="">
+                                <input type="text" class="form-control form-control-prepended" placeholder="请选择开始时间" id="datePicker1"  data-toggle="flatpickr" data-options='{"enableTime": true,"dateFormat": "Y-m-d H:i","locale":"zh"}'>
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <a class="fe fe-calendar text-primary"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6 a-field valid" a-field-type='input' a-field-name='endtime' a-field-length="15" >
+                            <label>活动结束时间 *</label>
+
+                            <div class="input-group input-group-merge">
+                                <input type="hidden" class="form-control a-field-main" id="datePickerStamp2" placeholder="" value="">
+                                <input type="text" class="form-control form-control-prepended" placeholder="请选择结束时间" id="datePicker2"  data-toggle="flatpickr" data-options='{"enableTime": true,"dateFormat": "Y-m-d H:i","locale":"zh"}'>
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <a class="fe fe-calendar text-primary"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr class="my-5">
+
+
+                    <div class="form-group a-field valid " a-field-type="input"  a-field-length="2048"  a-field-name="gifts">
+                        <label>添加选项 </label>
+
+                        <small class="form-text text-muted">
+                            生成数据格式: [{"title":"","score":0,"selected":0}]
+                        </small>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <input id="options" type="hidden" disabled="disabled" class="form-control a-field-main" placeholder="请点击按钮进行添加" value="">
+
+                                <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush pt-0 pb-3"  id="optionsList">
+                                </ul>
+
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control form-control-appended" id="optionInputer" placeholder="请输入选项名称">
+                                    <div class="input-group-append">
+                                        <button class="input-group-text" type="button" id="uploadOptions"><span class="fe fe-plus-circle text-primary"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <hr class="mt-5 mb-5">
+
+                    <div class="form-group a-field require valid required" a-field-type="muselect" a-field-length="255" a-field-name="tags" id="tagfield">
+                        <label>多选 静态 Multiple Static Select</label>
+
+                        <select class="form-control a-field-main input-c"  data-toggle="select" multiple>
+
+                            <option value="cover">{i18n{ cover }i18n}</option>
+                            <option value="gallery">{i18n{ gallery }i18n}</option>
+                            <option value="video">{i18n{ video }i18n}</option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="row">
+
+
+                        <div class="col-6 col-md-4 form-group a-field valid" a-field-type="input" a-field-length="5" a-field-name="sort">
+                            <label>数字 Int </label>
+                            <input type="number" class="w-xs form-control a-field-main" placeholder="" value="" data-mask="0000">
+                        </div>
+
+
+                        <div class="col-6 col-md-4 form-group a-field valid" a-field-type="input" a-field-length="16" a-field-name="price">
+                            <label>浮点数 Float </label>
+                            <input type="number" class="w-xs form-control a-field-main" placeholder="" value="">
+                        </div>
+
+
+
+                    </div>
+
+
+                    <div class="row">
+
+
+                        <div class="col-12 form-group a-field valid" a-field-type="radio" a-field-length="2" a-field-name="featured" data-toggle="buttons">
+                            <label>单选 Radio</label><br/>
+
+                            <label class="radiolabel btn btn-white" for="featured">
+                                <input type="radio" name=featured class="a-field-main" id="featured" value="1">
+                                置顶
+                            </label>&nbsp;&nbsp;
+
+                            <label class="radiolabel btn btn-white" for="notfeatured">
+                                <input type="radio" name=featured class="a-field-main" id="notfeatured" value="0">
+                                不置顶
+                            </label>
+                        </div>
+
+
+                        <div class="col-12 form-group a-field valid" a-field-type="checkbox" a-field-length="512" a-field-name="industry">
+                            <label>多选 CheckBox</label><br/>
+
+                            ||loop??categoryList??
+                            <label for={{categoryid}} class="checkboxLabel ml-2">
+                                <input type=checkbox value='{{categoryid}}' id={{categoryid}} class="a-field-main ">
+                                {{title}}</label>loop||
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-group a-field valid " a-field-type="switch" a-field-name="featured" a-field-length="6" id="data-featured">
+
+                                <label class="mb-1">
+                                    开关选项 Switch
+                                </label>
+
+                                <small class="form-text text-muted">
+                                    选中与否已0/1表示。( 1真/0否 )
+                                </small>
+
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input a-field-main" id="switchOne">
+                                    <label class="custom-control-label" for="switchOne"></label>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-12 col-md-6">
+
+                            <div class="card bg-light border">
+                                <div class="card-body">
+
+                                    <h4 class="mb-2">
+                                        <i class="fe fe-alert-triangle"></i> 提示信息 Warning
+                                    </h4>
+
+                                    <p class="small text-muted mb-0">
+                                        提示介绍内容。
+                                        Once a project is made private, you cannot revert it to a public project.
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <hr class="mt-5 mb-5">
+
+
+                    <div class="form-group a-field require valid" a-field-type='input' a-field-length="32" a-field-name='location'>
+                        <label>* 定位信息</label>
+                        <input id="location" type="text" disabled="disabled" class="form-control a-field-main" placeholder="请在地图右侧输入位置并点击搜索" value="">
+
+                    </div>
+
+                    <div class="form-group a-field require valid" a-field-type='input' a-field-length="48" a-field-name='address'>
+                        <label>* 地址</label>
+                        <input id="addressPrompt" type="text" class="form-control a-field-main" placeholder="右侧地图自动生成地址信息。也可手动更改" value="">
+
+                    </div>
+
+                    <div class="card">
+
+                        <div class="card-body">
+
+
+                            <div class=" pull-none-xs m-r m-b p-a-xs b-a amapPOI">
+                                <div id="outer-box">
+                                    <div id="container" class="map" tabindex="0"></div>
+                                    <div id="panel" class="scrollbar1">
+                                        <div id="searchBar" class="input-group input-group-merge mb-3">
+                                            <input id="searchInput" type="text" class="form-control form-control-prepended" placeholder="输入关键字搜素地点信息">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <span class="fe fe-search"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="searchResults"></div>
+                                    </div>
+                                </div>
+                                <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=e3d4b6c13f57d331c98391ab3f3b1b76"></script>
+                                <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr class="mt-5 mb-5">
+
+                    <a href="#" class="btn btn-block btn-primary">
+                        按钮 Submit Button
+                    </a>
+                    <a href="#" class="btn btn-block btn-link text-muted">
+                        取消 Cancel Button
+                    </a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

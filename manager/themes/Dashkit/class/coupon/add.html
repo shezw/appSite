@@ -1,0 +1,86 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+
+
+                <form class="my-5">
+
+
+                    <div class="row">
+
+                        <div class="col-6 col-md-4">
+                            <div class="form-group a-field valid" a-field-type="number" a-field-length="5" a-field-name="amount">
+                                <label>优惠金额($) * 必填</label>
+                                <small class="form-text text-muted">
+                                请填写0.01 - 10000 以内的任意数字
+                                </small>
+                                <input type="number" class="w-xs form-control a-field-main" placeholder="" value="0">
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-4">
+                            <div class="form-group a-field valid" a-field-type="number" a-field-length="5" a-field-name="min">
+                                <label>最小金额($) 可选</label>
+                                <small class="form-text text-muted">
+                                订单金额超过才可以使用
+                                </small>
+                                <input type="number" class="w-xs form-control a-field-main" placeholder="" value="0">
+                            </div>
+                        </div>
+
+                        <!-- <div class="col-3 col-md-3">
+                            <div class="form-group a-field valid" a-field-type="number" a-field-length="5" a-field-name="max">
+                                <label>最大金额($) 可选</label>
+                                <small class="form-text text-muted">
+                                限制订单金额在最大金额以内才可使用
+                                </small>
+                                <input type="number" class="w-xs form-control a-field-main" placeholder="" value="0">
+                            </div>
+                        </div> -->
+
+                        <div class="col-6 col-md-4">
+
+                            <div class="form-group a-field valid" a-field-type="input" a-field-length="8" a-field-name="userid">
+
+                                <label>
+                                    是否指定用户ID 可选
+                                </label>
+                                <small class="form-text text-muted">
+                                    指定后只有该用户可以使用
+                                </small>
+
+                                <input type="text" class="form-control a-field-main" placeholder="userid">
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                    <hr class="my-5">
+
+
+                    <div class="row">
+
+                        <div class="col-12 col-md-6 mb-3">
+                            <a class="btn btn-block btn-primary" onclick="MANAGER.add( null, 'CommerceCoupon' )">
+                                <i class="fe fe-send"></i> 发布
+                            </a>
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

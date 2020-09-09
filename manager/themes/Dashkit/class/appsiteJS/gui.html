@@ -1,0 +1,553 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-10">
+
+                <div class="header mt-md-5">
+                    <div class="header-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+
+                                <h6 class="header-pretitle">
+                                    AppSiteJS Components
+                                </h6>
+
+                                <h1 class="header-title">
+                                    GUI
+                                </h1>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-5" id="toast">
+
+                <h2>
+                    浮动提示 Toast
+                </h2>
+
+                <p class="text-muted mb-4">
+
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.toast('A simple notice.')">
+                            简单提示 Simple Toast
+                        </button>
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.toast('A simple notice.',2000,'')">
+                            自动关闭提示 Toast auto close
+                        </button>
+
+                        <div class="row">
+
+                            <div class="form-group my-3 col-12 col-md-4">
+
+                                <label>设置图标 Set Toast Icon</label>
+
+                                <select class="form-control" onchange="Aps.gui.toast( 'Toast with different Icon',2000, this.value)">
+                                    <option value="">无 default(empty)</option>
+                                    <option value="info">消息 info</option>
+                                    <option value="loading">加载 loading</option>
+                                    <option value="success">成功 success</option>
+                                    <option value="warning">警告 warning</option>
+                                    <option value="failed">错误 failed</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group my-3 col-12 col-md-4">
+
+                                <label>样式 Set Toast Style</label>
+
+                                <select class="form-control" onchange="Aps.gui.toast( 'Toast with different Style',{style:this.value,autoClose:2000})">
+                                    <option value="">默认(白色) default(white)</option>
+                                    <option value="light">浅色 light</option>
+                                    <option value="dark">深色 dark</option>
+                                    <option value="primary">主色 primary</option>
+                                    <option value="secondary">辅色 secondary</option>
+                                    <option value="success">成功 success</option>
+                                    <option value="danger">失败 danger</option>
+                                    <option value="warning">警告 warning</option>
+                                    <option value="info">信息 info</option>
+
+                                </select>
+                            </div>
+
+                            <div class="form-group my-3 col-12 col-md-4">
+
+                                <label>位置 Set Toast Position</label>
+
+                                <select class="form-control" onchange="Aps.gui.toast( 'Toast with different position',{position:this.value,autoClose:2000})">
+                                    <option value="topcenter">默认 default(TopCenter)</option>
+                                    <option value="topcenter">上中 TopCenter</option>
+                                    <option value="topleft">左上 topleft</option>
+                                    <option value="topright">右上 topright</option>
+                                    <option value="bottomcenter">下中 bottomcenter</option>
+                                    <option value="bottomleft">左下 bottomleft</option>
+                                    <option value="bottomright">右下 bottomright</option>
+                                    <option value="center">居中 center</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-footer bg-dark">
+
+<pre class="html highlight bg-dark">
+&lt;button href=&quot;#&quot; class=&quot;btn btn-lg btn-primary&quot; onclick=&quot;Aps.gui.toast(&#x27;A simple notice.&#x27;)&quot;&gt;
+    Simple Toast
+&lt;/button&gt;
+</pre>
+
+<pre class="javascript highlight bg-dark">
+// Javascript
+Aps.gui.toast('Simple notice');
+
+// Auto Close
+Aps.gui.toast('Auto close',2000);
+
+// Icon (Simple Mode)
+Aps.gui.toast('Auto close',0,'success');
+
+// Full Options
+Aps.gui.toast(
+    'Simple notice', // title
+    {
+        style:'',    // white, primary, secondary, success, danger, warning, info, light, dark
+        position:'', // topleft, topcenter, topright, bottomleft, bottomcenter, bottomright, center
+        icon:'',     // info, loading, warning, success, failed
+    });
+);</pre>
+
+                    </div>
+                </div>
+
+                <hr class="my-5" id="submit">
+
+                <h2>
+                    异步请求提示 Submit Progress Tips
+                </h2>
+
+                <p class="text-muted mb-4">
+
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.submitting('You have start a new submit.')">
+                            Start submit
+                        </button>
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.submitProgress('Uploading.',0);">
+                            Progress update (0%)
+                        </button>
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.submitProgress('Uploading.',100);">
+                            Progress update (100%)
+                        </button>
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.submitted('Success uploaded.');">
+                            Submitted
+                        </button>
+
+                    </div>
+
+
+                    <div class="card-footer bg-dark">
+
+<pre class="html highlight bg-dark">
+&lt;button href=&quot;#&quot; class=&quot;btn btn-lg btn-primary&quot; onclick=&quot;Aps.gui.submitting(&#x27;You have start a new submit.&#x27;)&quot;&gt;
+    Start Submit
+&lt;/button&gt;
+</pre>
+
+<pre class="javascript highlight bg-dark">
+// Javascript
+Aps.gui.submitting('You have start a new submit.');
+Aps.gui.submitProgress('Uploading.',0);     // 0 - 100
+Aps.gui.submitted('Success uploaded.');
+
+// Full Options
+
+Aps.gui.submitting(
+    'title',
+    {
+        style:'',    // white, primary, secondary, success, danger, warning, info, light, dark
+        position:'', // topleft, topcenter, topright, bottomleft, bottomcenter, bottomright, center
+        icon:'',     // info, loading, warning, success, failed
+    });
+
+Aps.gui.submitted(
+    'title',
+    {
+        delay:0,     // disappear after delay (ms)
+        style:'',    // white, primary, secondary, success, danger, warning, info, light, dark
+        position:'', // topleft, topcenter, topright, bottomleft, bottomcenter, bottomright, center
+        icon:'',     // info, loading, warning, success, failed
+    });
+
+);</pre>
+
+                    </div>
+                </div>
+
+
+
+                <hr class="my-5" id="loading">
+
+                <h2>
+                    加载提示 Loading Tips
+                </h2>
+
+                <p class="text-muted mb-4">
+
+                </p>
+
+                <div class="card">
+                    <div class="card-body" id="inner-load-container">
+
+                        <p class="text-muted mb-4">
+                            全局加载 Global loading
+                        </p>
+
+                        <div class="mb-5">
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loading.start('Loading Files.')">
+                                Start
+                            </button>
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loading.success('Loading Succeed.')">
+                                success
+                            </button>
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loading.failed('Load Failed.')">
+                                failed
+                            </button>
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loading.cancel()">
+                                cancel
+                            </button>
+
+                        </div>
+
+                        <p class="text-muted mb-4">
+                            局部加载 Inner loading
+                        </p>
+
+                        <div class="mb-3">
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loadingInner.start('#inner-load-container','Requesting.')">
+                                Start
+                            </button>
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loadingInner.success('#inner-load-container','Loaded.')">
+                                Success
+                            </button>
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loadingInner.failed('#inner-load-container','Failed.')">
+                                Failed
+                            </button>
+
+                            <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.loadingInner.cancel('#inner-load-container','Cancel.')">
+                                Cancel
+                            </button>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="card-footer bg-dark">
+
+<pre class="html highlight bg-dark">
+&lt;button href=&quot;#&quot; class=&quot;btn btn-lg btn-primary&quot; onclick=&quot;Aps.gui.loading.start(&#x27;Loading Files.&#x27;)&quot;&gt;
+    Start
+&lt;/button&gt;
+</pre>
+
+<pre class="javascript highlight bg-dark">
+// Javascript
+Aps.gui.loading.start('Loading Files.');
+Aps.gui.loading.success('Loading Succeed.');
+Aps.gui.loading.failed('Load Failed.');
+Aps.gui.loading.cancel();
+
+Aps.gui.loadingInner.start('#inner-load-container','Requesting.');
+Aps.gui.loadingInner.success('#inner-load-container','Loaded.');
+Aps.gui.loadingInner.failed('#inner-load-container','Failed.');
+Aps.gui.loadingInner.cancel('#inner-load-container','Cancel.');
+
+
+// Full Options
+
+Aps.gui.loading.start(
+    'message',
+    {
+        style:'',    // white, primary, secondary, success, danger, warning, info, light, dark
+        position:'', // topleft, topcenter, topright, bottomleft, bottomcenter, bottomright, center
+        icon:'',     // info, loading, warning, success, failed
+    },
+    forced           // true, false  (Forced Mask, disable responsive)
+    );
+
+Aps.gui.loading.success( 'message', delay ); // (ms)
+
+Aps.gui.loadingInner.start(
+    'container',
+    'message',
+    append           // true,false  (Append or prepend)
+    );
+
+Aps.gui.loadingInner.success(
+    'container',
+    'message',
+    delay // (ms)
+    );
+
+);</pre>
+
+                    </div>
+                </div>
+
+
+
+                <hr  class="my-5" id="popup">
+
+                <h2>
+                    信息弹窗 Popup
+                </h2>
+
+                <p class="text-muted mb-4">
+                    可以用于弹出图文，主体内容支持VD,富文本
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <script>
+                            var popupContents = "<h2 class='mb-2'>We released 2008 new versions of our theme to make the world a better place. </h2>\
+                            <p class='text-muted'>This is a true story and totally not made up. This is going to be better in the long run but for now this is the way it is. </p>\
+                            <a href='#' class='btn btn-primary'>Try it for free</a>";
+                        </script>
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.popup('Simple Popup','Text Contents')">
+                            Simple Popup
+                        </button>
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.popup('Cover Popup',popupContents,'https://appsite.cn/manager/themes/Dashkit/assets/img/illustrations/happiness.svg')">
+                            Cover Popup
+                        </button>
+
+                    </div>
+
+
+                    <div class="card-footer bg-dark">
+
+<pre class="html highlight bg-dark">
+&lt;script&gt;
+	var popupContents = &quot;&lt;h2 class=&#x27;mb-2&#x27;&gt;We released 2008 new versions of our theme to make the world a better place. &lt;/h2&gt;\
+	&lt;p class=&#x27;text-muted&#x27;&gt;This is a true story and totally not made up. This is going to be better in the long run but for now this is the way it is. &lt;/p&gt;\
+	&lt;a href=&#x27;#&#x27; class=&#x27;btn btn-primary&#x27;&gt;Try it for free&lt;/a&gt;&quot;;
+&lt;/script&gt;
+
+&lt;button href=&quot;#&quot; class=&quot;btn btn-lg btn-primary&quot; onclick=&quot;Aps.gui.popup(&#x27;Cover Popup&#x27;,popupContents,&#x27;https://appsite.cn/manager/themes/Dashkit/assets/img/illustrations/happiness.svg&#x27;)&quot;&gt;
+	Show Popup
+&lt;/button&gt;
+</pre>
+                        <pre class="javascript highlight bg-dark">
+// Javascript
+var popupContents = &quot;&lt;h2 class=&#x27;mb-2&#x27;&gt;We released 2008 new versions of our theme to make the world a better place. &lt;/h2&gt;\
+	&lt;p class=&#x27;text-muted&#x27;&gt;This is a true story and totally not made up. This is going to be better in the long run but for now this is the way it is. &lt;/p&gt;\
+	&lt;a href=&#x27;#&#x27; class=&#x27;btn btn-primary&#x27;&gt;Try it for free&lt;/a&gt;&quot;;
+Aps.gui.popup('Cover Popup',popupContents,'https://appsite.cn/manager/themes/Dashkit/assets/img/illustrations/happiness.svg');
+</pre>
+                    </div>
+
+                </div>
+
+
+                <hr  class="my-5" id="confirmModal">
+
+                <h2>
+                    确认弹窗 Confirm Modal
+                </h2>
+
+                <p class="text-muted mb-4">
+                    需要取消或确认进一步操作才可以关闭的弹窗。 A pop-up window that needs to be cancelled or confirmed for further operations to be closed.
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <button href="#" class="btn btn-lg btn-primary" onclick="Aps.gui.confirm('Please confirm','Confirm click ok button, and cancel with Cancel button.',function(){ Aps.gui.alert('Notice','You clicked ok.')})">
+                            Show Confirm Modal
+                        </button>
+
+                    </div>
+
+                    <div class="card-footer bg-dark">
+
+<pre class="html highlight bg-dark">
+&lt;button class=&quot;btn btn-block btn-primary&quot; onclick=&quot;Aps.gui.confirm(&#x27;Please confirm&#x27;,&#x27;Confirm click ok button, and cancel with Cancel button.&#x27;)&quot;&gt;
+    Show Confirm Modal
+&lt;/button&gt;</pre>
+
+                        <pre class="javascript highlight bg-dark">
+// Javascript
+Aps.gui.confirm(
+    'Please confirm', // title
+    'Confirm click ok button, and cancel with Cancel button.', // description
+    function(){ Aps.gui.alert('Notice','You clicked ok.')} // okCall by default
+);
+
+// Full Options
+Aps.gui.confirm(
+    'Please confirm', // title
+    'Confirm click ok button, and cancel with Cancel button.', // description
+    {
+        onOk:function(){},    // ok Callback
+        onCancel:function(){},  // cancel Callback
+        okText:'Ok Button Text',
+        cancelText:'Cancel Button Text',
+        size:'',   // large, small, normal
+    }
+);</pre>
+
+                    </div>
+                </div>
+
+
+                <hr class="my-5" id="alertModal">
+
+                <h2>
+                    Alert Modal
+                </h2>
+
+                <p class="text-muted mb-4">
+                    A combination of the standard button component and a feather icon.
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <button class="btn btn-lg btn-primary" onclick="Aps.gui.alert('Please Notice','Confirm click ok button.')">
+                            Show Alert Modal
+                        </button>
+
+                    </div>
+
+                    <div class="card-footer bg-dark">
+
+<pre class="html highlight bg-dark">
+&lt;a href=&quot;#&quot; class=&quot;btn btn-block btn-primary&quot; onclick=&quot;Aps.gui.confirm(&#x27;Please Notice&#x27;,&#x27;Click okay button to close.&#x27;)&quot;&gt;
+    Show Alert Modal
+&lt;/a&gt;</pre>
+
+                        <pre class="javascript highlight bg-dark">
+// Javascript
+Aps.gui.alert(
+    'Please confirm',
+    'Click okay button to close.'
+);
+
+// Full Options
+Aps.gui.alert(
+    'Please confirm',
+    'Click okay button to close.',
+    function(){
+        // okCall
+    }
+);
+                        </pre>
+
+                    </div>
+                </div>
+
+                <hr  class="my-5" id="formModal">
+
+
+                <h2>
+                    Form Modal
+                </h2>
+
+                <p class="text-muted mb-4">
+                    A combination of the standard button component and a feather icon.
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <script>
+                            var modalForm = "<div class='form-group a-field valid require' a-field-name='password' a-field-length='12' a-field-type='input'>" +
+                                "<label>照片密码</label>" +
+                                "<input type='password' class='form-control a-field-main' placeholder='请输入密码'>" +
+                                "</div>";
+                        </script>
+
+                        <button class="btn btn-lg btn-primary" onclick="Aps.gui.form('Please Notice',modalForm,function(){ var form = Aps.former.checkForm(VL('.a-modal-form .a-field'));  form && Aps.gui.toast( form.password ); return form; })">
+                            Show Form Modal
+                        </button>
+
+                    </div>
+
+                    <div class="card-footer bg-dark">
+
+<pre class="html highlight bg-dark">
+&lt;script&gt;
+// 参考Aps.former
+var modalForm =
+&quot;&lt;div class=&#x27;a-field valid require&#x27; a-field-name=&#x27;password&#x27; length=&#x27;12&#x27; a-field-type=&#x27;input&#x27;&gt;&quot; +
+&quot;&lt;label&gt;照片密码&lt;/label&gt;&quot; +
+&quot;&lt;input type=&#x27;password&#x27; class=&#x27;a-field-main&#x27; placeholder=&#x27;请输入密码&#x27;&gt;&quot; +
+&quot;&lt;/div&gt;&quot;;
+&lt;/script&gt;
+
+&lt;button class=&quot;btn btn-block btn-primary&quot;
+    onclick=&quot;Aps.gui.form(&#x27;Please Notice&#x27;,modalForm,function(){ return false; })&quot;&gt;
+    Show Form Modal
+&lt;/button&gt;
+</pre>
+
+<pre class="javascript highlight bg-dark">
+
+// Javascript
+var modalForm =
+    &quot;&lt;div class=&#x27;form-group a-field valid require&#x27; a-field-name=&#x27;password&#x27; length=&#x27;12&#x27; a-field-type=&#x27;input&#x27;&gt;&quot; +
+    &quot;&lt;label&gt;照片密码&lt;/label&gt;&quot; +
+    &quot;&lt;input type=&#x27;password&#x27; class=&#x27;form-control afield-main&#x27; placeholder=&#x27;请输入密码&#x27;&gt;&quot; +
+    &quot;&lt;/div&gt;&quot;;
+Aps.gui.form(
+    'Please confirm',
+    modalForm
+);
+
+// Full Options
+Aps.gui.alert(
+    'Please confirm',
+    'Click okay button to close.',
+    function(){
+        // okCall
+    }
+);
+                        </pre>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

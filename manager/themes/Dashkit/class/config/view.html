@@ -1,0 +1,576 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+
+                <div class="header"></div>
+
+
+                <div class="card">
+                    <div class="card-header">
+
+
+                        <div class="header-body mt-n3">
+
+                            <div class="row align-items-center">
+                                <div class="col">
+
+                                    <ul class="nav nav-tabs nav-overflow header-tabs">
+
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link active" href="#" data-toggle="tab" data-target="#tab_SystemCfg" aria-expanded="true">
+                                                <span class="text-md">{i18n{ manager.config_SystemCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_ManagerCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_ManagerCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_WebsiteCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_WebsiteCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_WechatCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_WechatCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_AliyunCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_AliyunCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_BaiduyunCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_BaiduyunCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_PointBonusCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_PointBonusCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_SMSModuleCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_SMSModuleCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_SMTPModuleCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_SMTPModuleCfg }i18n}</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_AppleIAPCfg" aria-expanded="false">
+                                                <span class="text-md">{i18n{ manager.config_AppleIAPCfg }i18n}</span>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane table-responsive active mb-0" id="tab_SystemCfg" data-toggle="lists" data-options='{"valueNames": ["goal-rows", "goal-length", "goal-size","goal-indexSize","goal-createTime","goal-lastTime"]}'>
+                            <table class="table table-sm card-table" >
+                                <thead>
+                                <tr>
+                                    <th>
+                                        Scope
+                                    </th>
+                                    <th>
+                                        {i18n{ manager.database_Title }i18n}
+                                    </th>
+                                    <th>
+                                        {i18n{ manager.database_Value }i18n}
+                                    </th>
+                                    <th style="max-width: 20%">
+                                        {i18n{ manager.database_Description }i18n}
+                                    </th>
+
+                                    <th>
+
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody class="list">
+                                ||loop??SystemCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+                                        <input type="text" class="form-control" value="{{content}}">
+                                    </td>
+                                    <td class="p-2 text-gray-600">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_WebsiteCfg">
+                            <table class="table table-sm card-table">
+
+                                <thead>
+                                <th>
+                                    Scope
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Title }i18n}
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Value }i18n}
+                                </th>
+                                <th >
+                                    {i18n{ manager.database_Description }i18n}
+                                </th>
+
+                                <th>
+
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                ||loop??WebsiteCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+                                        <input type="text" class="form-control" value="{{content}}">
+                                    </td>
+                                    <td class="p-2 text-gray-600" style="width: 35%;white-space: normal">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_ManagerCfg">
+                            <table class="table table-sm card-table">
+
+                                <thead>
+                                <th>
+                                    Scope
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Title }i18n}
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Value }i18n}
+                                </th>
+                                <th >
+                                    {i18n{ manager.database_Description }i18n}
+                                </th>
+
+                                <th>
+
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                ||loop??ManagerCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+                                        <input type="text" class="form-control" value="{{content}}">
+                                    </td>
+                                    <td class="p-2 text-gray-600" style="width: 35%;white-space: normal">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_WechatCfg">
+                            <table class="table table-sm card-table">
+
+                                <thead>
+                                <th>
+                                    Scope
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Title }i18n}
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Value }i18n}
+                                </th>
+                                <th >
+                                    {i18n{ manager.database_Description }i18n}
+                                </th>
+
+                                <th>
+
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                ||loop??WechatCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+                                        <input type="text" class="form-control" value="{{content}}">
+                                    </td>
+                                    <td class="p-2 text-gray-600" style="width: 35%;white-space: normal">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_AliyunCfg">
+                            <table class="table table-sm card-table">
+
+                                <thead>
+                                <th>
+                                    Scope
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Title }i18n}
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Value }i18n}
+                                </th>
+                                <th >
+                                    {i18n{ manager.database_Description }i18n}
+                                </th>
+
+                                <th>
+
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                ||loop??AliyunCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+                                        <input type="text" class="form-control" value="{{content}}">
+                                    </td>
+                                    <td class="p-2 text-gray-600" style="width: 35%;white-space: normal">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_BaiduyunCfg">
+                            <table class="table table-sm card-table">
+
+                                <thead>
+                                <th>
+                                    Scope
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Title }i18n}
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Value }i18n}
+                                </th>
+                                <th >
+                                    {i18n{ manager.database_Description }i18n}
+                                </th>
+
+                                <th>
+
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                ||loop??BaiduyunCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+                                        <input type="text" class="form-control" value="{{content}}">
+                                    </td>
+                                    <td class="p-2 text-gray-600" style="width: 35%;white-space: normal">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_PointBonusCfg">
+                            <table class="table table-sm card-table">
+
+                                <thead>
+                                <th>
+                                    Scope
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Title }i18n}
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Value }i18n}
+                                </th>
+                                <th >
+                                    {i18n{ manager.database_Description }i18n}
+                                </th>
+
+                                <th>
+
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                ||loop??PointBonusCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+
+                                        <div class="form-group field require valid" fieldtype="input" length="32" fieldname="content.title">
+                                            <label>奖励标题:</label>
+                                            <input type=text class="form-control mainfield" value={{content.title}}>
+                                        </div>
+
+                                        <div class="form-group field require valid" fieldtype="input" length="128" fieldname="content.description">
+                                            <label>奖励描述:</label>
+                                            <input type=text class="form-control mainfield" value={{content.description}}>
+                                        </div>
+
+                                        <div class="form-group field valid" fieldtype="input" length="128" fieldname="content.limit">
+                                            <label>总限制次数:(不限制则留空)</label>
+                                            <input type=text class="form-control mainfield" value={{content.limit}}>
+                                        </div>
+
+                                        <div class="form-group field valid" fieldtype="input" length="5" fieldname="content.daily">
+                                            <label>每日限制次数:(不限制则留空)</label>
+                                            <input type=text class="form-control mainfield" value={{content.daily}}>
+                                        </div>
+
+                                        <div class="form-group field require valid" fieldtype="number" length="128" fieldname="content.value">
+                                            <label>奖励积分:</label>
+                                            <input type=text class="form-control mainfield" value={{content.value}}>
+                                        </div>
+                                    </td>
+                                    <td class="p-2 text-gray-600">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_SMSModuleCfg">
+                            <table class="table table-sm card-table">
+
+                                <thead>
+                                <th>
+                                    Scope
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Title }i18n}
+                                </th>
+                                <th>
+                                    {i18n{ manager.database_Value }i18n}
+                                </th>
+                                <th >
+                                    {i18n{ manager.database_Description }i18n}
+                                </th>
+
+                                <th>
+
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                ||loop??SMSModuleCfg??
+                                <tr>
+                                    <td class="p-2">{{scope}}</td>
+                                    <td class="p-2">{{keyid}}</td>
+                                    <td class="p-2">
+                                        <input type="text" class="form-control" value="{{content}}">
+                                    </td>
+                                    <td class="p-2 text-gray-600" style="width: 35%;white-space: normal">{{description}}</td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item">
+                                                    Action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Another action
+                                                </a>
+                                                <a href="#!" class="dropdown-item">
+                                                    Something else here
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div> <!-- / .row -->
+    </div>
+</div>

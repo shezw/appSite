@@ -1,0 +1,177 @@
+<div class="main-content">
+
+<div class="header">
+    <div class="container-fluid">
+
+        <div class="header-body">
+            <div class="row align-items-end">
+                <div class="col">
+
+                    <h5 class="header-pretitle">
+                        <a class="text-primary" href="javascript:history.go(-1)" >订单列表</a> / 订单详情
+                    </h5>
+
+                    <h1 class="header-title">
+                        # {{detail.orderid}} - {{detail.status_}}
+                    </h1>
+
+                </div>
+                <div class="col-auto">
+
+                    [if[::detail.status=pending::
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="a-field valid require" a-field-type="input" a-field-length="32" a-field-name="trackid">
+                                <input class="form-control a-field-main" type="text" placeholder="请输入物流单号">
+                            </div>
+                            <div class="a-field valid" a-field-type="input" a-field-length="32" a-field-name="status">
+                                <input class="a-field-main" type="hidden" placeholder="STATUS_SHIPPING" value="shipping">
+                            </div>
+                            <div class="a-field valid" a-field-type="input" a-field-length="32" a-field-name="orderid">
+                                <input class="a-field-main" type="hidden" placeholder="ORDERID" value="{{detail.orderid}}">
+                            </div>
+                        </div>
+<!--                        <button class="btn btn-primary lift" onclick="MANAGER.update( null, '{{detail.orderid}}' , 'CommerceOrder', MANAGER.reloadCall);">-->
+<!--                            <i class="fa fa-shopping-cart"></i> 发货-->
+<!--                        </button>-->
+                        <button class="btn btn-primary lift" onclick="MANAGER.postFormToAction( 'commerce/orderShipped', null, MANAGER.reloadCall);">
+                            <i class="fa fa-shopping-cart"></i> 发货
+                        </button>
+                    </div>
+                    ]if]
+
+                    [if[::detail.status=shipping::
+                    <div class="a-field valid" a-field-type="input" a-field-length="32" a-field-name="status">
+                        <input class="a-field-main" type="hidden" placeholder="STATUS_DONE" value="done">
+                    </div>
+                    <button class="btn btn-success lift" onclick="MANAGER.update( null, '{{detail.orderid}}' , 'CommerceOrder', MANAGER.reloadCall);">
+                        <i class="fa fa-check-circle-o"></i> 完成订单
+                    </button>
+                    ]if]
+
+                </div>
+
+                <div class="col-auto">
+                    <a class="btn btn-outline-secondary" onclick="MANAGER.print('#printContainer','/manager/print/');"><i class="fa fa-print"></i> Print</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- CARDS -->
+<div class="container-fluid" id="printContainer">
+
+    <div class="row">
+        <div class="col-12 col-lg-5">
+            <div class="card card-fill">
+                <div class="card-body">
+
+                    <div class="row no-gutters align-content-between">
+                        <div class="col">
+                            <h3>Order: O_20053100194452</h3>
+                        </div>
+                    </div>
+
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                            <div class="h2 mb-0">$</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="display-2 mb-0">{{detail.amount}}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                                <i class="fe fe-clock"> Time:</i> <small>{{detail.createtime_}}</small>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                                <i class="fe fe-credit-card"> Payment:</i> <small>{{detail.payment}} [if[::detail.paymentid::<a href="#"  title="支付详情" data-container="body" data-toggle="popover" data-placement="top" data-content="{{paymentDetail}}">{{paymentTransactionid}}</a>]if]</small>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                                <i class="fe fe-truck"> Delivery:</i> <small>${{detail.details.delivery.price}} | {{detail.details.delivery.title}} [if[::detail.trackid:: | {{detail.trackid}}]if]</small>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                                <i class="fe fe-tag"> Promo Code:</i> <small>[if[::detail.details.coupon::- ${{detail.details.coupon.amount}} | {{detail.details.coupon.couponid}}]if]</small>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <i class="fe fe-info"> Customer Info:</i>
+                                    </div>
+                                    <div class="col-12">
+                                        <b>Shipping Address:</b><br/>
+                                        {{detail.details.shippingAddress.firstname}} {{detail.details.shippingAddress.lastname}} <br/>
+                                        {{detail.details.shippingAddress.email}} {{detail.details.shippingAddress.phone}}<br/>
+                                        {{detail.details.shippingAddress.address}}, {{detail.details.shippingAddress.city}}, {{detail.details.shippingAddress.state}} {{detail.details.shippingAddress.zip}}, {{detail.details.shippingAddress.country}}
+                                        [if[::detail.details.billingAddress::
+                                        <br/><br/><b>Billing Address:</b><br/>
+                                        {{detail.details.billingAddress.firstname}} {{detail.details.billingAddress.lastname}} <br/>
+                                        {{detail.details.billingAddress.email}} {{detail.details.billingAddress.phone}} <br/>
+                                        {{detail.details.billingAddress.address}}, {{detail.details.billingAddress.city}}, {{detail.details.billingAddress.state}} {{detail.details.billingAddress.zip}}, {{detail.details.billingAddress.country}}
+                                        ]if]
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+
+            <div class="card card-fill">
+                <div class="card-header">
+
+                    <h4 class="card-header-title">
+                        Products
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="list-group list-group-flush my-n3">
+
+                        ||loop??detail.details.items??
+                        <div class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+
+                                    <a href="/product/detail/{{productid}}" target="_blank" class="avatar avatar-4by3">
+                                        <img src="{{cover}}!thumbs" alt="..." class="avatar-img rounded">
+                                    </a>
+
+                                </div>
+                                <div class="col ml-n2">
+
+                                    <h4 class="mb-1">
+                                        <a href="/product/detail/{{productid}}" target="_blank">{{title}}</a>
+                                    </h4>
+
+                                    <p class="card-text text-gray-700">
+                                        ${{sale}} * {{count}}
+                                    </p>
+
+                                </div>
+                                <div class="col-auto">
+
+                                </div>
+                            </div>
+                        </div>
+                        loop||
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</div>

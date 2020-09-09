@@ -14,6 +14,7 @@ custom.php
 
 /manager/themes/*
 !/manager/themes/default
+!/manager/themes/Dashkit
 /manager/custom/*
 
 /api/custom/*
