@@ -57,7 +57,7 @@ return [
 
         ['settingid'=>'xveRYhhv','keyid'=> 'title',          'scope'=>'MANAGER', 'content'=>'管理后台' , 'description'=>'后台名称',],
         ['settingid'=>'z8gIV6vw','keyid'=> 'description',    'scope'=>'MANAGER', 'content'=>'AppSite Back-End Management', 'description'=>'后台简介',],
-        ['settingid'=>'KkSKd0HN','keyid'=> 'id',             'scope'=>'MANAGER', 'content'=>'appsite_m', 'description'=>'后台识别ID 用于本地缓存',],
+        ['settingid'=>'KkSKd0Ha','keyid'=> 'id',             'scope'=>'MANAGER', 'content'=>'appsite_m', 'description'=>'后台识别ID 用于本地缓存',],
         ['settingid'=>'KkSKd0HN','keyid'=> 'rootPath',       'scope'=>'MANAGER', 'content'=>'/manager', 'description'=>'自定义根目录,用于隐藏后台地址。需要与Rewrite规则匹配。',],
         ['settingid'=>'c3M0U9us','keyid'=> 'logoUrl',        'scope'=>'MANAGER', 'content'=>'/website/static/appsite/images/logo480.png', 'description'=>'LOGO地址',],
         ['settingid'=>'RPytxxJ4','keyid'=> 'logoW',          'scope'=>'MANAGER', 'content'=>NULL, 'description'=>'横版logo',],
@@ -110,11 +110,6 @@ return [
         ['settingid'=>'wCirl541','keyid'=>'AUTO_LOGINTOREGIST' ,         'description'=>'是否支持认证登录 无账号自动创建<br>Can auto regist new user when login user not exist','content'=> 0 , ],
 
         ['settingid'=>'O3iE5ug1','keyid'=>'SENDLOGINCODE_USERNOTEXIST' , 'description'=>'用户不存在是是否可以发送登录验证码<br>Can send verify code ( login scope ) if user not exist','content'=> 0 , ],
-
-        [ 'settingid'=>'WnXMO5TU','keyid'=>'SMTP_SERVER',           'content'=> NULL , 'description'=>'SMTP服务器' ],
-        [ 'settingid'=>'FVYZfGB8','keyid'=>'SMTP_PORT',             'content'=> NULL , 'description'=>'端口 ' ],
-        [ 'settingid'=>'2dsas2B8','keyid'=>'SMTP_USER',             'content'=> NULL , 'description'=>'用户名' ],
-        [ 'settingid'=>'Fsa332a8','keyid'=>'SMTP_PASS',             'content'=> NULL , 'description'=>'口令' ],
 
         /* 支付 */
         ['settingid'=>'RAkVY6xg','keyid'=>'PAYMENT_VALIDTIME' ,    'description'=>'支付有效时间','content'=> 300 , ],

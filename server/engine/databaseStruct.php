@@ -76,6 +76,7 @@ return [
 		['name'=>'level',       'type'=>'mediumint','len'=>5,     'dft'=>0,                'cmt'=>'权限级别'],
 		['name'=>'groupname',   'type'=>'varchar',  'len'=>32,	  'dft'=>'',               'cmt'=>'组名'],
 		['name'=>'description', 'type'=>'varchar',  'len'=>255,	  'dft'=>'NULL',           'cmt'=>'描述 120字以内'],
+		['name'=>'menuaccess',  'type'=>'text',     'len'=>-1,    'dft'=>'NULL',           'cmt'=>'菜单栏权限'],
 		['name'=>'status',      'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',        'cmt'=>'状态 enabled开启 disabled关闭'], 
 
 	],

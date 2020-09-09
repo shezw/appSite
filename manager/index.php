@@ -18,7 +18,7 @@ include_once dirname(__DIR__).'/server/autoload.php';
 define('SITE_DIR' , __DIR__.'/');
 define('MANAGER_BASIC_DIR',SITE_DIR.'basic/');
 define('MANAGER_CUSTOM_DIR',SITE_DIR.'custom/');
-define('THEME_DIR', SITE_DIR .'themes/'. (getConfig("theme",'MANAGER') ?? 'default').'/' );
+define('THEME_DIR', SITE_DIR .'themes/'. (getConfig("theme",'MANAGER') ?? 'Dashkit').'/' );
 
 $website = new \APS\Management(getConfig('MANAGER_ROUTE_FORMAT') ?? 'manager/class/action/id' );
 

@@ -244,7 +244,7 @@ define("CONFIG",[
         'ORC_BAIDU_SK' => null,
         'access_token' => null,
 
-    ]
+    ],
 
     'POINTBONUS_RULES'=>[
 
