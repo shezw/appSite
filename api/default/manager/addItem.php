@@ -33,7 +33,6 @@ class addItem extends ASAPI
         }
 
         $this->data['authorid'] = $this->user->userid;
-        $this->data['userid']   = $this->user->userid;
 
         return $updateItem = $this->itemClass::common()->add( $this->data ) ?? ASResult::shared();
 

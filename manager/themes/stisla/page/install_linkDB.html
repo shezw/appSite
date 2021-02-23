@@ -1,0 +1,175 @@
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+
+            <div class="header mb-3 mt-5">
+                    <div class="header-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+
+                                <h6 class="header-pretitle">
+                                    AppSite
+                                </h6>
+
+                                <h1 class="header-title">
+                                    {i18n{ manager.Install }i18n}
+                                </h1>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+
+                            <!-- Nav -->
+                            <ul class="nav nav-tabs nav-overflow header-tabs">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        {i18n{ manager.EnvCheck }i18n}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link active">
+                                        {i18n{ manager.linkDB }i18n}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        {i18n{ manager.setConfig }i18n}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        {i18n{ manager.done }i18n}
+                                    </a>
+                                </li>
+                            </ul>
+
+
+                        </div>
+                    </div>
+
+                    <form class="my-4" method="post">
+
+                        <div class="row">
+                            <div class="col-12 col-md-6 order-md-2">
+
+
+                                <div class="card bg-light border ml-md-4">
+                                    <div class="card-body">
+
+                                        <p class="mb-2">
+                                            {i18n{ manager.databaseStatus }i18n}
+                                        </p>
+
+                                        <p class="text-gray-700 mb-2">
+                                            {i18n{ manager.databaseVersionIntroduce }i18n}
+                                        </p>
+
+
+                                        <div class="list-group list-group-flush mb-4">
+
+                                            <div class="list-group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <small>{i18n{ manager.connectionStatus }i18n}</small>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        [if[::canNext::<span class="text-success">●</span> {i18n{ manager.connected }i18n} ]if]
+                                                        [not[::canNext::<span class="text-danger">●</span> {i18n{ manager.notConnect }i18n} ]not]
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="list-group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <small>{i18n{ manager.currentVersion }i18n}</small>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        {{version}}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-md-6">
+
+                                <input type="hidden" name="step" value="linkDB">
+
+                                <div class="form-group">
+
+                                    <label>
+                                        {i18n{ manager.DBHost }i18n}
+                                    </label>
+
+                                    <input type="text" class="form-control" name="host" placeholder="localhost" required value="{{db.host}}">
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label>
+                                        {i18n{ manager.DBBase }i18n}
+                                    </label>
+
+                                    <input type="text" class="form-control" name="base" placeholder="" required value="{{db.base}}">
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label>
+                                        {i18n{ manager.DBUser }i18n}
+                                    </label>
+
+                                    <input type="text" class="form-control" name="user" placeholder="root" required value="{{db.user}}">
+
+                                </div>
+
+
+
+                                <div class="form-group">
+
+                                    <label>
+                                        {i18n{ manager.DBPass }i18n}
+                                    </label>
+
+                                    <input type="password" class="form-control" name="pass" placeholder="" required>
+
+                                </div>
+
+                                <button type="submit" class="btn btn-primary lift">
+                                    {i18n{ manager.TestLink }i18n}
+                                </button>
+
+                                [if[::canNext::
+                                <button type="button" class="btn btn-primary lift" onclick="javascript:location.href='?step=setConfig';">
+                                    {i18n{ manager.next }i18n}
+                                </button>]if]
+
+
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>

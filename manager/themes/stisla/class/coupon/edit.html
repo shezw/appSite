@@ -1,0 +1,157 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+
+
+                <form class="my-5">
+
+
+                    <div class="row">
+
+                        <div class="col-6 col-md-6">
+
+                            <div class="form-group a-field valid require" a-field-type="input" a-field-length="32" a-field-name="title">
+
+                                <label>
+                                    {i18n{ manager.title }i18n} *
+                                </label>
+
+                                <input type="text" class="form-control a-field-main" value="{{detail.title}}">
+
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-6">
+
+
+                            <div class="form-group a-field require valid " a-field-type="input" a-field-length="255" a-field-name="type">
+                                <label>{i18n{ manager.type }i18n} * </label>
+
+                                <input type="text" class="form-control a-field-main" value="{{detail.type}}" >
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <div class="form-group a-field valid" a-field-type="input" a-field-length="64" a-field-name="description">
+
+                                <label>
+                                    {i18n{ manager.description }i18n}
+                                </label>
+
+                                <input type="text" class="form-control a-field-main" value="{{detail.description}}">
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="form-group a-field valid" a-field-switch="cover,gallery,video,audio" a-field-type='input' a-field-length="255" a-field-name="cover" id="uploadContainer">
+
+                        <label class="mb-1">封面 (jpg,gif,png,jpeg格式)</label>
+
+                        <small class="form-text text-muted">
+                            建议尺寸 800x600 - 1600x1200  5M以内 最大10M
+                        </small>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="avatar avatar-xxl avatar-4by3">
+                                    <img id="imagePreview" src="{{detail.cover}}!m" alt="..." class="avatar-img rounded">
+                                </div>
+
+                                <div class="input-group my-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="cover-url">{i18n{url}i18n}:</span>
+                                    </div>
+                                    <input id="image" type="text" disabled="disabled" class="form-control a-field-main" placeholder="{i18n{ manager.chooseFileTip }i18n}" value="{{detail.cover}}" readonly aria-describedby="cover-url">
+                                </div>
+
+                                <input class="btn btn-sm btn-secondary" type="button" id="broseImage" value="选择图片">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <hr class="my-5">
+
+
+                    <div class="row">
+
+                        <div class="col-6 col-md-4 form-group a-field valid" a-field-type="number" a-field-length="5" a-field-name="sort">
+                            <label>优先排序 </label>
+                            <small class="form-text text-muted">
+                                数字越大越靠前
+                            </small>
+                            <input type="number" class="w-xs form-control a-field-main" placeholder="" value="{{detail.sort}}" data-mask="0000">
+                        </div>
+
+                        <div class="col-6 col-md-2 form-group a-field valid " a-field-type="switch" a-field-name="featured" a-field-length="6" id="data-featured">
+
+                            <label class="mb-1">
+                                是否置顶
+                            </label>
+
+                            <small class="form-text text-muted">
+                                On-置顶
+                            </small>
+
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input a-field-main" id="featured">
+                                <label class="custom-control-label" for="featured"></label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="card bg-light border">
+                                <div class="card-body">
+
+                                    <h4 class="mb-2">
+                                        <i class="fe fe-info"></i> 系统优先级
+                                    </h4>
+
+                                    <p class="small text-muted mb-0">
+                                        默认优先级 置顶 > 排序 > 创建日期
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <hr class="mt-5 mb-5">
+
+                    <div class="row">
+
+                        <div class="col-12 col-md-6 mb-3">
+                            <a class="btn btn-block btn-primary" onclick="MANAGER.update( null,'{{detail.categoryid}}', 'Category', MANAGER.chooseCall )">
+                                <i class="fe fe-send"></i> 更新
+                            </a>
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

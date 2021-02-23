@@ -45,7 +45,7 @@ class User extends ASModel{
      * @param  string  $userid
      * @param  string  $token
      * @param  string  $scope
-     * @return \APS\User
+     * @return User
      */
     public static function shared( string $userid = null, string $token = null, string $scope = null ): User{
 
@@ -59,7 +59,7 @@ class User extends ASModel{
      * 从网络请求Header信息中初始化
      * Init User from header
      * @param  bool  $setToGlobal 设为全局用户
-     * @return \APS\User
+     * @return User
      */
     public static function fromHeader( bool $setToGlobal = true ): User{
 
@@ -73,7 +73,7 @@ class User extends ASModel{
      * Init User from session
      * @param  string  $prefix
      * @param  bool    $setToGlobal  设为全局用户
-     * @return \APS\User
+     * @return User
      */
     public static function fromSession( string $prefix = 'website', bool $setToGlobal = true ): User{
         session_start();
@@ -106,7 +106,7 @@ class User extends ASModel{
         $_SESSION["{$prefix}_scope"] = null;
     }
 
-    private function init():void{
+    private function init(){
 
         if($this->inited){ return ;}
 
@@ -127,7 +127,8 @@ class User extends ASModel{
         }
     }
 
-    public function isVerified(){
+    public function isVerified(): bool
+    {
         return $this->verified;
     }
 
@@ -136,7 +137,7 @@ class User extends ASModel{
      * 请求用户数据到对象中
      * acquire user information
      * @param  bool  $forcedRefresh  强制刷新
-     * @return \APS\ASResult
+     * @return ASResult
      */
     private function acquire( bool $forcedRefresh = false ):ASResult{
 
@@ -157,7 +158,8 @@ class User extends ASModel{
     }
 
 
-    public function isGuest(){
+    public function isGuest(): bool
+    {
         return $this->userid === 'GUEST' || !isset($this->userid);
     }
 
@@ -171,7 +173,8 @@ class User extends ASModel{
 
     }
 
-    public function refreshToken(){
+    public function refreshToken(): Access
+    {
 
         $this->identify();
 
@@ -179,7 +182,8 @@ class User extends ASModel{
 
     }
 
-    public function systemAuthorize( string $userid, string $scope = 'common'){
+    public function systemAuthorize( string $userid, string $scope = 'common'): ASResult
+    {
 
         $this->userid = $userid;
         $this->scope  = $scope;
@@ -194,9 +198,10 @@ class User extends ASModel{
      * 新建用户账户
      * add
      * @param  array  $params
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function add( array $params ){
+    public function add( array $params ): ASResult
+    {
 
         $params[static::$primaryid] = isset($params[static::$primaryid]) ? $params[static::$primaryid] : Encrypt::shortId(8);
 
@@ -254,7 +259,13 @@ class User extends ASModel{
 
     }
 
-    public function update( array $params, string $userid ){
+    /**
+     * @param array $params
+     * @param string $uid
+     * @return ASResult
+     */
+    public function update(array $params, string $uid ): ASResult
+    {
 
         $accountParams = Filter::purify($params,static::$updateFields);
         $infoParams = Filter::purify($params,UserInfo::$updateFields);
@@ -266,32 +277,33 @@ class User extends ASModel{
             $accountParams['password'] = $ENC->hashPassword($pass);
         }
 
-        if( isset($accountParams['username'])  && ( $this->isConflict('username',$accountParams['username'],$userid))){
+        if( isset($accountParams['username'])  && ( $this->isConflict('username',$accountParams['username'],$uid))){
             return $this->take($accountParams['username'])->error(600,i18n('USR_UN_EXT'),'User->add');
         }
-        if( isset($accountParams['email'])     && ( $this->isConflict('email',$accountParams['email'],$userid))){
+        if( isset($accountParams['email'])     && ( $this->isConflict('email',$accountParams['email'],$uid))){
             return $this->take($accountParams['email'])->error(600,i18n('USR_EM_EXT'),'User->add');
         }
-        if( isset($accountParams['mobile'])    && ( $this->isConflict('mobile',$accountParams['mobile'],$userid))){
+        if( isset($accountParams['mobile'])    && ( $this->isConflict('mobile',$accountParams['mobile'],$uid))){
             return $this->take($accountParams['mobile'])->error(600,i18n('USR_MB_EXT'),'User->add');
         }
-        if( isset($params['wechatid']) && ( $this->isConflict('wechatid',$params['wechatid'],$userid))){
+        if( isset($params['wechatid']) && ( $this->isConflict('wechatid',$params['wechatid'],$uid))){
             return $this->take($params['wechatid'])->error(600,i18n('USR_WE_EXT'),'User->add');
         }
-        if( isset($params['appleUUID']) && ( $this->isConflict('appleUUID',$params['appleUUID'],$userid))){
+        if( isset($params['appleUUID']) && ( $this->isConflict('appleUUID',$params['appleUUID'],$uid))){
             return $this->take($params['appleUUID'])->error(600,i18n('USR_AP_EXT'),'User->add');
         }
 
         if (count($accountParams)<1 && count($infoParams)<1) { return $this->take($params)->error(603,i18n('SYS_PARA_REQ'),'ITEM::update'); }
 
-        $conditions = static::$primaryid."='$userid'";
+        $conditions = static::$primaryid."='$uid'";
 
         $this->DbUpdate($accountParams,$conditions);
-        $this->setId($userid);
+        $this->setId($uid);
         $this->record('ITEM_UPDATE','ITEM::update');
 
         if (!empty($infoParams)) {
-            UserInfo::update($infoParams,$userid);
+            $userInfo = new UserInfo( $uid );
+            $userInfo->update( $infoParams, $uid );
         }
 
         # 删除历史缓存
@@ -313,9 +325,10 @@ class User extends ASModel{
      * 统计vip用户数
      * countVip
      * @param  array  $filters  筛选条件
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countVip( array $filters = [] ){
+    public function countVip( array $filters = [] ): ASResult
+    {
 
         $filters['vip'] = $filters['vip'] ?? 1;
 
@@ -330,9 +343,10 @@ class User extends ASModel{
      * @param  int     $page
      * @param  int     $size
      * @param  string  $sort
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function listVip( array $filters = [], int $page=1, int $size=20, string $sort = 'vip DESC, vipexpire DESC, createtime DESC' ){
+    public function listVip( array $filters = [], int $page=1, int $size=20, string $sort = 'vip DESC, vipexpire DESC, createtime DESC' ): ASResult
+    {
 
         $filters['vip'] = $filters['vip'] ?? 1;
 
@@ -348,9 +362,10 @@ class User extends ASModel{
      * checkPassword
      * @param  string  $password
      * @param  string  $userid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function checkPassword( string $password , string $userid ){
+    public function checkPassword( string $password , string $userid ): ASResult
+    {
 
         $this->sign('User->checkPassword');
 
@@ -371,7 +386,8 @@ class User extends ASModel{
 
 
     // 检测用户授权是否正确
-    public function checkAuth( string $status=null, int $level = 0 ){
+    public function checkAuth( string $status=null, int $level = 0 ): ASResult
+    {
 
 //        if( !$this->access-> )
 //        $CHECK = ACCESS::checkToken($userid,$token);
@@ -392,8 +408,13 @@ class User extends ASModel{
         return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkAuth');
     }
 
-    // 检测用户权限级别
-    public function checkLevel( int $level = 0 ){
+    /**
+     * 检测用户权限级别
+     * @param int $level
+     * @return ASResult
+     */
+    public function checkLevel(int $level = 0 ): ASResult
+    {
 
         if ( $this->getUserInfo('level') < $level ) {
             return $this->error(9900,i18n('AUTH_LEVEL_LOW'),'User->checkLevel');
@@ -407,7 +428,7 @@ class User extends ASModel{
      * 通过信息查询用户
      * searchUseridByInfo
      * @param  string  $info
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function searchUserByInfo( string $info ):ASResult{
 
@@ -424,7 +445,7 @@ class User extends ASModel{
      * getGroupId
      * @return string|null
      */
-    public function getGroupId():?string {
+    public function getGroupId(): string {
 
         $this->acquire();
         return $this->detail['group']['uid'];
@@ -445,7 +466,7 @@ class User extends ASModel{
      * getGroupCharacter
      * @return string|null
      */
-    public function getGroupCharacter():?string {
+    public function getGroupCharacter(): string {
         $this->acquire();
         return $this->detail['group']['type'];
     }
@@ -463,9 +484,10 @@ class User extends ASModel{
     /**
      * 联合查询用户信息
      * fullDetail
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function fullDetail(){
+    public function fullDetail(): ASResult
+    {
 
         $hashParams = ['USER',$this->userid];
 
@@ -474,9 +496,9 @@ class User extends ASModel{
         }else{
 
             $joinParamsArray = [
-                JoinParams::common('APS\UserInfo')->get(UserInfo::$detailFields)->asSubData('info'),
-                JoinParams::common('APS\UserPocket')->get(UserPocket::$detailFields)->asSubData('pocket'),
-                JoinParams::common('APS\UserGroup','groupid')->get(UserGroup::$detailFields)->equalTo('user_account.groupid')->asSubData('group'),
+                JoinParams::init('APS\UserInfo')->get(UserInfo::$detailFields)->asSubData('info'),
+                JoinParams::init('APS\UserPocket')->get(UserPocket::$detailFields)->asSubData('pocket'),
+                JoinParams::init('APS\UserGroup')->get(UserGroup::$detailFields)->equalTo('user_account.groupid')->asSubData('group'),
             ];
             $DETAIL = $this->joinDetail($this->userid,null,$joinParamsArray);
             if( $DETAIL->isSucceed() ){
@@ -533,7 +555,7 @@ class User extends ASModel{
      * getUserid by specific key & value
      * @param  string  $key
      * @param  mixed   $value
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function getUserid( string $key, $value ):ASResult{
 
@@ -569,7 +591,8 @@ class User extends ASModel{
      * @param  string  $userid
      * @return bool
      */
-    public function isSuper( string $userid ){
+    public function isSuper( string $userid ): bool
+    {
 
         return $this->isInGroup('900');
     }
@@ -580,19 +603,22 @@ class User extends ASModel{
      * @param  string  $userid
      * @return bool
      */
-    public function isAdmin( string $userid ){
+    public function isAdmin( string $userid ): bool
+    {
 
         return $this->isInGroup('800');
     }
 
     // 查询是否网站编辑
-    public function isEditor( string $userid ){
+    public function isEditor( string $userid ): bool
+    {
 
         return $this->isInGroup('400');
     }
 
     // 查询是否专家/讲师
-    public function isAuthor( string $userid ){
+    public function isAuthor( string $userid ): bool
+    {
 
         return $this->isInGroup('300') || $this->isInGroup('301') || $this->isInGroup('302') || $this->isInGroup('303');
     }
@@ -616,9 +642,10 @@ class User extends ASModel{
      *
      * @param  int     $duration
      * @param  int     $viplevel
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function setVip( int $duration, int $viplevel=1 ){
+    public function setVip( int $duration, int $viplevel=1 ): ASResult
+    {
 
         $vipexpire = $this->getUserInfo('vipexpire');
         $vipexpire = $vipexpire>0 ? $vipexpire : time();
@@ -638,9 +665,10 @@ class User extends ASModel{
      * 取消vip身份
      * undoVip
      * @param  int  $time
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function undoVip( int $time = 0 ){
+    public function undoVip( int $time = 0 ): ASResult
+    {
 
         return $this->updateUserInfo(['vipexpire'=>$time]);
     }
@@ -661,9 +689,10 @@ class User extends ASModel{
      * 更新用户信息表
      * updateUserInfo
      * @param  array  $data
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function updateUserInfo( array $data ){
+    public function updateUserInfo( array $data ): ASResult
+    {
 
         $infoModel = new UserInfo();
         return $infoModel->update( $data, $this->userid );

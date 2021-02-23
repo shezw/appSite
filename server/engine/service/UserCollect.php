@@ -26,9 +26,10 @@ class UserCollect extends ASModel{
      *                                         描述 description
      *                                         封面 cover
      *                                         更多 contents
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function collect( string $userid, string $itemid, string $itemType = null, string $type = 'like', int $rate = null, array $extraInformation = null ){
+    public function collect( string $userid, string $itemid, string $itemType = null, string $type = 'like', int $rate = null, array $extraInformation = null ): ASResult
+    {
 
         $checkCollect = $this->getCollectId( $userid,$itemid,$itemType,$type );
         $extraInformation = isset($extraInformation) ? Filter::purify( $extraInformation, static::$addFields ) : [];
@@ -59,7 +60,8 @@ class UserCollect extends ASModel{
      * @param  int|null     $rate
      * @return bool
      */
-    public function hasCollected( string $userid, string $itemid, string $itemType = null, string $type='like', int $rate = null){
+    public function hasCollected( string $userid, string $itemid, string $itemType = null, string $type='like', int $rate = null): bool
+    {
 
         return $this->getDB()->count(static::$table,[
             'type'=>$type,
@@ -77,9 +79,10 @@ class UserCollect extends ASModel{
      * @param  string       $itemid
      * @param  string|null  $itemType
      * @param  string       $type
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function cancelWith( string $userid, string $itemid, string $itemType = null , string $type='like' ){
+    public function cancelWith( string $userid, string $itemid, string $itemType = null , string $type='like' ): ASResult
+    {
 
         $checkCollect = $this->getCollectId( $userid,$itemid,$itemType,$type );
 
@@ -97,9 +100,10 @@ class UserCollect extends ASModel{
      * @param  string       $itemid
      * @param  string|null  $itemType
      * @param  string       $type
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getCollectId( string $userid, string $itemid, string $itemType = null, string $type='like' ){
+    public function getCollectId( string $userid, string $itemid, string $itemType = null, string $type='like' ): ASResult
+    {
 
         $getCollectList = $this->list([
             'type'=>$type,
@@ -126,20 +130,23 @@ class UserCollect extends ASModel{
      *                                         描述 description
      *                                         封面 cover
      *                                         更多 contents
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function favorite( string $userid, string $itemid, string $itemType = null, array $params = null ){
+    public function favorite( string $userid, string $itemid, string $itemType = null, array $params = null ): ASResult
+    {
 
         return $this->collect( $userid,$itemid,$itemType,'favorite', null, $params );
     }
 
     // 取消收藏
-    public function unFavorite( string $userid, string $itemid, string $itemType = null ){
+    public function unFavorite( string $userid, string $itemid, string $itemType = null ): ASResult
+    {
 
         return $this->cancelWith($userid,$itemid,$itemType,'favorite');
     }
 
-    public function hasFavorited( string $userid, string $itemid, string $itemType ){
+    public function hasFavorited( string $userid, string $itemid, string $itemType ): bool
+    {
         return $this->hasCollected($userid,$itemid,$itemType,'favorite');
     }
 
@@ -154,9 +161,10 @@ class UserCollect extends ASModel{
      * @param  string|null  $itemType
      * @param  int  $rate  比率可以用来标记喜欢、超级喜欢.
      *                     Rate can be used for mark like, super like.
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function like( string $userid, string $itemid, string $itemType = null, int $rate = 1 ){
+    public function like( string $userid, string $itemid, string $itemType = null, int $rate = 1 ): ASResult
+    {
 
         $checkCollect = $this->getCollectId( $userid,$itemid,$itemType,'like' );
 
@@ -182,9 +190,10 @@ class UserCollect extends ASModel{
      * @param  string       $itemid
      * @param  string|null  $itemType
      * @param  int          $rate
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function unLike( string $userid, string $itemid, string $itemType = null, int $rate = 1 ){
+    public function unLike( string $userid, string $itemid, string $itemType = null, int $rate = 1 ): ASResult
+    {
         return $this->like( $userid,$itemid,$itemType, 0 - $rate );
     }
 
@@ -194,9 +203,10 @@ class UserCollect extends ASModel{
      * @param  string       $userid
      * @param  string       $itemid
      * @param  string|null  $itemType
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function cancelLike( string $userid, string $itemid, string $itemType = null ){
+    public function cancelLike( string $userid, string $itemid, string $itemType = null ): ASResult
+    {
 
         return $this->cancelWith($userid,$itemid,$itemType,'like');
     }
@@ -212,7 +222,8 @@ class UserCollect extends ASModel{
      *                      The rate value can also be used to determine whether unlike, like, or superlike is performed during the query.
      * @return bool
      */
-    public function hasLiked( string $userid, string $itemid, string $itemType, int $rate = null ){
+    public function hasLiked( string $userid, string $itemid, string $itemType, int $rate = null ): bool
+    {
         return $this::hasCollected($userid,$itemid,$itemType,'like',$rate);
     }
 
@@ -229,9 +240,10 @@ class UserCollect extends ASModel{
      *                                         描述 description
      *                                         封面 cover
      *                                         更多 contents
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function follow( string $userid, string $followedUserid, array $params = null ){
+    public function follow( string $userid, string $followedUserid, array $params = null ): ASResult
+    {
 
         return $this->collect( $userid,$followedUserid,'user','follow', null, $params );
     }
@@ -242,9 +254,10 @@ class UserCollect extends ASModel{
      * unFollow
      * @param  string  $userid
      * @param  string  $followedUserid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function unFollow( string $userid, string $followedUserid ){
+    public function unFollow( string $userid, string $followedUserid ): ASResult
+    {
 
         return $this->cancelWith($userid,$followedUserid,'user','follow');
 
@@ -257,7 +270,8 @@ class UserCollect extends ASModel{
      * @param  string  $followedUserid
      * @return bool
      */
-    public function hasFollowed( string $userid, string $followedUserid ){
+    public function hasFollowed( string $userid, string $followedUserid ): bool
+    {
         return $this->hasCollected($userid,$followedUserid,'user','follow');
     }
 
@@ -271,9 +285,10 @@ class UserCollect extends ASModel{
      * @param  string       $itemid
      * @param  string|null  $itemType
      * @param  array|null   $contents
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function share( string $userid, string $itemid, string $itemType = null, array $contents = null ){
+    public function share( string $userid, string $itemid, string $itemType = null, array $contents = null ): ASResult
+    {
 
         $checkCollect = $this->getCollectId( $userid,$itemid,$itemType,'share' );
 
@@ -302,7 +317,8 @@ class UserCollect extends ASModel{
      * @param  int|null  $rate
      * @return mixed
      */
-    public function hasShared( string $userid, string $itemid, string $itemType, int $rate = null ){
+    public function hasShared( string $userid, string $itemid, string $itemType, int $rate = null ): bool
+    {
         return $this->hasCollected($userid,$itemid,$itemType,'share',$rate);
     }
 

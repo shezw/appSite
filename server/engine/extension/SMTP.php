@@ -25,6 +25,10 @@ class SMTP extends ASObject {
     private $replyTo;
 
     private $attachments;
+    /**
+     * @var string
+     */
+    private $replyToName;
 
     function __construct($server = NULL, $user = NULL, $pass = NULL, $port = NULL)
     {
@@ -88,11 +92,11 @@ class SMTP extends ASObject {
      * verify
      * @param  string  $emailAddress  收件邮箱地址
      * @param  string  $scope         作用域
-     * @return \APS\ASResult
+     * @return ASResult
      * @throws \PHPMailer\PHPMailer\Exception
      * @version  1.0
      */
-    public function verify( string $emailAddress, string $scope = 'verify')
+    public function verify( string $emailAddress, string $scope = 'verify'): ASResult
     {
 
         $beginVerify = AccessVerify::common()->begin($emailAddress,getConfig('ACCESSVERIFY_VALID')??300,$scope);
@@ -109,10 +113,10 @@ class SMTP extends ASObject {
      * [sendWithTemplate 通过模板发送]
      * @Author   Sprite                   hello@shezw.com http://donsee.cn
      * @DateTime 2019-07-31T15:31:55+0800
-     * @param  string  $emailAddress  [收件邮箱地址]
-     * @param  array   $params        [参数 自动混合到对应模板]
-     * @param  string  $template      [模板 对应在MAILS常量中]
-     * @return   [array]                                  [result对象]
+     * @param string $emailAddress [收件邮箱地址]
+     * @param array $params [参数 自动混合到对应模板]
+     * @param string $template [模板 对应在MAILS常量中]
+     * @return ASResult [array]                                  [result对象]
      * @throws \PHPMailer\PHPMailer\Exception
      * @version  [1.0]
      */
@@ -128,12 +132,13 @@ class SMTP extends ASObject {
      * @param  string  $subject   主题
      * @param  string  $content   内容
      * @param  string  $text      纯文本模式内容  Content display in plain-text mode
-     * @return \APS\ASResult
+     * @return ASResult
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    public function send(string $receiver, string $subject, string $content, string $text = NULL)
+    public function send(string $receiver, string $subject, string $content, string $text = NULL): ASResult
     {
         $mail = new PHPMailer();
+        $mail->CharSet = PHPMailer::CHARSET_UTF8;
 
         # Tell PHPMailer to use SMTP
         $mail->isSMTP();

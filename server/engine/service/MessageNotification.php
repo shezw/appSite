@@ -21,9 +21,10 @@ class MessageNotification extends ASModel{
      * @param  string  $to      接收方id Receiver Userid
      * @param  string  $content 内容
      * @param  string  $type    ?类型
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function send( string $from, string $to, string $content , string $type = 'message'  ){
+    public function send( string $from, string $to, string $content , string $type = 'message'  ): ASResult
+    {
 
         return $this->add(['status'=>'send','senderid'=>$from,'receiverid'=>$to,'content'=>$content,'type'=>$type]);
     }
@@ -37,9 +38,10 @@ class MessageNotification extends ASModel{
      * @param  string  $link
      * @param  array   $linkparams
      * @param  string  $linktype
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function notify( string $userid, string $content, string $link = null, array $linkparams = null, string $linktype = null ){
+    public function notify( string $userid, string $content, string $link = null, array $linkparams = null, string $linktype = null ): ASResult
+    {
 
         return $this->add(['status'=>'send','senderid'=>'system','receiverid'=>$userid,'content'=>$content,'type'=>'notify','link'=>$link,'linkparams'=>$linkparams,'linktype'=>$linktype]);
     }
@@ -52,9 +54,10 @@ class MessageNotification extends ASModel{
      * @param  string  $link
      * @param  array   $linkparams
      * @param  string  $linktype
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function suggest( string $userid, string $content, string $link = null, array $linkparams = null, string $linktype = null){
+    public function suggest( string $userid, string $content, string $link = null, array $linkparams = null, string $linktype = null): ASResult
+    {
 
         return $this->add(['status'=>'send','senderid'=>$userid,'receiverid'=>'system','content'=>$content,'type'=>'suggest','link'=>$link,'linkparams'=>$linkparams,'linktype'=>$linktype]);
     }
@@ -69,9 +72,10 @@ class MessageNotification extends ASModel{
      * @param  string|null  $type
      * @param  string|null  $status
      * @param  array|null   $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countSent( string $userid , string $type = null , string $status = null, array $moreFilters = null ){
+    public function countSent( string $userid , string $type = null , string $status = null, array $moreFilters = null ): ASResult
+    {
 
         $moreFilters = array_merge($moreFilters ?? [],['senderid'=>$userid,'type'=>$type,'status'=>$status]);
 
@@ -85,9 +89,10 @@ class MessageNotification extends ASModel{
      * @param  string|null  $type
      * @param  string|null  $status
      * @param  array|null   $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countReceive( string $userid, string $type = null, string $status = null, array $moreFilters = null ){
+    public function countReceive( string $userid, string $type = null, string $status = null, array $moreFilters = null ): ASResult
+    {
 
         $moreFilters = array_merge($moreFilters ?? [],['receiverid'=>$userid,'type'=>$type,'status'=>$status]);
 
@@ -99,16 +104,17 @@ class MessageNotification extends ASModel{
      * countNew
      * @param  string  $userid
      * @param  string  $type
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countNew( string $userid , string $type = 'message' ){
+    public function countNew( string $userid , string $type = 'message' ): ASResult
+    {
 
         return $this->count(['receiverid'=>$userid,'status'=>'send','type'=>$type]);
     }
 
-    public function countNewMessage( string $userid ){ return $this->countNew($userid,'message'); }
-    public function countNewNotification( string $userid ){ return $this->countNew($userid,'notify'); }
-    public function countNewSuggest(  ){ return $this->countNew('system','suggest'); }
+    public function countNewMessage( string $userid ):ASResult { return $this->countNew($userid,'message'); }
+    public function countNewNotification( string $userid ):ASResult { return $this->countNew($userid,'notify'); }
+    public function countNewSuggest(  ):ASResult { return $this->countNew('system','suggest'); }
 
     /**
      * 我的消息 计数
@@ -116,9 +122,10 @@ class MessageNotification extends ASModel{
      * @param  string       $userid
      * @param  string|null  $status
      * @param  string|null  $senderid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countMyMessage( string $userid , string $status = null, string $senderid = null ){
+    public function countMyMessage( string $userid , string $status = null, string $senderid = null ): ASResult
+    {
         return $this->count(['receiverid'=>$userid,'senderid'=>$senderid,'status'=>$status,'type'=>'message']);
     }
 
@@ -127,9 +134,10 @@ class MessageNotification extends ASModel{
      * countNotification
      * @param  string       $userid
      * @param  string|null  $status
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countMyNotification( string $userid , string $status = null ){
+    public function countMyNotification( string $userid , string $status = null ): ASResult
+    {
         return $this->count(['receiverid'=>$userid,'status'=>$status,'type'=>'notify']);
     }
 
@@ -139,9 +147,10 @@ class MessageNotification extends ASModel{
      * @param  string       $userid
      * @param  string|null  $status
      * @param  string|null  $receiverid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countSentMessage( string $userid, string $status = null, string $receiverid = null ){
+    public function countSentMessage( string $userid, string $status = null, string $receiverid = null ): ASResult
+    {
 
         return $this->count(['senderid'=>$userid,'receiverid'=>$receiverid,'status'=>$status,'type'=>'message']);
     }
@@ -151,9 +160,10 @@ class MessageNotification extends ASModel{
      * countMySuggest
      * @param  string       $userid
      * @param  string|null  $status
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countMySuggest( string $userid, string $status = null ){
+    public function countMySuggest( string $userid, string $status = null ): ASResult
+    {
         return $this->count(['senderid'=>$userid,'receiverid'=>'system','status'=>$status,'type'=>'suggest']);
     }
 
@@ -164,9 +174,10 @@ class MessageNotification extends ASModel{
      * @param  string|null  $status
      * @param  int          $page
      * @param  int          $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function myNotificationList( string $userid, string $status = null, $page = 1, $size = 20 ){
+    public function myNotificationList( string $userid, string $status = null, $page = 1, $size = 20 ): ASResult
+    {
         return $this->list(['receiverid'=>$userid,'status'=>$status,'type'=>'notify'],$page,$size, 'createtime DESC');
     }
 
@@ -178,9 +189,10 @@ class MessageNotification extends ASModel{
      * @param  string|null  $receiverid
      * @param  int          $page
      * @param  int          $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function mySentMessageList( string $userid, string $status = null, string $receiverid = null, int $page = 1, int $size = 20 ){
+    public function mySentMessageList( string $userid, string $status = null, string $receiverid = null, int $page = 1, int $size = 20 ): ASResult
+    {
         return $this->list(['senderid'=>$userid,'status'=>$status,'receiverid'=>$receiverid,'type'=>'message'],$page,$size);
     }
 
@@ -191,15 +203,17 @@ class MessageNotification extends ASModel{
      * @param  string|null  $status
      * @param  int          $page
      * @param  int          $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function mySuggestList( string $userid, string $status = null, int $page = 1, int $size = 20 ){
+    public function mySuggestList( string $userid, string $status = null, int $page = 1, int $size = 20 ): ASResult
+    {
         return $this->list(['senderid'=>$userid,'status'=>$status,'receiverid'=>'system','type'=>'suggest'],$page,$size);
     }
 
 
     // 对系统内单位进行标记( 进行认证反馈或是回复标注 )
-    public function mark( $content, string $itemid, string $itemtype ){
+    public function mark( $content, string $itemid, string $itemtype ): ASResult
+    {
 
         return $this->add(['status'=>'send','senderid'=>'system','receiverid'=>$itemid,'type'=>$itemtype,'content'=>$content]);
     }
@@ -213,22 +227,37 @@ class MessageNotification extends ASModel{
      * @param  string|null  $senderid
      * @param  int          $page
      * @param  int          $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function myMessageList( string $userid = null, string $status = null, string $senderid = null, int $page = 1, int $size = 20 ){
+    public function myMessageList( string $userid = null, string $status = null, string $senderid = null, int $page = 1, int $size = 20 ): ASResult
+    {
 
         return $this->list(['receiverid'=>$userid,'status'=>$status,'senderid'=>$senderid],$page,$size);
     }
 
-    // 设置已读
-    public function read( string $uid ){
+    /**
+     * 设置已读
+     * Set read
+     * @param string $uid
+     * @return ASResult
+     */
+    public function read( string $uid ): ASResult
+    {
 
         return $this->status($uid,'read');
 
     }
 
-    // 设置已回复
-    public function replied( string $uid , string $replyid = null ){
+
+    /**
+     * 设置已回复
+     * Set replied
+     * @param string $uid
+     * @param string|null $replyid
+     * @return ASResult
+     */
+    public function replied( string $uid , string $replyid = null ): ASResult
+    {
 
         return $this->update(['status'=>'replied','replyid'=>$replyid],$uid);
 
@@ -240,9 +269,10 @@ class MessageNotification extends ASModel{
      * @param  string       $userid
      * @param  string|null  $type
      * @param  string|null  $senderid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function readAll( string $userid, string $type = null, string $senderid = null){
+    public function readAll( string $userid, string $type = null, string $senderid = null): ASResult
+    {
 
         $conditions = [
             'receiverid'=>$userid,
@@ -254,7 +284,8 @@ class MessageNotification extends ASModel{
     }
 
 
-    public function suggestList( array $filters ){
+    public function suggestList( array $filters ): ASResult
+    {
 
         $filters['type'] = 'suggest';
 
@@ -262,7 +293,8 @@ class MessageNotification extends ASModel{
 
     }
 
-    public function messageList( array $filters ){
+    public function messageList( array $filters ): ASResult
+    {
 
         $filters['type'] = 'message';
 
@@ -270,7 +302,8 @@ class MessageNotification extends ASModel{
 
     }
 
-    public function notificationList( array $filters ){
+    public function notificationList( array $filters ): ASResult
+    {
 
         $filters['type'] = 'notify';
 

@@ -19,7 +19,7 @@ return [
 		['name'=>'birthday',  'type'=>'bigint',   'len'=>11,   'dft'=>'NULL',             'cmt'=>'生日 时间戳'],
 		['name'=>'gender',    'type'=>'varchar',  'len'=>16,   'dft'=>'private',          'cmt'=>'性别 female male private'],
 
-		['name'=>'groupid',   'type'=>'varchar',  'len'=>8,   'dft'=>1,                   'cmt'=>'用户分组 参考user_group'],
+		['name'=>'groupid',   'type'=>'varchar',  'len'=>8,   'dft'=>'100',                   'cmt'=>'用户分组 参考user_group'],
 		['name'=>'areaid',    'type'=>'varchar',   'len'=>8,   'dft'=>1,                  'cmt'=>'地区分组 参考user_group'],
 		['name'=>'status',    'type'=>'varchar',  'len'=>12,   'dft'=>'enabled',          'cmt'=>'状态 enabled 可以 '],
 
@@ -46,6 +46,7 @@ return [
 		['name'=>'weiboid',   'type'=>'varchar',  'len'=>63,   'dft'=>'NULL',             'cmt'=>'微博ID'],
 		['name'=>'appleUUID', 'type'=>'varchar',  'len'=>64,   'dft'=>'NULL',             'cmt'=>'苹果UUID'],
 		['name'=>'qqid',      'type'=>'varchar',  'len'=>63,   'dft'=>'NULL',             'cmt'=>'qqID'],
+        ['name'=>'deviceid',  'type'=>'varchar',  'len'=>64,   'dft'=>'NULL',             'cmt'=>'Device ID'],
 		['name'=>'status',    'type'=>'varchar',  'len'=>12,   'dft'=>'enabled',          'cmt'=>'状态 enabled'],
 		['name'=>'realstatus','type'=>'varchar',  'len'=>24,   'dft'=>'default',          'cmt'=>'实名状态 '],
 		// verified 已认证, pending 审核中, default 默认
@@ -341,215 +342,6 @@ return [
 
 
 
-	// 场馆
-	// 后台用高德jsapi 选址组件
-	'venue'=>
-	[
-		['table'=>'场馆'],
-
-		['name'=>'uid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,   'cmt'=>'场馆ID'  ],
-		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'分类ID'  ],
-		['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',              'cmt'=>'类型 lesson, vip...'  ],
-		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,   'cmt'=>'地区ID'  ],
-		['name'=>'authorid',        'type'=>'varchar',  'len'=>8,	'dft'=>'NULL',  'idx'=>1,   'cmt'=>'创建人ID'  ],
-
-		//基础字段
-		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',      'ngr'=>1,   'cmt'=>'名称名'  ],
-		['name'=>'cover',         'type'=>'varchar',  'len'=>255,   'dft'=>'',                  'cmt'=>'封面'  ],
-		['name'=>'tags',          'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',              'cmt'=>'标签 最高255'  ],
-		['name'=>'thumb',         'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',              'cmt'=>'缩略图'  ],
-		['name'=>'address',       'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',              'cmt'=>'地址'  ],
-		['name'=>'location',      'type'=>'GEOMETRY', 'len'=>-1,    'dft'=>'',      'spt'=>1,     'cmt'=>'定位 GeomFromWKB(POINT(110.0003,39.0002))'  ],
-
-
-		['name'=>'lng',           'type'=>'decimal',   'len'=>'14,10',    'dft'=>0,                   'cmt'=>'经度'  ],
-		['name'=>'lat',           'type'=>'decimal',   'len'=>'14,10',    'dft'=>0,                   'cmt'=>'纬度'  ],
-
-		['name'=>'phone',         'type'=>'varchar',  'len'=>64,    'dft'=>'NULL',              'cmt'=>'联系电话 '  ],
-		['name'=>'description',   'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',  'ngr'=>1,   'cmt'=>'描述'  ],
-		['name'=>'introduce',     'type'=>'text',     'len'=>-1,	'dft'=>'NULL',              'cmt'=>'详情介绍'  ],
-
-		//开放信息
-		['name'=>'opentime',      'type'=>'varchar',  'len'=>128,   'dft'=>'NULL',    'cmt'=>'开放时间 [["09:00","17:30"],[]...]'  ],
-		['name'=>'opendays',      'type'=>'varchar',  'len'=>128,   'dft'=>'NULL',    'cmt'=>'开放日  [1,2,3,4,5,6,7];'  ],
-
-		['name'=>'viewtimes',     'type'=>'bigint',      'len'=>13,    'dft'=>0,                   'cmt'=>'播放次数'  ],
-
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',           'cmt'=>'状态 '  ],
-
-	],
-
-
-	// 活动室 
-	'room'=>
-	[
-		['table'=>'活动室'],
-
-		['name'=>'uid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场馆ID' ],
-		['name'=>'venueid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'分类ID' ],
-		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'分类ID' ],
-		['name'=>'authorid',        'type'=>'varchar',  'len'=>8,	'dft'=>'NULL',  'idx'=>1,  'cmt'=>'创建人ID' ],
-		['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',             'cmt'=>'类型 lesson, vip...' ],
-
-		//基础字段
-		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',      'ngr'=>1,  'cmt'=>'名称名' ],
-		['name'=>'cover',         'type'=>'varchar',  'len'=>255,   'dft'=>'',                 'cmt'=>'封面' ],
-		['name'=>'tags',          'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',             'cmt'=>'标签 最高255' ],
-		['name'=>'thumb',         'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',             'cmt'=>'缩略图' ],
-
-		['name'=>'description',   'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',  'ngr'=>1,  'cmt'=>'描述' ],
-		['name'=>'support',       'type'=>'varchar',  'len'=>511,   'dft'=>'NULL',  'ngr'=>1,  'cmt'=>'配套设备' ],
-		['name'=>'introduce',     'type'=>'text',     'len'=>-1,	'dft'=>'NULL',             'cmt'=>'详情介绍' ],
-
-		['name'=>'acreage',       'type'=>'int',      'len'=>8  ,   'dft'=>0 ,                 'cmt'=>'面积' ],
-		['name'=>'capacity',      'type'=>'int',      'len'=>8  ,   'dft'=>0 ,                 'cmt'=>'容量' ],
-
-		//开放信息 开放信息模版
-		['name'=>'opens',         'type'=>'text',     'len'=>-1,   'dft'=>'NULL',             'cmt'=>'活动室周开放信息 eg: [[{"09:00-10:30":"on"},{"10:30-12:00":"on"},{"14:00-15:30":"on"},{"15:30-17:00":"on"}],[],[],[],[],[],[]]' ],
-
-		//订单字段
-		['name'=>'price',         'type'=>'int',      'len'=>8  ,   'dft'=>0,                  'cmt'=>'价格' ],
-		['name'=>'costpoint',     'type'=>'int',      'len'=>8  ,   'dft'=>0,                  'cmt'=>'扣除积分' ],
-
-		['name'=>'viewtimes',     'type'=>'bigint',   'len'=>13,    'dft'=>0,                  'cmt'=>'播放次数' ],
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',          'cmt'=>'状态 ' ],
-
-	],
-
-
-	// 活动室场次
-	'roomround'=>
-	[
-		['table'=>'活动室场次'],
-
-		['name'=>'uid', 'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场次ID' ],
-		['name'=>'roomid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'idx'=>1,  'cmt'=>'活动室ID' ],
-
-		['name'=>'opens',       'type'=>'text',     'len'=>-1,   'dft'=>'NULL',             'cmt'=>'活动室开放信息 ' ],
-		// JSON Array 
-		// [{row:[{col:col,status:status},{col:col,status:status}...]},{}...]  status on,off,used
-		// eg: [{"一":[{"col":"A","status":"on"},{"col":"B","status":"on"}]},{"二":[{"col":"A","status":"off"},{"col":"B","status":"used"}]}]
-
-		// 活动室定时任务:
-		// 当前日期之前的所有活动室场次设置为下线 （从数据统计角度来说 暂不考虑删除）
-		// 从当前日期开始增加活动室场次，场次信息从活动室开放信息获取模板 存在则跳过，最大七天 开始时间用0点时间戳+1 结束时间以时间戳第二天0点时间戳-1   7日以内的活动室(未被预定)可以支持手动编辑状态
-
-		['name'=>'date',          'type'=>'int',    'len'=>11,    'dft'=>625312800,          'cmt'=>'开始时间' ],
-
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',          'cmt'=>'状态 ' ],
-		// 场次状态
-		// expired 过期  offline 下线  
-
-	],
-
-
-	// 活动
-	'active'=>
-	[
-		['table'=>'活动'],
-
-		['name'=>'uid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'活动ID' ],
-		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'分类ID' ],
-		['name'=>'venueid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'场馆ID' ],
-		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'地区ID' ],
-		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'创建人ID' ],
-		['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',            'cmt'=>'类型 lesson, vip...' ],
-
-		//基础字段
-		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',      'ngr'=>1, 'cmt'=>'名称名' ],
-		['name'=>'cover',         'type'=>'varchar',  'len'=>255,   'dft'=>'',                'cmt'=>'封面' ],
-		['name'=>'tags',          'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',            'cmt'=>'标签 最高255' ],
-		['name'=>'thumb',         'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',            'cmt'=>'缩略图' ],
-		['name'=>'address',       'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',            'cmt'=>'地址' ],
-		['name'=>'phone',         'type'=>'varchar',  'len'=>64,    'dft'=>'NULL',            'cmt'=>'联系电话 ' ],
-		['name'=>'description',   'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',  'ngr'=>1, 'cmt'=>'描述' ],
-		['name'=>'introduce',     'type'=>'text',     'len'=>-1,	'dft'=>'NULL',            'cmt'=>'详情介绍' ],
-
-		['name'=>'information',   'type'=>'varchar',  'len'=>1024,	'dft'=>'NULL',            'cmt'=>'补充信息 ' ],
-		// information.organiser    string 64    // 主办单位
-		// information.coorganizer  string 64    // 协办单位
-		// information.exhibitor    string 64    // 承办单位
-		// information.performer    string 64    // 表演单位
-		// information.speaker      string 64    // 主讲人
-		// information.remark       string 128   // 提示
-
-		//订单字段
-		['name'=>'paytype',       'type'=>'varchar',  'len'=>8  ,   'dft'=>'point',           'cmt'=>'支付类型 balance,point,cash' ],
-		['name'=>'price',         'type'=>'int',      'len'=>8  ,   'dft'=>0,                 'cmt'=>'价格' ],
-		['name'=>'limitpoint',    'type'=>'int',      'len'=>8  ,   'dft'=>0,                 'cmt'=>'积分限制' ],
-		['name'=>'costpoint',     'type'=>'int',      'len'=>8  ,   'dft'=>0,                 'cmt'=>'扣除积分' ],
-		['name'=>'breachpoint',   'type'=>'int',      'len'=>8  ,   'dft'=>0,                 'cmt'=>'违约扣除积分' ],
-		['name'=>'maxorder',      'type'=>'int',      'len'=>8  ,   'dft'=>1,                 'cmt'=>'订单次数限制' ],
-		['name'=>'maxticket',     'type'=>'int',      'len'=>8  ,   'dft'=>5,                 'cmt'=>'单次票数限制' ],
-
-		['name'=>'roundtype',     'type'=>'varchar',   'len'=>32,	'dft'=>'free',            'cmt'=>'参与类型' ],
-		// free 直接前往, chooseSeat 在线选座, freeSeat 自由入座, private 不公开 不可预定  
-
-		['name'=>'starttime',     'type'=>'bigint',   'len'=>13,   'dft'=>625312800,         'cmt'=>'开始时间' ],
-		['name'=>'endtime',       'type'=>'bigint',   'len'=>13,   'dft'=>625312801,         'cmt'=>'结束时间' ],
-
-		['name'=>'idverify',      'type'=>'int',       'len'=>1,    'dft'=>0,                 'cmt'=>'是否需要身份 ' ],
-		['name'=>'idorder',       'type'=>'int',       'len'=>1,    'dft'=>0,                 'cmt'=>'是否可以身份证取票 ' ],
-
-		// 场次信息
-		// 存储在item_activeround表中 以activeid关联
-
-		//状态字段
-		['name'=>'viewtimes',     'type'=>'bigint',   'len'=>13,    'dft'=>0,              'cmt'=>'播放次数' ],
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态  trash 垃圾桶' ],
-
-	],
-
-
-	// 座位模版 
-	// 序列号和坐次号独立
-	'activeseats'=>
-	[
-		['table'=>'座位模版'],
-
-		['name'=>'uid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',        'unq'=>1, 'cmt'=>'索引ID'],
-		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',                  'cmt'=>'标签名'],
-		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',    'idx'=>1, 'cmt'=>'创建人ID'],
-		['name'=>'type',          'type'=>'varchar',  'len'=>16,	'dft'=>'NULL',              'cmt'=>'类型 '], 
-		['name'=>'seats',         'type'=>'text',     'len'=>-1,    'dft'=>'',                  'cmt'=>'座位 '],
-		// 座位数据结构
-		// JSON Array 
-		// [{row:[{col:col,status:status},{col:col,status:status}...]},{}...]  status on,off,used
-		// eg: [{"一":[{"col":"A","status":"on"},{"col":"B","status":"on"}]},{"二":[{"col":"A","status":"off"},{"col":"B","status":"used"}]}]
-
-	],
-
-
-	// 活动场次
-	//
-	'activeround'=>
-	[
-		['table'=>'活动场次'],
-
-		['name'=>'uid', 'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'场次ID' ],
-		['name'=>'activeid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'idx'=>1,  'cmt'=>'活动ID' ],
-		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'创建人ID' ],
-		['name'=>'seats',         'type'=>'text',     'len'=>-1,    'dft'=>'NULL',             'cmt'=>'座位数' ],
-		['name'=>'max',           'type'=>'int',      'len'=>6,	    'dft'=>0,                  'cmt'=>'最大数' ],
-		['name'=>'total',         'type'=>'int',      'len'=>6,	    'dft'=>0,                  'cmt'=>'预定数' ],
-		// 座位数据结构
-		// JSON Array 
-		// [{row:[{col:col,status:status},{col:col,status:status}...]},{}...]  status on,off,used
-		// eg: [{"一":[{"col":"A","status":"on"},{"col":"B","status":"on"}]},{"二":[{"col":"A","status":"off"},{"col":"B","status":"used"}]}]
-		// {"一":{"A":"on","B":"on"},"二":{"A":"off","B":"used"}}
-		
-		['name'=>'date',          'type'=>'bigint',   'len'=>13,    'dft'=>'',                 'cmt'=>'活动日期' ],
-		['name'=>'starttime',     'type'=>'varchar',  'len'=>8,     'dft'=>'NULL',             'cmt'=>'开始时间' ],
-		['name'=>'endtime',       'type'=>'varchar',  'len'=>8,     'dft'=>'NULL',             'cmt'=>'结束时间' ],
-
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',          'cmt'=>'状态 ' ],
-		// 场次状态
-		// expired 过期  offline 下线  
-
-	],
-
-
-
 	// 资讯
 	'article'=>
 	[
@@ -580,80 +372,6 @@ return [
 		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态 ' ],
 
 	],
-
-
-	// 团队
-	'community'=>
-	[
-		['table'=>'社团/团队'],
-
-		['name'=>'uid',   'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1,  'cmt'=>'唯一ID'],
-		['name'=>'categoryid',    'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'分类ID'],
-		['name'=>'type',          'type'=>'varchar',  'len'=>12,	'dft'=>'NULL',             'cmt'=>'类型'],
-		['name'=>'areaid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'地区ID'],
-		['name'=>'authorid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'创建人ID'],
-		['name'=>'leaderid',      'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'领导人ID'],
-		['name'=>'avatar',        'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',             'cmt'=>'头像 url'],
-
-		//基础字段
-		['name'=>'title',         'type'=>'varchar',  'len'=>32,	'dft'=>'',      'ngr'=>1,  'cmt'=>'名称名'],
-		['name'=>'cover',         'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',             'cmt'=>'封面'],
-		['name'=>'gallery',       'type'=>'text',     'len'=>-1,	'dft'=>'NULL',             'cmt'=>'详情介绍'],
-		['name'=>'videos',        'type'=>'text',     'len'=>-1,    'dft'=>'NULL',             'cmt'=>'缩略图'],
-		['name'=>'tags',          'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',             'cmt'=>'标签 最高255'],
-
-		['name'=>'member',        'type'=>'bigint',      'len'=>13,    'dft'=>0,               'cmt'=>'成员人数'],
-		['name'=>'follower',      'type'=>'bigint',      'len'=>13,    'dft'=>0,               'cmt'=>'关注人数'],
-
-		['name'=>'description',   'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',  'ngr'=>1,  'cmt'=>'描述'],
-		['name'=>'introduce',     'type'=>'text',     'len'=>-1,	'dft'=>'NULL',             'cmt'=>'详情介绍'],
-
-		['name'=>'viewtimes',     'type'=>'bigint',      'len'=>13,    'dft'=>0,               'cmt'=>'播放次数'],
-		['name'=>'flower',        'type'=>'bigint',      'len'=>13,    'dft'=>0,               'cmt'=>'点赞次数/ 浇花'],
-
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',          'cmt'=>'状态 '],
-
-	],
-
-	// 社团成员
-	'communitymember'=>
-	[
-		['table'=>'社团成员'],
-
-		['name'=>'uid', 'type'=>'varchar',  'len'=>8,   'dft'=>'',    'unq'=>1,  'cmt'=>'成员ID' ],
-		['name'=>'communityid',   'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'社团ID' ],
-		['name'=>'userid',        'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1,  'cmt'=>'用户ID' ],
-		['name'=>'name',          'type'=>'varchar',  'len'=>32,	'dft'=>'',      'ngr'=>1,  'cmt'=>'成员名称' ],
-		['name'=>'avatar',        'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',             'cmt'=>'头像' ],
-		['name'=>'cover',         'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',             'cmt'=>'封面' ],
-		['name'=>'role',          'type'=>'varchar',  'len'=>24,    'dft'=>'member',           'cmt'=>'角色 ' ],
-		['name'=>'introduce',     'type'=>'text',     'len'=>-1,	'dft'=>'NULL',             'cmt'=>'详情介绍' ],
-		['name'=>'age',           'type'=>'int',      'len'=>3,  	'dft'=>'',                 'cmt'=>'年龄' ],
-		['name'=>'gender',        'type'=>'tinyint',  'len'=>1,	    'dft'=>0,                  'cmt'=>'性别' ],
-
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',          'cmt'=>'状态 ' ],
-
-	],
-
-	// 问答
-	'vote'=>
-	[
-
-		['name'=>'uid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'',   'unq'=>1,    'cmt'=>'问题ID' ],
-		['name'=>'areaid',       'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'地区ID' ],
-		['name'=>'authorid',     'type'=>'varchar',  'len'=>8,	    'dft'=>'NULL',  'idx'=>1, 'cmt'=>'创建人ID' ],
-		['name'=>'title',        'type'=>'varchar',  'len'=>255,	'dft'=>'',      'ngr'=>1, 'cmt'=>'题目' ],
-		['name'=>'type',  'type'=>'varchar',  'len'=>32,	'dft'=>'NULL',            'cmt'=>'类型 radio单选 ,textarea段落 ,input单行' ],
-		['name'=>'placeholder',   'type'=>'varchar',  'len'=>127,	'dft'=>'NULL',            'cmt'=>'提示 60字以内' ],
-
-		['name'=>'options',       'type'=>'text',     'len'=>-1,    'dft'=>'NULL',            'cmt'=>'如是选择题 则 k-v json' ],
-		// eg: "{'a':'第一个选项','b':'第二个选项','c':'第三个选项',...}"
-
-		['name'=>'viewtimes',     'type'=>'bigint',      'len'=>13,    'dft'=>0,               'cmt'=>'播放次数'],
-		['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态 enabled 开启, disabled 关闭' ],
-
-	],
-
 
 	// banner设置
 	'banner' =>
@@ -953,8 +671,10 @@ return [
             ['table'=>'物流'],
 
             ['name'=>'uid',     'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'索引ID',  ],
-            ['name'=>'orderid',        'type'=>'varchar',  'len'=>32,  'dft'=>'',      'idx'=>1, 'cmt'=>'订单ID',  ],
-            ['name'=>'userid',         'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'用户ID',  ],
+            ['name'=>'title',          'type'=>'varchar',  'len'=>127,	'dft'=>'',     'ngr'=>1,  'cmt'=>'标题 60字以内 分词' ],
+            ['name'=>'cover',          'type'=>'varchar',  'len'=>255,  'dft'=>'NULL',            'cmt'=>'缩略图 小图' ],
+            ['name'=>'description',   'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',             'cmt'=>'描述' ],
+            ['name'=>'amount',         'type'=>'decimal',  'len'=>'12,2','dft'=>0,                 'cmt'=>'总价 精度0.01元' ],
             ['name'=>'details',        'type'=>'text',     'len'=>-1,   'dft'=>'NULL',              'cmt'=>'详情记录 ASJson',  ],
 
             ['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态  trash 垃圾桶'  ],
@@ -962,19 +682,88 @@ return [
         ],
 
     'writeoff' =>
-        [
+    [
 
-            ['table'=>'核销'],
+        ['table'=>'核销'],
 
-            ['name'=>'uid',     'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'支付ID',  ],
-            ['name'=>'orderid',        'type'=>'varchar',  'len'=>32,  'dft'=>'',      'idx'=>1, 'cmt'=>'订单ID',  ],
-            ['name'=>'itemid',         'type'=>'varchar',  'len'=>32,  'dft'=>'NULL',  'idx'=>1, 'cmt'=>'对象ID',  ],
-            ['name'=>'targetid',       'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'核销绑定ID',  ],
-            ['name'=>'userid',         'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'用户ID',  ],
+        ['name'=>'uid',     'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'核销ID',  ],
+        ['name'=>'orderid',        'type'=>'varchar',  'len'=>32,  'dft'=>'',      'idx'=>1, 'cmt'=>'订单ID',  ],
+        ['name'=>'itemid',         'type'=>'varchar',  'len'=>32,  'dft'=>'NULL',  'idx'=>1, 'cmt'=>'对象ID',  ],
+        ['name'=>'targetid',       'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'核销绑定ID',  ],
+        ['name'=>'userid',         'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'用户ID',  ],
 
-            ['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态  trash 垃圾桶'  ],
+        ['name'=>'status',        'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态  trash 垃圾桶'  ],
 
-        ],
+    ],
+
+    'coupon' => [
+
+        ['table'=>'优惠券'],
+
+        ['name'=>'uid',         'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'优惠券ID',  ],
+        ['name'=>'userid',      'type'=>'varchar',  'len'=>8,  'dft'=>'NULL',  'idx'=>1, 'cmt'=>'绑定用户ID',  ],
+        ['name'=>'orderid',     'type'=>'varchar',  'len'=>32,  'dft'=>'NULL',  'idx'=>1, 'cmt'=>'订单ID',  ],
+        ['name'=>'amount',      'type'=>'decimal',   'len'=>'12,2',   'dft'=>0,                 'cmt'=>'总价 精度0.01元',  ],
+        ['name'=>'min',         'type'=>'decimal',   'len'=>'12,2',   'dft'=>0,                 'cmt'=>'最小额度 精度0.01元',  ],
+        ['name'=>'max',         'type'=>'decimal',   'len'=>'12,2',   'dft'=>0,                 'cmt'=>'最大额度 精度0.01元',  ],
+
+        ['name'=>'status',      'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态  trash 垃圾桶'  ],
+
+    ],
+
+    'product'=>[
+
+        ['table'=>'产品'],
+
+        ['name'=>'uid',         'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1, 'cmt'=>'优惠券ID',  ],
+        ['name'=>'categoryid',  'type'=>'varchar',  'len'=>8,	'dft'=>'NULL',            'cmt'=>'分类id' ],
+        ['name'=>'authorid',    'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1, 'cmt'=>'订单ID',  ],
+        ['name'=>'type',        'type'=>'varchar',   'len'=>16,   'dft'=>0,                 'cmt'=>'类型',  ],
+        ['name'=>'mode',        'type'=>'varchar',   'len'=>16,   'dft'=>0,                 'cmt'=>'模式',  ],
+
+        ['name'=>'title',          'type'=>'varchar',  'len'=>127,	'dft'=>'',     'ngr'=>1,  'cmt'=>'标题 60字以内 分词' ],
+        ['name'=>'cover',          'type'=>'varchar',  'len'=>255,  'dft'=>'NULL',            'cmt'=>'缩略图 小图' ],
+        ['name'=>'description',   'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',             'cmt'=>'描述' ],
+        ['name'=>'introduce', 'type'=>'text',     'len'=>-1,   'dft'=>'NULL',             'cmt'=>'简介 120字以内'],
+
+        ['name'=>'gallery',       'type'=>'text',     'len'=>-1,	'dft'=>'NULL',            'cmt'=>'详情介绍' ],
+        ['name'=>'attachments',   'type'=>'text',     'len'=>-1,	'dft'=>'NULL',            'cmt'=>'附件' ],
+        ['name'=>'video',         'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',            'cmt'=>'缩略图' ],
+        ['name'=>'link',          'type'=>'varchar',  'len'=>255,   'dft'=>'NULL',            'cmt'=>'链接' ],
+        ['name'=>'tags',          'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',            'cmt'=>'标签 最高255' ],
+
+        ['name'=>'details',        'type'=>'text',     'len'=>-1,   'dft'=>'NULL',            'cmt'=>'补充信息，如兑换码等' ],
+
+        ['name'=>'price',      'type'=>'decimal',   'len'=>'12,2',   'dft'=>0,                 'cmt'=>'价格',  ],
+        ['name'=>'sale',      'type'=>'decimal',   'len'=>'12,2',   'dft'=>0,                 'cmt'=>'售价',  ],
+        ['name'=>'isvirtual',   'type'=>'tinyint',  'len'=>1,	'dft'=>0,                  'cmt'=>'是否虚拟' ],
+        ['name'=>'features',        'type'=>'text',     'len'=>-1,   'dft'=>'NULL',            'cmt'=>'补充信息，如兑换码等' ],
+        ['name'=>'stock',       'type'=>'mediumint','len'=>8,     'dft'=>1,                'cmt'=>'剩余库存'],
+
+        ['name'=>'viewtimes',     'type'=>'bigint',      'len'=>13,    'dft'=>0,                   'cmt'=>'展示次数'  ],
+        ['name'=>'status',      'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态  trash 垃圾桶'  ],
+
+    ],
+
+
+    'stock' => [
+
+        ['table'=>'库存'],
+
+        ['name'=>'uid',         'type'=>'varchar',  'len'=>8,   'dft'=>'',      'unq'=>1,  'cmt'=>'优惠券ID',  ],
+        ['name'=>'productid',   'type'=>'varchar',  'len'=>8,  'dft'=>'NULL',  'idx'=>1,   'cmt'=>'所属产品ID',  ],
+        ['name'=>'authorid',    'type'=>'varchar',  'len'=>8,   'dft'=>'NULL',  'idx'=>1,  'cmt'=>'订单ID',  ],
+        ['name'=>'type',        'type'=>'varchar',   'len'=>16,   'dft'=>0,                 'cmt'=>'类型',  ],
+        ['name'=>'mode',        'type'=>'varchar',   'len'=>16,   'dft'=>0,                 'cmt'=>'模式',  ],
+
+        ['name'=>'title',       'type'=>'varchar',  'len'=>127,	'dft'=>'',     'ngr'=>1,  'cmt'=>'标题 60字以内 分词' ],
+        ['name'=>'cover',       'type'=>'varchar',  'len'=>255,  'dft'=>'NULL',            'cmt'=>'缩略图 小图' ],
+        ['name'=>'description', 'type'=>'varchar',  'len'=>255,	'dft'=>'NULL',             'cmt'=>'描述' ],
+        ['name'=>'stock',       'type'=>'mediumint','len'=>8,     'dft'=>1,                'cmt'=>'剩余库存'],
+
+        ['name'=>'status',      'type'=>'varchar',  'len'=>12,    'dft'=>'enabled',         'cmt'=>'状态  trash 垃圾桶'  ],
+
+    ],
 
 
 ],
@@ -1265,5 +1054,26 @@ return [
 
 ],
 
+// SETTING
+// 统计
 
+'analysis' =>[
+
+    'product' =>
+    [
+        ['table'=>'商品统计'],
+
+        ['name'=>'uid',  'type'=>'varchar',  'len'=>8,	    'dft'=>'',      'unq'=>1, 'cmt'=>'主ID' ],
+        ['name'=>'userid',     'type'=>'varchar', 'len'=>8,    'dft'=>'',     'idx'=>1,    'cmt'=>'用户ID' ],
+        ['name'=>'title',       'type'=>'varchar',  'len'=>127,	'dft'=>'',     'ngr'=>1,  'cmt'=>'标题 60字以内 分词' ],
+        ['name'=>'cover',       'type'=>'varchar',  'len'=>255,  'dft'=>'NULL',            'cmt'=>'缩略图 小图' ],
+
+        ['name'=>'price',      'type'=>'decimal',  'len'=>'12,2','dft'=>0,       'cmt'=>'价格' ],
+        ['name'=>'sale',       'type'=>'decimal',  'len'=>'12,2','dft'=>0,       'cmt'=>'售价' ],
+
+        ['name'=>'count',      'type'=>'mediumint','len'=>8,     'dft'=>1,                'cmt'=>'库存数量(非多类型商品)'],
+        ['name'=>'total',      'type'=>'decimal',  'len'=>'12,2','dft'=>0,       'cmt'=>'总价' ],
+    ]
+]
 ];
+

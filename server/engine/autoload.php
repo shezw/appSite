@@ -12,6 +12,16 @@
  * 引擎模块注册
  * Register dictionary
  */
+
+use APS\ASDB;
+use APS\ASError;
+use APS\ASRecord;
+use APS\ASRedis;
+use APS\ASRoute;
+use APS\ASSetting;
+use APS\I18n;
+use APS\User;
+
 define( 'EngineRegisterDict' , [
     'tool'=>[             /** 工具层 */
 
@@ -24,23 +34,24 @@ define( 'EngineRegisterDict' , [
         'Block',          # 核心区块
         'Mixer',          # 模板\数据混合
     ],
-	'core'=>[             /** 核心层 */
+    'core'=>[             /** 核心层 */
 
         'ASObject',       # 基础通讯结构
         'ASResult',       # 操作结果
         'ASRecord',       # 日志
-		'ASDB',           # 数据库交互
+        'ASDB',           # 数据库交互
         'ASRedis',        # Redis服务器
-		'ASBase',         # 基础对象
-		'ASModel',        # 数据模型处理
+        'ASBase',         # 基础对象
+        'ASModel',        # 数据模型处理
         'ASSetting',      # 系统配置
         'ASError',        # 异常处理
         'ASRoute',        # 系统路由
         'ASAPI',          # 接口基类
+        'ASTester',       # 测试基类
 
-	],
+    ],
 
-	'service'=>[          /** 业务层 */
+    'service'=>[          /** 业务层 */
 
         'Access',          # 鉴权模块
         'AccessToken',     # token
@@ -54,9 +65,17 @@ define( 'EngineRegisterDict' , [
         'UserCollect',     # 收藏
         'UserComment',     # 评论
         'UserGroup',       # 用户组
+        'UserAddress',     # 用户地址
 
         'CommerceOrder',   # 订单
         'CommercePayment', # 支付
+        'CommerceCoupon',  # 优惠券
+        'CommerceProduct', # 商品
+        'CommerceShipping',# 物流
+        'CommerceStock',   # 库存
+        'CommerceWriteOff',# 核销
+
+        'AnalysisProduct', # 统计-商品
 
         'FinanceDeal',     # 交易
         'FinanceWithdraw', # 提现
@@ -76,7 +95,7 @@ define( 'EngineRegisterDict' , [
 
         'Area',            # 地区
 
-	],
+    ],
 
     'extension'=>[         /* 扩展功能 */
 
@@ -108,45 +127,45 @@ define( 'EngineRegisterDict' , [
 
 /**
  * 全局数据库访问 _ASDB
- * @param  \APS\ASDB|null  $specificDB  指定数据库 更新到全局共享
- * @return \APS\ASDB
+ * @param  ASDB|null  $specificDB  指定数据库 更新到全局共享
+ * @return ASDB
  */
-function _ASDB( APS\ASDB $specificDB = null  ):\APS\ASDB{
-    return \APS\ASDB::shared( $specificDB );
+function _ASDB( APS\ASDB $specificDB = null  ): ASDB{
+    return ASDB::shared( $specificDB );
 }
 
 /**
  * 全局内存数据库 _ASRedis
- * @return \APS\ASRedis
+ * @return ASRedis
  */
-function _ASRedis():\APS\ASRedis{
-    return \APS\ASRedis::shared();
+function _ASRedis(): ASRedis{
+    return ASRedis::shared();
 }
 
 /**
  * 全局日志
  * _ASRecord
- * @return \APS\ASRecord
+ * @return ASRecord
  */
-function _ASRecord():\APS\ASRecord{
-    return \APS\ASRecord::shared();
+function _ASRecord(): ASRecord{
+    return ASRecord::shared();
 }
 
 /**
  * 全局错误处理
  * _ASError
- * @return \APS\ASError
+ * @return ASError
  */
-function _ASError():\APS\ASError{
-    return \APS\ASError::shared();
+function _ASError(): ASError{
+    return ASError::shared();
 }
 
 /**
  * 全局系统设置单例 _Setting
- * @return \APS\ASSetting
+ * @return ASSetting
  */
-function _ASSetting():\APS\ASSetting{
-    return \APS\ASSetting::shared();
+function _ASSetting(): ASSetting{
+    return ASSetting::shared();
 }
 
 /**
@@ -166,19 +185,19 @@ function getConfig( string $key, string $scope = null ){
 
 /**
  * 全局用户单例 _User
- * @return \APS\User
+ * @return User
  */
-function _User():\APS\User{
-    return \APS\User::shared();
+function _User(): User{
+    return User::shared();
 }
 
 /**
  * 全局本地化单例 _I18n
  * @param  string|null  $lang
- * @return \APS\I18n
+ * @return I18n
  */
-function _I18n( string $lang = null ):\APS\I18n{
-    return \APS\I18n::shared( $lang );
+function _I18n( string $lang = null ): I18n{
+    return I18n::shared( $lang );
 }
 
 /**
@@ -196,10 +215,10 @@ function i18n( string $code, string $scope = null ):String{
  * 全局路由单例 _ASRoute
  * @param  string|null  $format
  * @param  string|null  $mode
- * @return \APS\ASRoute
+ * @return ASRoute
  */
 function _ASRoute( string $format = null, string $mode = null ){
-    return \APS\ASRoute::shared( $format, $mode );
+    return ASRoute::shared( $format, $mode );
 }
 
 
@@ -210,13 +229,13 @@ function _ASRoute( string $format = null, string $mode = null ){
  * @return int|string|null
  */
 function checkRegisterFolder( string $name ){
-	$cleanName = str_replace("/", "", $name);
-	foreach (EngineRegisterDict as $folder => $list) {
-		if( in_array($cleanName, $list) ){
-			return $folder;
-		}
-	}
-	return null;
+    $cleanName = str_replace("/", "", $name);
+    foreach (EngineRegisterDict as $folder => $list) {
+        if( in_array($cleanName, $list) ){
+            return $folder;
+        }
+    }
+    return null;
 }
 
 /**
@@ -228,8 +247,8 @@ spl_autoload_register(function ($classname) {
     $filename   = str_replace('APS\\', DIRECTORY_SEPARATOR, $classname);
     $foldername = checkRegisterFolder($filename);
     if (file_exists("{$pathname}{$foldername}{$filename}.php")) {
-	    include "{$pathname}{$foldername}{$filename}.php";
-	    return true;
-	}
+        include "{$pathname}{$foldername}{$filename}.php";
+        return true;
+    }
     return false;
 });

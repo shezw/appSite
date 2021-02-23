@@ -39,7 +39,8 @@ class File{
      * @param  String       $mode
      * @return bool
      */
-    public static function write( String $filename, $content, String $path = null, String $mode = 'a' ){
+    public static function write( String $filename, $content, String $path = null, String $mode = 'a' ): bool
+    {
 
         $fileUrl = $path.$filename;
 
@@ -56,13 +57,14 @@ class File{
     }
 
     /**
-     * 建立文件
-     *
+     * 建立文件( 默认追加 )
+     * Create a file or append to old one
      * @param string $fullPath
      * @param boolean $overWrite 该参数控制是否覆盖原文件
      * @return boolean
      */
-    public static function addFile($fullPath, $overWrite = false) {
+    public static function addFile(string $fullPath, $overWrite = false): bool
+    {
 
         if (file_exists($fullPath) && $overWrite == false) {
             return true;
@@ -77,12 +79,14 @@ class File{
 
     /**
      * 新建文件(已存在会被覆盖)
+     * create a file or rewrite the old one
      * @param  string       $filename
      * @param  mixed        $content
      * @param  string|null  $path
      * @return bool
      */
-    public static function new( String $filename, $content, string $path = null ){
+    public static function newFile(String $filename, $content, string $path = null ): bool
+    {
 
         return static::write($filename,$content,$path,'wb');
 
@@ -94,7 +98,7 @@ class File{
      * @param  array   $struct
      * @param  string  $path
      */
-    public static function makeDirs( array $struct, string $path = '' ):void{
+    public static function makeDirs( array $struct, string $path = '' ){
 
         # need rewrite
     }
@@ -106,7 +110,8 @@ class File{
      * @param    string                   $path           [description]
      * @return   array
      */
-    public static function dirList( array $struct, string $path = ''){
+    public static function dirList( array $struct, string $path = ''): array
+    {
 
         # need rewrite
     }
@@ -116,7 +121,8 @@ class File{
      * @param string $fullPath
      * @return bool
      */
-    public static function addDir($fullPath) {
+    public static function addDir(string $fullPath): bool
+    {
 
         if (!file_exists($fullPath)) {
             return mkdir($fullPath,0777,true);
@@ -132,7 +138,8 @@ class File{
      * @param boolean $overWrite 该参数控制是否覆盖原文件
      * @return boolean
      */
-    public static function moveDir($oldDir, $fullDirectory, $overWrite = false) {
+    public static function moveDir(string $oldDir, string $fullDirectory, $overWrite = false): bool
+    {
         # need rewrite with rename
     }
 
@@ -144,7 +151,8 @@ class File{
      * @param boolean $overWrite 该参数控制是否覆盖原文件
      * @return boolean
      */
-    public static function moveFile($from, $toFullPath, $overWrite = false) {
+    public static function moveFile(string $from, string $toFullPath, $overWrite = false): bool
+    {
         if (!file_exists($from)) {
             return false;
         }
@@ -164,7 +172,8 @@ class File{
      * @param string $fullDirectory
      * @return boolean
      */
-    public static function removeDir( string $fullDirectory ) {
+    public static function removeDir( string $fullDirectory ): bool
+    {
 
         return rmdir($fullDirectory);
     }
@@ -175,7 +184,8 @@ class File{
      * @param string $fullPath
      * @return boolean
      */
-    public static function removeFile( string $fullPath ) {
+    public static function removeFile( string $fullPath ): bool
+    {
         if (file_exists($fullPath)) {
             return unlink($fullPath);
         } else {
@@ -190,7 +200,7 @@ class File{
      * @param boolean $overWrite 该参数控制是否覆盖原文件
      * @return void
      */
-    public static function copyDir($oldDir, $fullDirectory, $overWrite = false) {
+    public static function copyDir(string $oldDir, string $fullDirectory, $overWrite = false) {
         # need rewrite with rename
     }
 
@@ -202,7 +212,8 @@ class File{
      * @param boolean $overWrite 该参数控制是否覆盖原文件
      * @return boolean
      */
-    public static function copyFile($from, $toFullPath, $overWrite = false) {
+    public static function copyFile(string $from, string $toFullPath, $overWrite = false): bool
+    {
         if (!file_exists($from)) {
             return false;
         }

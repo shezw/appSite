@@ -1,0 +1,217 @@
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+
+        <div class="section-body"><div class="card"><div class="card-body"><div class="row">
+
+            <div class="col-auto">
+
+                <a class="btn btn-primary"href="./add[if[::constants.Params.type::?type={{constants.Params.type}}]if]">
+                    <i class="fa fa-plus-circle"></i> {i18n{ manager.categoryAdd }i18n}
+                </a>
+            </div>
+
+        </div></div></div></div>
+
+
+
+        <div class="section-body"><div class="card"><div class="card-body"><div class="row">
+
+
+            <div class="col">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link [if[::constants.Params.status=enabled::active]if]" href="#" onclick="Aps.query.addFilter('status','enabled')">
+                            {i18n{ status.enabled }i18n}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link [if[::constants.Params.status=trash::active]if]" href="#" onclick="Aps.query.addFilter('status','trash')">
+                            {i18n{ status.trash }i18n}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link [not[::constants.Params.status::active]not]" href="#" onclick="Aps.query.removeFilter('status')">
+                            {i18n{ status.all }i18n}
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="col-auto">
+                <div class="dropdown my-1">
+
+                    <button class="btn btn-sm dropdown-toggle [not[::constants.Params.type::btn-outline-primary]not] [if[::constants.Params.type::btn-primary]if]" type="button" id="dropdownMenuButtonType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {i18n{ manager.type }i18n} [if[::constants.Params.type::{{constants.Params.type}}]if]
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonType" style="">
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.removeFilter('type');" >{i18n{ status.default }i18n}</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('type','product');" >{i18n{ manager.product }i18n}</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('type','article');" >{i18n{ manager.article }i18n}</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('type','media');" >{i18n{ manager.media }i18n}</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <div class="dropdown my-1">
+
+                    <button class="btn btn-sm dropdown-toggle [not[::constants.Params.order::btn-outline-primary]not] [if[::constants.Params.order::btn-primary]if]" type="button" id="dropdownMenuButtonViewtimes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {i18n{ manager.sort }i18n} [if[::constants.Params.order::{{constants.Params.order}}]if]
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonViewtimes" style="">
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.removeFilter('order');" >{i18n{ status.default }i18n}</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('order','createtime DESC');" >{i18n{ manager.createtime }i18n} <i class="fas fa-arrow-down"></i></a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('order','createtime ASC');" >{i18n{ manager.createtime }i18n} <i class="fas fa-arrow-up"></i></a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('order','sort DESC');" >{i18n{ manager.sort }i18n} <i class="fas fa-arrow-down"></i></a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('order','sort ASC');" >{i18n{ manager.sort }i18n} <i class="fas fa-arrow-up"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <div class="dropdown my-1">
+                    <button class="btn btn-sm btn-white dropdown-toggle [not[::constants.Params.size::btn-outline-primary]not] [if[::constants.Params.size::btn-primary]if]" type="button" id="dropdownMenuButtonSize" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fe fe-list mr-1"></span> {i18n{ manager.sizePerPage }i18n} [not[::constants.Params.size::10]not]{{constants.Params.size}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonSize" style="">
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.removeFilter('size');">{i18n{default}i18n}</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('size','8');">8</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('size','12');">12</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('size','24');">24</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('size','48');">48</a>
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('size','120');">120</a>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-12">
+                <div class="tab-content">
+
+                    <div class="tab-pane table-responsive active mb-0">
+                        <table class="table table-sm card-table table-striped" >
+                            <thead>
+                            <tr>
+                                <th>UID</th>
+                                <th>{i18n{ manager.type }i18n}</th>
+                                <th>{i18n{ manager.cover }i18n}</th>
+                                <th>{i18n{ manager.title }i18n}</th>
+                                <th>{i18n{ manager.description }i18n}</th>
+                                <th>{i18n{ manager.createtime }i18n}</th>
+                                <th>{i18n{ manager.isFeatured }i18n}</th>
+                                <th>{i18n{ manager.sort }i18n}</th>
+                                <th>{i18n{ manager.status }i18n}</th>
+                                <th>{i18n{ manager.operation }i18n}</th>
+                                <th>{i18n{ manager.more }i18n}</th>
+                            </tr>
+                            </thead>
+                            <tbody class="list">
+                            [not[::categoryList::
+                            <tr>
+                                <td colspan="10">
+                                    <div class="row justify-content-center">
+                                        <div class="col-12 col-md-8 col-xl-6 py-5">
+
+                                            <h2>
+                                                {i18n{SYS_NON}i18n}
+                                            </h2>
+
+                                            <button class="btn btn-primary lift" onclick="Aps.router.back(-1)">
+                                                {i18n{ back }i18n}
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            ]not]
+
+                            ||loop??categoryList??
+                            <tr class="col-6 col-md-4 col-lg-12">
+                                <td class="p-2">{{uid}}</td>
+                                <td class="p-2">{{type}}</td>
+                                <td class="p-2">
+                                    <div class="avatar avatar-lg avatar-4by3">
+                                        <img src="{{cover}}" alt="..." class="avatar-img rounded">
+                                    </div>
+                                </td>
+                                <td class="p-2">{{title}}</td>
+                                <td class="p-2 goal-rows">{{description}}</td>
+                                <td class="p-2">{{createtime_}}</td>
+                                <td class="p-2 [if[::featured=0::text-muted]if] [if[::featured=1::text-primary]if]">{i18n{ isFeatured.{{featured}} }i18n}</td>
+                                <td class="p-2 ">{{sort}}</td>
+                                <td class="p-2 [if[::status=trash::text-muted]if]">{{status_}}</td>
+                                <td class="p-2">
+                                    <a href="edit/{{uid}}" class="mr-2"><span class="far fa-edit a-text-l"></span></a>
+                                    [not[::featured::<a href="" onclick="MANAGER.feature('{{uid}}','Category')"><span class="fa fa-fire-alt a-text-l text-primary mr-2"></span></a>]not]
+                                    [if[::featured::<a href="" onclick="MANAGER.cancelFeature('{{uid}}','Category')"><span class="fa fa-fire-alt a-text-l text-light mr-2"></span></a>]if]
+                                    <a href="" onclick="MANAGER.sortUp('{{uid}}','Category')"><span class="fa fa-arrow-up a-text-l mr-2"></span></a>
+                                    <a href="" onclick="MANAGER.sortDown('{{uid}}','Category')"><span class="fa fa-arrow-down a-text-l mr-2"></span></a>
+                                </td>
+                                <td class="p-2 text-right">
+                                    <div class="dropdown">
+                                        <a href="#" class="dropdown-ellipses" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-v a-text-l"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+
+                                            [if[::status=enabled::
+                                            <a class="dropdown-item a-color-6" onclick="MANAGER.trash('{{uid}}','Category');"><span class="far fa-trash-alt mr-2 text-warning"></span>{i18n{ manager.trash }i18n}</a>
+                                            <a class="dropdown-item a-color-6" onclick="MANAGER.preRemove('{{uid}}','Category');"><span class="fas fa-times mr-2 text-danger"></span>{i18n{ manager.delete }i18n}</a>
+                                            ]if]
+
+                                            [if[::status^trash,offline::
+                                            <a class="dropdown-item a-color-6" onclick="MANAGER.recover('{{uid}}','Category');"><span class="fas fa-check-circle mr-2 text-success"></span>{i18n{ manager.accept }i18n}</a>
+                                            <a class="dropdown-item a-color-6" onclick="MANAGER.remove('{{uid}}','Category');"><span class="fas fa-times mr-2 text-danger"></span>{i18n{ manager.delete }i18n}</a>
+                                            ]if]
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            loop||
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+
+                        [if[::pager.first::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','1')">{i18n{ firstPage }i18n}</a></li>
+                        ]if]
+
+                        [if[::pager.prev::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.prev}}')">{i18n{ prevPage }i18n}</a></li>
+                        ]if]
+
+                        ||loop??pager.list??
+                        [if[::current:: <li class="page-item active"><a class="page-link" href="#" >{{page}}</a></li> ]if]
+                        [not[::current::<li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{page}}')">{{page}}</a></li> ]not]
+                        loop||
+
+                        [if[::pager.next::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.next}}')">{i18n{ nextPage }i18n}</a></li>
+                        ]if]
+
+                        [if[::pager.last::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.last}}')">{i18n{ lastPage }i18n} ({{pager.last}})</a></li>
+                        ]if]
+
+                    </ul>
+                </nav>
+
+
+            </div>
+
+
+        </div></div></div></div>
+
+    </section>
+</div>

@@ -55,7 +55,7 @@ abstract class ASBase extends ASObject{
     /**
      * 数据库链接
      * SQL Connect
-     * @var \APS\ASDB
+     * @var ASDB
      */
     protected $DB;
 

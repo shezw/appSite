@@ -61,9 +61,10 @@ class ASSetting extends ASModel{
      * read
      * @param  string       $keyid
      * @param  string|null  $scope
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function read( string $keyid , string $scope = null ){
+    public function read( string $keyid , string $scope = null ): ASResult
+    {
 
         if( !$this->has(['keyid'=>$keyid,'scope'=>$scope,'status'=>'enabled']) ){
             return $this->error(10086,i18n('SYS_NON'),'Setting->read');
@@ -81,9 +82,10 @@ class ASSetting extends ASModel{
      * getSettingid
      * @param  string       $keyid
      * @param  string|null  $scope
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getSettingid( string $keyid, string $scope = null ){
+    public function getSettingid( string $keyid, string $scope = null ): ASResult
+    {
 
         $getFirst = $this->list(['keyid'=>$keyid,'scope'=>$scope],1,1,'scope DESC, createtime DESC');
 
@@ -95,7 +97,8 @@ class ASSetting extends ASModel{
     }
 
     // 设定
-    public function set( string $keyid, $value, string $description = null, string $scope = null ){
+    public function set( string $keyid, $value, string $description = null, string $scope = null ): ASResult
+    {
 
         $data = ['keyid'=>$keyid,'content'=>$value,'scope'=>$scope,'description'=>$description];
 
@@ -113,9 +116,10 @@ class ASSetting extends ASModel{
      * delete
      * @param  string       $keyid
      * @param  string|null  $scope
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function delete( string $keyid, string $scope = null ){
+    public function delete( string $keyid, string $scope = null ): ASResult
+    {
 
         $getSettingId = $this->getSettingid($keyid,$scope);
 
@@ -134,7 +138,8 @@ class ASSetting extends ASModel{
      * @param  string|null  $scope
      * @return bool|mixed
      */
-    public function switchStatus( string $keyid, string $scope = null ){
+    public function switchStatus( string $keyid, string $scope = null ): bool
+    {
 
         if($this->_isCacheEnabled()){
 

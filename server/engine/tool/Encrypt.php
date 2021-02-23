@@ -43,28 +43,32 @@ class Encrypt{
 
     }
 
-	public static function shortId( $n=16 ){ //不大于32位
+	public static function shortId( $n=16 ): string
+    { //不大于16位
 
 		$n = $n>=16 ? 16 : $n;
 		return static::radomCode($n);
 
 	}
 
-	public static function minId( $n=64 ){ //不大于256位
+	public static function minId( $n=64 ): string
+    { //不大于64位
 
 		$n = $n>=64 ? 64 : $n;
 		return static::radomCode($n);
 
 	}
 
-	public static function longId( $n=128 ){ // 不大于512位
+	public static function longId( $n=128 ): string
+    { // 不大于128位
 
 		$n = $n>=128 ? 128 : $n;
 		return static::radomCode($n);
 
 	}
 
-	public static function radomNum( $n=511 ){ // 不大于256位
+	public static function radomNum( $n=511 ): string
+    { // 不大于512位
 
 		$n = $n>=511 ? 511 : $n;
 		$code='';
@@ -74,13 +78,15 @@ class Encrypt{
 		return $code;
 	}
 
-	public static function timeId( $alis=NULL ){
+	public static function timeId( $alis=NULL ): string
+    {
 
 		return (isset($alis)?$alis:'').date("YmdHis00").static::radomNum(6);
 
 	}
 
-	public static function radomCode( $n=512 ){ // 不大于512位
+	public static function radomCode( $n=512 ): string
+    { // 不大于512位
 
         // 检测必填项
 		$itoa64  =  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -101,7 +107,8 @@ class Encrypt{
 	 * @param    string                   $signal         连接符
 	 * @return   string                                   hashID
 	 */
-	public static function hashID( $params , $signal = ":" ){
+	public static function hashID( $params , $signal = ":" ): string
+    {
 
 		$hashID = "";
 
@@ -154,7 +161,8 @@ class Encrypt{
 	}
 
 
-	public static function LetterToNumber( $letter ){
+	public static function LetterToNumber( $letter ): string
+    {
 
 		$lt64 = [
 			'0'=>'00','1'=>'01','2'=>'02','3'=>'03','4'=>'04','5'=>'05','6'=>'06','7'=>'07','8'=>'08','9'=>'09',
@@ -176,7 +184,8 @@ class Encrypt{
 	}
 
 	// 马赛克加密方法奇偶位
-	public static function intervalMosaic( string $input , bool $odd = true ){
+	public static function intervalMosaic( string $input , bool $odd = true ): string
+    {
 		$output = '';
 		for ( $i = 0; $i < mb_strlen($input); $i+=2) {
 			$output .= ($odd?'*':'') . $input[$i] . (!$odd?'*':'');
@@ -185,7 +194,8 @@ class Encrypt{
 	}
 	
 	// 马赛克加密方法左右位
-	public static function mirrorMosaic( string $input , bool $left = true ){
+	public static function mirrorMosaic( string $input , bool $left = true ): string
+    {
 		$output = '';
 		$x = 0;
 		for ( $i = 0; $i < mb_strlen($input)/2; $i++){
@@ -199,7 +209,8 @@ class Encrypt{
 	}
 	
 	// 马赛克加密方法中间两边
-	public static function middleMosaic( string $input , bool $middle = true ){
+	public static function middleMosaic( string $input , bool $middle = true ): string
+    {
 		$output = '';
 		$x = 0;
 		for ($i = 0; $i < mb_strlen($input)/4; $i++){
@@ -216,7 +227,8 @@ class Encrypt{
 		return $output;
 	}
 
-	public static function isNumber( $input ){
+	public static function isNumber( $input ): bool
+    {
 
 		return in_array(gettype($input), ['int','integer','float','double']);
 	}
@@ -254,7 +266,7 @@ class Encrypt{
         	return $ASJson;
         }
 
-        if( is_array($decode) && !isset($decode['_T'])){
+        if(!isset($decode['_T'])){
 
             foreach ($decode as $key => $value) {
                 $decode[$key] = static::ASJsonDecode($value);
@@ -318,7 +330,8 @@ class Encrypt{
      * @param    int                   $size           比特大小
      * @return   string
      */
-    public static function convertByteSize( int $size ){
+    public static function convertByteSize( int $size ): string
+    {
 
         $size = (int)$size;
 
@@ -395,7 +408,8 @@ class Encrypt{
    
     }
 
-	public static function sign( $name=false ){
+	public static function sign( $name=false ): string
+    {
 
 		$t    = time();
 		$salt = uniqid(rand(), TRUE);
@@ -432,8 +446,8 @@ class Encrypt{
 		return $output;
 	}
 
-	public function encode64($input, $count)
-	{
+	public function encode64($input, $count): string
+    {
 		$output = '';
 		$i = 0;
 		do {
@@ -455,8 +469,8 @@ class Encrypt{
 		return $output;
 	}
 
-	public function gensaltPrivate($input)
-	{
+	public function gensaltPrivate($input): string
+    {
 		$output = '$P$';
 		$output .= $this->itoa64[min($this->iterationCount +
 			((PHP_VERSION >= '5') ? 5 : 3), 30)];
@@ -465,8 +479,8 @@ class Encrypt{
 		return $output;
 	}
 
-	public function cryptPrivate($password, $setting)
-	{
+	public function cryptPrivate($password, $setting): string
+    {
 		$output = '*0';
 		if (substr($setting, 0, 2) == $output)
 			$output = '*1';
@@ -510,8 +524,8 @@ class Encrypt{
 		return $output;
 	}
 
-	public function gensaltExtended($input)
-	{
+	public function gensaltExtended($input): string
+    {
 		$count_log2 = min($this->iterationCount + 8, 24);
 		# This should be odd to not reveal weak DES keys, and the
 		# maximum valid value is (2**24 - 1) which is odd anyway.
@@ -528,8 +542,8 @@ class Encrypt{
 		return $output;
 	}
 
-	public function gensaltBlowfish($input)
-	{
+	public function gensaltBlowfish($input): string
+    {
 		# This one needs to use a different order of characters and a
 		# different encoding scheme from the one in encode64() above.
 		# We care because the last character in our encoded string will
@@ -569,8 +583,8 @@ class Encrypt{
 		return $output;
 	}
 
-	public function hashPassword($password)
-	{
+	public function hashPassword($password): string
+    {
 		if ( strlen( $password ) > 4096 ) {
 			return '*';
 		}
@@ -608,8 +622,8 @@ class Encrypt{
 		return '*';
 	}
 
-	public function checkPassword($password, $storedHash)
-	{
+	public function checkPassword($password, $storedHash): bool
+    {
 
 		if ( strlen( $password ) > 4096 ) {
 			return false;

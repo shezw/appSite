@@ -9,7 +9,8 @@ namespace APS;
  */
 class Area extends ASModel{
 
-    public function listChild( array $params , string $uid , int $page = 1, int $size = 15, string $sort = null ){
+    public function listChild( array $params , string $uid , int $page = 1, int $size = 15, string $sort = null ): ASResult
+    {
 
         $params['parentid'] = $uid;
 
@@ -17,14 +18,16 @@ class Area extends ASModel{
     }
 
     // 查询对应的下级
-    public function countChild( array $params , string $uid ){
+    public function countChild( array $params , string $uid ): ASResult
+    {
 
         $params['parentid'] = $uid;
 
         return $this->count($params);
     }
 
-    public function getParents( string $uid, array $tmp = null ){
+    public function getParents( string $uid, array $tmp = null ): array
+    {
 
         $parents = $tmp ?? [];
 

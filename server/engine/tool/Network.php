@@ -57,7 +57,8 @@ class Network{
 		return $key;
 	}
 
-	public static function getAllHeaderParams(){
+	public static function getAllHeaderParams(): array
+    {
 
 		$headerParams = [];
 

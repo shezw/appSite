@@ -111,11 +111,11 @@ return [
 
         ['uid'=>'O3iE5ug1','keyid'=>'SENDLOGINCODE_USERNOTEXIST' , 'description'=>'用户不存在是是否可以发送登录验证码<br>Can send verify code ( login scope ) if user not exist','content'=> 0 , ],
 
-        /* 支付 */
+        /* Payment expire duration 支付 */
         ['uid'=>'RAkVY6xg','keyid'=>'PAYMENT_VALIDTIME' ,    'description'=>'支付有效时间','content'=> 300 , ],
 
 
-        /* 订单相关 */
+        /* Order Config 订单相关 */
         ['uid'=>'ezzaER09','keyid'=>'ORDER_VALIDTIME' ,      'description'=>'订单有效时长<br>Valid duration of an order','content'=> 3*24*3600 , ],
 
         /* RECORD 后台统计设置  */
@@ -125,25 +125,24 @@ return [
 
 
 
-        /** 微信公众平台 Wechat Mp **/
+        /** Wechat Mp 微信公众平台 **/
         [ 'uid'=>'KDN2RQ2X','keyid'=>'WXMP_ID',              'scope'=>'WECHAT','description'=>'公众号ID' ,   'content'=> NULL, ],
         [ 'uid'=>'BdyE2mIY','keyid'=>'WXMP_SECRET',          'scope'=>'WECHAT','description'=>'公众号Secret' ,   'content'=> NULL, ],
         [ 'uid'=>'b5DNDQht','keyid'=>'WXMP_TOKEN',           'scope'=>'WECHAT','description'=>'公众号Token' ,   'content'=> NULL, ],
         [ 'uid'=>'U0iLIANT','keyid'=>'WXMP_EncodingAESKey',  'scope'=>'WECHAT','description'=>'公众号AESKey' ,   'content'=> NULL, ],
 
-        /** 微信开放平台 wechat Open **/
+        /** Wechat Open 微信开放平台 **/
         [ 'uid'=>'FDhReq4X','keyid'=>'WXOPEN_ID',            'scope'=>'WECHAT','description'=>'微信开放平台-ID', 'content'=>NULL ,],
         [ 'uid'=>'ywoVmb27','keyid'=>'WXOPEN_SECRET',        'scope'=>'WECHAT','description'=>'微信开放平台-SECRET', 'content'=>NULL ,],
 
-        /** 微信支付 Wechat Payment **/
+        /** Wechat Payment 微信支付 **/
         [ 'uid'=>'VlwhDqTQ','keyid'=>'WXPAY_ID',             'scope'=>'WECHAT','description'=>'微信支付-商户ID', 'content'=>NULL ,],
         [ 'uid'=>'lSZDHspr','keyid'=>'WXPAY_KEY',            'scope'=>'WECHAT','description'=>'微信支付-支付密钥', 'content'=>NULL ,],
         [ 'uid'=>'NCHYoQID','keyid'=>'WXPAY_SSLCERT_PATH',   'scope'=>'WECHAT','description'=>'微信支付-支付证书文件', 'content'=>NULL ,],
         [ 'uid'=>'elJ7bbM3','keyid'=>'WXPAY_SSLKEY_PATH',    'scope'=>'WECHAT','description'=>'微信支付-支付密钥文件', 'content'=>NULL ,],
 
 
-
-        /* 阿里云存储 ALIYUN OSS */
+        /* ALIYUN OSS 阿里云存储 */
 
         [ 'uid'=>'HV5ZhhsI','keyid'=>'OSS_KEYID',         'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'阿里云存储KEYID' ],
         [ 'uid'=>'M0rlXnIM','keyid'=>'OSS_KEYSECRET',     'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'阿里云存储SECRET' ],
@@ -151,7 +150,7 @@ return [
         [ 'uid'=>'mQJRz325','keyid'=>'OSS_BUCKET',        'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'阿里云存储BUCKET' ],
         [ 'uid'=>'mQJZD225','keyid'=>'CUSTOM_OSS_DOMAIN',        'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'自定义绑定阿里云域名' ],
 
-        /* 阿里云短信 ALIYUN SMS */
+        /* ALIYUN SMS 阿里云短信 */
 
         [ 'uid'=>'kJVKL3j2','keyid'=>'SMS_KEYID',         'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'阿里云短信KEYID' ],
         [ 'uid'=>'nxActDTD','keyid'=>'SMS_KEYSECRET',     'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'云短信SECRET' ],
@@ -160,7 +159,7 @@ return [
         [ 'uid'=>'ORKVnb2S','keyid'=>'SMS_MODULE_DM',     'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'推广短信模板(更多模板设置进入短信模块)' ],
         [ 'uid'=>'CQb7FoOS','keyid'=>'SMS_SIGN_DM',       'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'推广短信签名' ],
 
-        /* 阿里云邮件 ALIYUN SMTP */
+        /* ALIYUN SMTP 阿里云邮件 */
 
         [ 'uid'=>'WnXMO5TU','keyid'=>'SMTP_SERVER',          'scope'=>'ALIYUN', 'content'=> NULL , 'description'=>'SMTP服务器' ],
         [ 'uid'=>'FVYZfGB8','keyid'=>'SMTP_PORT',            'scope'=>'ALIYUN', 'content'=> 80 , 'description'=>'端口 阿里云 建议使用80 本机可以使用25' ],
@@ -172,7 +171,7 @@ return [
 
 
 
-        /* 百度AI baidu-ai */
+        /* Baidu Developer 百度AI baidu-ai */
 
         [ 'uid'=>'CtN8obRZ','keyid'=>'ORC_BAIDU_ID', 'scope'=>'BAIDUYUN', 'content'=> NULL, 'description'=>'百度云-AI识图ID' ],
         [ 'uid'=>'YXzISeI2','keyid'=>'ORC_BAIDU_AK', 'scope'=>'BAIDUYUN', 'content'=> NULL, 'description'=>'百度云-AI识图KEY' ],
@@ -184,19 +183,19 @@ return [
         [ 'uid'=>'3sD2AZZs','keyid'=>'regist','scope'=>'POINTBONUS_RULES','content'=>['title'=>'系统奖励','description'=>'注册平台用户成功','value'=>100,'limit'=>1],'description'=>'注册平台用户成功奖励' ],
 
 
-        /* 苹果内购设置 */
+        /* AppStore In-app purchase 苹果内购设置 */
         [ 'uid'=>'bWihGFX0','keyid'=>'0000000000', 'scope'=>'APPLE_IAP_ITEMS', 'description'=>'绑定账号的永久权限的专业版','content'=>['ituneLevel'=>3,'price'=>18,'title'=>'专业版','description'=>'绑定账号的永久权限的专业版'],],
 
 
-        /* 短信验证所使用的短信模板编号 */
+        /* SMS template code 短信验证所使用的短信模板编号 */
 
-        [ 'uid'=>'LhSM5RK5','keyid'=>'verify',        'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 code',	],
-        [ 'uid'=>'cF6smfBU','keyid'=>'login',         'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 登录 code',	],
-        [ 'uid'=>'UCHxMmYy','keyid'=>'regist',        'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 注册 code',	],
-        [ 'uid'=>'tKUPuXhK','keyid'=>'loginError',    'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 登录异常 code',	],
-        [ 'uid'=>'hMJZ0gIe','keyid'=>'resetPassword', 'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 修改密码 code',	],
-        [ 'uid'=>'FVIuilFf','keyid'=>'updateInfo',    'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 修改信息 code',	],
-        [ 'uid'=>'Ztx1kzqz','keyid'=>'findPassword',  'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 查找密码 code',	],
+        [ 'uid'=>'LhSM5RK5','keyid'=>'verify',        'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 code',   ],
+        [ 'uid'=>'cF6smfBU','keyid'=>'login',         'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 登录 code',    ],
+        [ 'uid'=>'UCHxMmYy','keyid'=>'regist',        'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 注册 code',    ],
+        [ 'uid'=>'tKUPuXhK','keyid'=>'loginError',    'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 登录异常 code',  ],
+        [ 'uid'=>'hMJZ0gIe','keyid'=>'resetPassword', 'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 修改密码 code',  ],
+        [ 'uid'=>'FVIuilFf','keyid'=>'updateInfo',    'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 修改信息 code',  ],
+        [ 'uid'=>'Ztx1kzqz','keyid'=>'findPassword',  'scope'=>'SMS_MODULE_CODE', 'content'=>NULL, 'description'=>'验证码 查找密码 code',  ],
 
 
     ],

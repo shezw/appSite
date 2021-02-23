@@ -33,7 +33,7 @@ class ASError{
 		return $GLOBALS['ASError'];
 	}
 	
-	public function add( ASResult $operation ):void{
+	public function add( ASResult $operation ){
 		$this->stack[] = $operation;
 	}
 

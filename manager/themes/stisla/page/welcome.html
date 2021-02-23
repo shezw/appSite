@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="row align-items-center justify-content-center">
+        <div class="col-12 col-md-5 col-lg-6 col-xl-4 my-5">
+
+
+            <div class="card card-fill">
+
+                <div class="card-body text-center">
+
+                    <a href="profile" class="avatar avatar-xl mb-3">
+                        <img src="{{userInfo.avatar}}" class="avatar-img rounded-circle border border-4 border-card" alt="Avatar">
+                    </a>
+
+                    <h2 class="card-title">
+                        {{userInfo.nickname}}
+                    </h2>
+
+                    <p class="card-text">
+                    <span class="badge badge-soft-secondary">
+                        {{userInfo.group.groupname}}
+                    </span>
+                    </p>
+
+                    <p class="small text-muted mb-3">
+                        {i18n{ manager.welcome }i18n}
+                    </p>
+
+                </div>
+
+                <div class="card-footer card-footer-boxed">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-auto">
+
+                            <a href="dashboard" class="btn btn-primary">
+                                {i18n{ manager.toDashboard }i18n}
+                            </a>
+
+                            <a href="profile" class="btn btn-secondary">
+                                {i18n{ manager.toProfile }i18n}
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

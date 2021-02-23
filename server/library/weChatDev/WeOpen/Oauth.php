@@ -31,7 +31,7 @@ class Oauth extends BasicWeChat
      * @param string $scope 授权类类型(可选值snsapi_base|snsapi_userinfo)
      * @return string
      */
-    public function getOauthRedirect($redirect_url, $state = '', $scope = 'snsapi_login')
+    public function getOauthRedirect(string $redirect_url, $state = '', $scope = 'snsapi_login'): string
     {
         $appid = $this->config->get('openkey');
         $redirect_uri = urlencode($redirect_url);
@@ -58,7 +58,7 @@ class Oauth extends BasicWeChat
      * @return bool|array
      * @throws Exceptions\LocalCacheException
      */
-    public function getOauthRefreshToken($refresh_token)
+    public function getOauthRefreshToken(string $refresh_token)
     {
         $appid = $this->config->get('appid');
         $url = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid={$appid}&grant_type=refresh_token&refresh_token={$refresh_token}";
@@ -72,7 +72,7 @@ class Oauth extends BasicWeChat
      * @return array
      * @throws Exceptions\LocalCacheException
      */
-    public function checkOauthAccessToken($access_token, $openid)
+    public function checkOauthAccessToken(string $access_token, string $openid): array
     {
         $url = "https://api.weixin.qq.com/sns/auth?access_token={$access_token}&openid={$openid}";
         return $this->httpGetForJson($url);
@@ -86,7 +86,7 @@ class Oauth extends BasicWeChat
      * @return array
      * @throws Exceptions\LocalCacheException
      */
-    public function getUserInfo($access_token, $openid, $lang = 'zh_CN')
+    public function getUserInfo(string $access_token, string $openid, $lang = 'zh_CN'): array
     {
         $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$access_token}&openid={$openid}&lang={$lang}";
         return $this->httpGetForJson($url);

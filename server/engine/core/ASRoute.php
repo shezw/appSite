@@ -49,8 +49,8 @@ class ASRoute extends ASObject{
 
     /**
      * ASRoute constructor.
-     * @param  string  $pathFormat  路由格式
-     * @param  string  $mode 输出模式 ASRouteExportMode
+     * @param string|null $pathFormat 路由格式
+     * @param string|null $mode 输出模式 ASRouteExportMode
      */
     function __construct( string $pathFormat = null, string $mode = null ){
 
@@ -69,7 +69,7 @@ class ASRoute extends ASObject{
      * shared
      * @param  string|null  $format
      * @param  string|null  $mode
-     * @return \APS\ASRoute
+     * @return ASRoute
      */
     public static function shared( string $format = null, string $mode = null ):ASRoute{
 
@@ -84,7 +84,8 @@ class ASRoute extends ASObject{
         $this->mode = $mode;
     }
 
-    public function urlToRoute():void{
+    public function urlToRoute()
+    {
 
         $path = $_GET['path'];
         $webRouteTypes = explode('/',$this->pathFormat);
@@ -128,7 +129,14 @@ class ASRoute extends ASObject{
         }
     }
 
-    public function buildQuery( array $params = null ){
+    /**
+     * 路由生成
+     * buildRouteQuery
+     * @param array|null $params
+     * @return string
+     */
+    public function buildQuery( array $params = null ): string
+    {
 
         $query = "?q";
         if( !isset($params) || empty($params)){ return $query.'=none'; }
@@ -148,7 +156,7 @@ class ASRoute extends ASObject{
      */
     public static function loadAPIFile( string $namespace, string $class ){
 
-        $fileName = \APS\Mixer::mix( ['namespace'=>$namespace,'class'=>$class], '{{namespace}}/{{class}}.php' );
+        $fileName = Mixer::mix( ['namespace'=>$namespace,'class'=>$class], '{{namespace}}/{{class}}.php' );
         $filePath = API_DIR.'default/'.$fileName;
         $customFilePath = API_DIR.'custom/'.$fileName;
 
@@ -164,12 +172,12 @@ class ASRoute extends ASObject{
 
     /**
      * 执行接口程序
-     * run
-     * @param  \APS\User|null  $user
+     * run API
+     * @param User|null  $user
      */
     public function runAPI( User $user = null ){
 
-        $fileName = \APS\Mixer::mix( $this->route, '/{{namespace}}/{{class}}.php' );
+        $fileName = Mixer::mix( $this->route, '/{{namespace}}/{{class}}.php' );
         $filePath = API_DIR.'/default'.$fileName;
         $customFilePath = API_DIR.'/custom'.$fileName;
 
@@ -189,6 +197,30 @@ class ASRoute extends ASObject{
 
         $this->export();
     }
+
+    public function runTester( User $user ){
+
+        $fileName = Mixer::mix( $this->route, '/{{namespace}}/{{class}}.php' );
+        $filePath = TESTER_DIR.'/default'.$fileName;
+        $customFilePath = TESTER_DIR.'/custom'.$fileName;
+
+        if ( file_exists($customFilePath) ){
+            include_once $customFilePath;
+        }elseif ( file_exists($filePath) ){
+            include_once $filePath;
+        }else{
+            $this->exit( $this->error(410,'File not found') );
+        }
+
+        $testClass = '\\'.$this->route['namespace'].'\\'.$this->route['class'];
+        $testInstance = new $testClass( $this->params, $user ) ?? new \sample\test();
+
+        $this->mode   = $testInstance->mode ?? $this->mode;
+        $this->result = $testInstance->runTest();
+
+        $this->export();
+    }
+
 
     /**
      * 输出结果
@@ -236,8 +268,8 @@ class ASRoute extends ASObject{
 
     /**
      * 强制退出
-     * exit
-     * @param  \APS\ASResult|null  $result
+     * exit forced
+     * @param ASResult|null  $result
      */
     public function exit( ASResult $result = null ){
 
@@ -253,7 +285,8 @@ class ASRoute extends ASObject{
      * @param  bool  $returnString
      * @return string | void
      */
-    public function GoodSay( bool $returnString = true ){
+    public function GoodSay( bool $returnString = true ): string
+    {
 
         $all = [
 

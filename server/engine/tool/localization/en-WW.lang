@@ -550,7 +550,7 @@ return [
         'trash'=>'Trash',
         'offline'=>'Offline',
         'disabled'=>'Disabled',
-        'block'=>'Blocked',
+        'blocked'=>'Blocked',
 
         'default'=>'Default'
     ],
@@ -629,7 +629,7 @@ return [
 
         /* install */
 
-        'Install' => 'Install',
+        'Install' => 'Installation',
         'EnvCheck'=> 'Environment Check',
         'linkDB'  => 'Link to MySQL',
         'setConfig'=>'Set Config',
@@ -702,9 +702,23 @@ return [
         'processBack' =>'Back to previous',
 
         'installCompleted'=>'Brawo',
-        'installDoneComment'=>'Installation complete. Let\'s start your full-stack application development journey.<br>',
+        'installDoneComment'=>'Installation completed. Let\'s start your full-stack application development journey.<br>',
         'toDashboard'=>'Dashboard',
         'viewDocument'=>'Documentation',
+
+        'createDatabase'=>'Construct Database/Tables',
+        'initData'=>'Init Database Data',
+        'setCustomConfig'=>'Set custom configs',
+        'createConfig'=>'Create config file',
+        'fileCreated'=>'File created。',
+        'create'=>'Create',
+        'configFailedDescription'=>'Save file failed, please add the config file to the server folder.',
+
+        'contribute'=>'Contribute Code',
+        'contributeDescription'=>'Fork this project or star on it!',
+        'conversation'=>'Take a conversation',
+        'conversationDescription'=>'Come and talk on my blog, coding is prefer.',
+        'authorPage'=>'Author Page',
 
         # Sign In
         'account' => 'Account',
@@ -762,8 +776,56 @@ return [
         'sidebar_managerAdmin'=>'Admin',
         'sidebar_managerEditor'=>'Editor',
 
+        # Contents
+
+        'categoryAdd'=>'Add Category',
+        'categoryEdit'=>'Edit Category',
+        'categoryTitle'=>'Category Name',
+
+        'required'=>'Required',
+        'optional'=>'Optional',
+        'coverFormat'=>'JPG,PNG',
+        'coverDescription'=>'less than 2Mb',
+        'chooseFile'=>'Choose File',
+        'chooseFileTip'=>'Please choose a file and upload',
+        'clear'=>'Clear current',
+        'submit'=>'Submit',
+        'update'=>'Update',
+        'upload'=>'Upload',
+        'gallery'=>'Gallery',
+        'galleryDescription'=>'Please upload files with JPG,PNG',
+
+        'chooseStartTime'=>'Choose start time',
+        'chooseEndTime'=>'Choose end time',
+
+
+
+        # Users
+        'ban'=>'Ban',
+        'blocked'=>'Blocked',
+        'recover'=>'Recover',
+
+        'userDetail'=>'User Detail',
+        'basicInformation'=>'Basic Information',
+        'gender'=>'Gender',
+        'birth'=>'Birth Date',
+        'group'=>'Group Id',
+
+        'vipInformation'=>'VIP Information',
+        'vipLevel'=>'VIP Level',
+        'vipExpire'=>'VIP Expire',
+
+        'username'=>'Username',
+        'mobile'=>'Phone Number',
+        'email'=>'Email',
+        'nickname'=>'Nickname',
+        'avatar'=>'Avatar',
+        'area'=>'Area',
+        'introduce'=>'Introduce',
+
         'database_RelationDatabase'=>'MySQL',
         'database_RedisDatabase'=>'Redis',
+        'clearRedis'=>'Clear Redis',
 
         'tableDetail'=>'Table Detail',
 
@@ -792,6 +854,25 @@ return [
         'config_SMTPModuleCfg'=>'SMTPModule',
         'config_AppleIAPCfg'=>'AppleIAP',
 
+
+    ],
+
+    'website' => [
+        'appName'=>'AppSite',
+
+        'home'=>'Home',
+        'documentation'=>'Documentation',
+        'regist'=>'Sign Up',
+        'login'=>'Sign In',
+        'logout'=>'Sign Out',
+
+        'GetStart' => 'Get started',
+        'Download' => 'Download',
+
+        'home_title' => 'Cross-Platform App/Site Development Engine',
+        'home_introduce' => 'AppSite is a PHP full-stack development engine that can be used to iterative dynamic websites, background management systems, and API interfaces fast development.<br>Designed for small teams, the flexible framework struct allows you to develop various applications and websites simply and quickly.',
+        'MIT_License' => 'Released under the MIT License',
+        'footerIntroduce'=>'Powered build by Donsee Tech',
 
     ],
 

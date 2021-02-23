@@ -1,0 +1,129 @@
+<div class="main-sidebar">
+    <aside id="sidebar-wrapper">
+        <div class="sidebar-brand">
+            <a href="{{constants.rootPath}}/">{{constants.siteTitle}}</a>
+        </div>
+
+
+        <ul class="sidebar-menu">
+            <li class="{{menuActive.dashboard.active}}"><a class="nav-link" href="{{constants.rootPath}}/dashboard">
+                <i class="fas fa-home"></i> <span>{i18n{manager.sidebar_dashboard}i18n}</span></a>
+            </li>
+
+
+            <li class="menu-header">Commerce</li>
+            <li class="nav-item dropdown {{menuActive.commerce.active}}">
+                <a href="#sidebar_commerce" class="nav-link has-dropdown" data-toggle="dropdown" aria-expanded="{{menuActive.commerce.expanded}}" aria-controls="sidebar_commerce"><i class="fas fa-columns"></i> <span>Products</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{{menuActive.productAdd.active}}"><a class="nav-link" href="{{constants.rootPath}}/product/add"><span>New Product</span></a></li>
+                    <li class="{{menuActive.product.active}}"><a class="nav-link" href="{{constants.rootPath}}/product/list"><span>All Products</span></a></li>
+                    <li class="{{menuActive.category.active}}"><a class="nav-link" href="{{constants.rootPath}}/category/list?type=product"><span>Category Manage</span></a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item {{menuActive.order.active}}">
+                <a class="nav-link" href="{{constants.rootPath}}/order/list"><i class="fas fa-file-alt"></i><span>Orders</span></a>
+            </li>
+
+            <li class="nav-item {{menuActive.payment.active}}">
+                <a class="nav-link" href="{{constants.rootPath}}/payment/list"><i class="fas fa-file-invoice-dollar"></i><span>Payments</span></a>
+            </li>
+
+            <li class="nav-item {{menuActive.shipping.active}}">
+                <a class="nav-link" href="{{constants.rootPath}}/shipping/list"><i class="fas fa-truck"></i><span>Shipping</span></a>
+            </li>
+
+            <li class="nav-item {{menuActive.coupon.active}}">
+                <a class="nav-link" href="{{constants.rootPath}}/coupon/list"><i class="fas fa-tag"></i><span>Coupon</span></a>
+            </li>
+
+
+            <li class="menu-header">Content</li>
+
+            <li class="nav-item {{menuActive.category.active}}">
+                <a class="nav-link" href="{{constants.rootPath}}/category/list"><i class="fas fa-folder-open"></i><span>Category</span></a>
+            </li>
+
+
+            [if[::menu.operation::
+
+            <li class="menu-header">{i18n{manager.sidebar_operationManage}i18n}</li>
+
+            <li class="nav-item dropdown {{menuActive.user.active}}">
+                <a href="#sidebarOperationAnalysis" class="nav-link has-dropdown" data-toggle="dropdown" aria-expanded="{{menuActive.user.expanded}}" aria-controls="sidebarOperationAnalysis">
+                    <i class="fas fa-users"></i><span>{i18n{manager.sidebar_user}i18n}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    [if[::menu.operationUser::<li class="nav-item {{menuActive.userManage.active}}"><a href="{{constants.rootPath}}/user/list" class="nav-link"><span>{i18n{manager.sidebar_userManage}i18n}</span></a></li>]if]
+                </ul>
+            </li>
+
+
+            <li class="nav-item dropdown">
+                <a class="nav-link has-dropdown {{menuActive.analysis.active}}" href="#sidebarOperationAnalysis" data-toggle="collapse" role="button" aria-expanded="{{menuActive.analysis.expanded}}" aria-controls="sidebarOperationAnalysis">
+                    <i class="fas fa-chart-bar"></i><span>{i18n{manager.sidebar_analysis}i18n}</span>
+                </a>
+                <ul class="dropdown-menu {{menuActive.analysis.show}}" id="sidebarOperationAnalysis">
+                    <li class="nav-item {{menuActive.analysisView.active}}">
+                        <a href="{{constants.rootPath}}/analysis/view" class="nav-link"><span>{i18n{manager.sidebar_analysisView}i18n}</span></a>
+                    </li>
+                    <li class="nav-item {{menuActive.analysisUser.active}}">
+                        <a href="{{constants.rootPath}}/analysis/user" class="nav-link"><span>{i18n{manager.sidebar_analysisUser}i18n}</span></a>
+                    </li>
+                    <li class="nav-item {{menuActive.analysisPoint.active}}">
+                        <a href="{{constants.rootPath}}/analysis/point" class="nav-link"><span>{i18n{manager.sidebar_analysisPoint}i18n}</span></a>
+                    </li>
+                    <li class="nav-item {{menuActive.analysisOrder.active}}">
+                        <a href="{{constants.rootPath}}/analysis/order" class="nav-link"><span>{i18n{manager.sidebar_analysisOrder}i18n}</span></a>
+                    </li>
+                </ul>
+            </li>
+
+            ]if]
+
+
+            [if[::menu.setting::
+
+            <li class="menu-header">{i18n{manager.sidebar_systemManage}i18n}</li>
+
+            <li class="nav-item dropdown {{menuActive.manager.active}}">
+                <a class="nav-link has-dropdown" href="#sidebarManager" data-toggle="collapse" role="button" aria-expanded="{{menuActive.manager.expanded}}" aria-controls="sidebarManager">
+                    <i class="fas fa-user-cog"></i><span>{i18n{manager.sidebar_manager}i18n}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    [if[::menu.managerArea::
+                    <li class="nav-item {{menuActive.managerArea.active}}"><a href="{{constants.rootPath}}/manager/area" class="nav-link"><span>{i18n{manager.sidebar_managerArea}i18n}</span></a></li>
+                    ]if]
+                    [if[::menu.managerAdmin::
+                    <li class="nav-item {{menuActive.managerAdmin.active}}"><a href="{{constants.rootPath}}/manager/admin" class="nav-link"><span>{i18n{manager.sidebar_managerAdmin}i18n}</span></a></li>
+                    ]if]
+                    [if[::menu.managerEditor::
+                    <li class="nav-item {{menuActive.managerEditor.active}}"><a href="{{constants.rootPath}}/manager/editor" class="nav-link"><span>{i18n{manager.sidebar_managerEditor}i18n}</span></a></li>
+                    ]if]
+                </ul>
+            </li>
+
+            <li class="nav-item dropdown {{menuActive.setting.active}}">
+                <a class="nav-link has-dropdown" href="#sidebarSettings" data-toggle="collapse" role="button" aria-expanded="{{menuActive.setting.expanded}}" aria-controls="sidebarSettings">
+                    <i class="fas fa-tools"></i><span>{i18n{manager.sidebar_systemSetting}i18n}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    [if[::menu.settingConfig::
+                    <li class="nav-item {{menuActive.settingConfig.active}}"><a href="{{constants.rootPath}}/config/view" class="nav-link"><span>{i18n{manager.sidebar_systemSettingConfig}i18n}</span></a></li>
+                    ]if]
+                    [if[::menu.settingApiTest::
+                    <li class="nav-item {{menuActive.settingApiTest.active}}"><a href="{{constants.rootPath}}/apiTest/interface" class="nav-link"><span>{i18n{manager.sidebar_systemSettingApiTest}i18n}</span></a></li>
+                    ]if]
+                    [if[::menu.settingDatabase::
+                    <li class="nav-item {{menuActive.settingDatabase.active}}"><a href="{{constants.rootPath}}/database/view" class="nav-link"><span>{i18n{manager.sidebar_systemSettingDatabase}i18n}</span></a></li>
+                    ]if]
+                </ul>
+            </li>
+
+            ]if]
+
+
+        </ul>
+
+    </aside>
+</div>

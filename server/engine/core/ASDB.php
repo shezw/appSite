@@ -58,7 +58,7 @@ class ASDB extends ASObject{
      * 预定义查询标记
      * Predefined query symbols
      */
-    private const symbols = [
+    const symbols = [
         '[[>]]'   => ' > ' ,
         '[[<]]'   => ' < ' ,
         '[[>=]]'  => ' >= ' ,
@@ -74,7 +74,7 @@ class ASDB extends ASObject{
 
     /**
      * 全局单例
-     * @param  \APS\ASDB|null  $specificDB 指定数据库 更新到全局共享
+     * @param  ASDB|null  $specificDB 指定数据库 更新到全局共享
      * @return ASDB
      */
     public static function shared( ASDB $specificDB = null  ):ASDB{
@@ -144,7 +144,8 @@ class ASDB extends ASObject{
      * Touch connection
      * @return   bool
      */
-    public function touch(){
+    public function touch(): bool
+    {
 
         if( !$this->connected ){
             $this->connect();
@@ -160,7 +161,8 @@ class ASDB extends ASObject{
      * @param    string                   $dbname         [数据库名]
      * @return   string                                   [数据库名]
      */
-    public function selectDB( string $dbname ){
+    public function selectDB( string $dbname ): string
+    {
         $this->base = $dbname;
         return $this->base;
     }
@@ -213,12 +215,13 @@ class ASDB extends ASObject{
      * insert
      * @param  array        $data
      * @param  string       $table
-     * @return \APS\ASResult
+     * @return ASResult
      * @example
      *           $DB->insert(['mobile'=>'13300001111'],'user_account');
      *           $DB->insert(['data'=>['mobile'=>'13300001111'],'table'=>'user_account']);
      */
-    public function insert( array $data , string $table ){
+    public function insert( array $data , string $table ): ASResult
+    {
 
         $this->sign('ASDB->insert');
 
@@ -259,9 +262,10 @@ class ASDB extends ASObject{
      * Alias Of Insert
      * @param  array   $data
      * @param  string  $table
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function add( array $data, string $table ){
+    public function add( array $data, string $table ): ASResult
+    {
         return $this->insert($data,$table);
     }
 
@@ -270,7 +274,7 @@ class ASDB extends ASObject{
      * inserts
      * @param  array   $dataList
      * @param  string  $table
-     * @return \APS\ASResult
+     * @return ASResult
      * @mark
      * 批量添加注意: List中可以存在数据字段不一致的情况,其他元素中含有字段,但另外一些元素中又没有该字段的值时将会自动默认填充为 '' SQL空值, 如果为空字段是不能为空类型，如数字，将会插入失败。
      * 如果希望保持空白值为null 可以使用 字符值 "SET_NULL", 将自动转化为 null进行填充
@@ -278,7 +282,8 @@ class ASDB extends ASObject{
      * $DB->inserts([["mobile"=>"13300001111"],["email"=>"a@b.com"],["email"=>"c@d.cn"]],"user_account");
      * $DB->inserts(["list"=>[["mobile"=>"13300001111"],["email"=>"a@b.com"],["email"=>"c@d.cn"]],"table"=>"user_account"])
      */
-    public function inserts( array $dataList, string $table ){
+    public function inserts( array $dataList, string $table ): ASResult
+    {
 
         $this->sign('ASDB->inserts');
 
@@ -343,9 +348,10 @@ class ASDB extends ASObject{
      * Alias Of Inserts
      * @param  array        $dataList
      * @param  string|null  $table
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function adds( array $dataList, string $table = null ){
+    public function adds( array $dataList, string $table = null ): ASResult
+    {
         return $this->inserts($dataList,$table);
     }
 
@@ -376,7 +382,8 @@ class ASDB extends ASObject{
      * @param  array | string    $conditions
      * @return   ASResult
      */
-    public function update( array $data, string $table, $conditions ){
+    public function update( array $data, string $table, $conditions ): ASResult
+    {
 
         $this->sign('ASDB->update');
 
@@ -414,9 +421,10 @@ class ASDB extends ASObject{
      * @param  string  $key
      * @param  string  $table
      * @param          $conditions
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function updates( array $dataList, string $key, string $table, $conditions ) {
+    public function updates( array $dataList, string $key, string $table, $conditions ): ASResult
+    {
 
         $this->sign("ASDB->updates");
 
@@ -448,9 +456,10 @@ class ASDB extends ASObject{
      * @param  string  $table
      * @param  mixed   $conditions
      * @param  float   $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function increase( string $field, string $table, $conditions, float $size = 1 ){
+    public function increase( string $field, string $table, $conditions, float $size = 1 ): ASResult
+    {
 
         $query = "UPDATE $table SET ";
         $query.= " {$field} = {$field} + {$size} ";
@@ -470,9 +479,10 @@ class ASDB extends ASObject{
      * @param  string  $table
      * @param  mixed   $conditions
      * @param  float   $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function reduce( string $field, string $table, $conditions, float $size = 1  ){
+    public function reduce( string $field, string $table, $conditions, float $size = 1  ): ASResult
+    {
 
         return $this->decrease( $field, $table, $conditions, $size );
     }
@@ -485,7 +495,7 @@ class ASDB extends ASObject{
      * @param  string  $table
      * @param  null    $conditions
      * @param  float   $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function decrease( string $field, string $table, $conditions, float $size = 1  ){
 
@@ -498,9 +508,10 @@ class ASDB extends ASObject{
      * remove row(s) from table
      * @param  string  $table
      * @param  array|string  $conditions
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function remove( string $table, $conditions ){
+    public function remove( string $table, $conditions ): ASResult
+    {
 
         $this->sign('ASDB->remove');
 
@@ -526,9 +537,10 @@ class ASDB extends ASObject{
      * @param  string       $table
      * @param  null         $conditions  筛选条件
      * @param  string|null  $distinct    排重字段
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function count( string $table , $conditions = null, string $distinct = null ){
+    public function count( string $table , $conditions = null, string $distinct = null ): ASResult
+    {
 
         $conditions = static::spliceCondition($conditions);
 
@@ -551,7 +563,6 @@ class ASDB extends ASObject{
      * get data
      * @Author   Sprite                   hello@shezw.com http://donsee.cn
      * @DateTime 2019-08-17T01:30:42+0800
-     * @version 1.5
      * @param array|string $fields  查询字段
      * @param string       $table   表名
      * @param null $conditions      条件
@@ -560,9 +571,11 @@ class ASDB extends ASObject{
      * @param int $size             页数
      * @param string|null $distinct 排重字段
      * @param null $sets            FIND_IN_SET查询方式 子集 field,values
-     * @return \APS\ASResult
+     * @return ASResult
+     *@version 1.5
      */
-    public function get( $fields, string $table, $conditions = null, int $page = 1, int $size = 25, $sort = null, string $distinct = null, $sets = null ){
+    public function get( $fields, string $table, $conditions = null, int $page = 1, int $size = 25, $sort = null, string $distinct = null, $sets = null ): ASResult
+    {
 
         $this->sign("ASDB->get");
 
@@ -616,7 +629,8 @@ class ASDB extends ASObject{
      * @return ASResult
      * @version  1.0
      */
-    public function batchGet( $fields, string $table, string $key, array $keyList ){
+    public function batchGet( $fields, string $table, string $key, array $keyList ): ASResult
+    {
 
         $this->sign("ASDB->batchGet");
 
@@ -661,9 +675,10 @@ class ASDB extends ASObject{
      * @param  string  $table
      * @param  array|string $conditions
      * @param  null    $sort
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function check( $value , string $field, string $table, $conditions, $sort = null ){
+    public function check( $value , string $field, string $table, $conditions, $sort = null ): ASResult
+    {
 
         $this->sign("ASDB->check");
 
@@ -703,10 +718,11 @@ class ASDB extends ASObject{
      * @param  array|string $conditions
      * @param  int|null    $page
      * @param  int|null    $size
-     * @return  \APS\ASResult
+     * @return  ASResult
      * @mark    SELECT SUM(salary) as "Total Salary"    FROM employees  WHERE salary > 25000;
      */
-    public function sum( string $key, string $table, $conditions = null, int $page = null, int $size = null ){
+    public function sum( string $key, string $table, $conditions = null, int $page = null, int $size = null ): ASResult
+    {
 
         $this->sign('ASDB->sum');
 
@@ -753,9 +769,10 @@ class ASDB extends ASObject{
      * @param  int|null     $page
      * @param  int|null     $size
      * @param  string|array|null  $count
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function sumByGroup( $fields, string $table, $key, string $group, $conditions = null, int $page = null, int $size = null, $sort = null, $count = null ){
+    public function sumByGroup( $fields, string $table, $key, string $group, $conditions = null, int $page = null, int $size = null, $sort = null, $count = null ): ASResult
+    {
 
         $this->sign("ASDB->sumByGroup");
 
@@ -836,9 +853,10 @@ class ASDB extends ASObject{
      * @param  string       $table
      * @param  null         $conditions
      * @param  string|null  $distinct
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countByGroup( string $group, string $table, $conditions = null, string $distinct = null ){
+    public function countByGroup( string $group, string $table, $conditions = null, string $distinct = null ): ASResult
+    {
 
         $this->sign("ASDB->countByGroup");
 
@@ -870,7 +888,7 @@ class ASDB extends ASObject{
      * @param  int|null     $size
      * @param  null         $sort
      * @param  string|null  $distinct
-     * @return \APS\ASResult|bool
+     * @return ASResult|bool
      * @mark   SELECT userid,COUNT(*) AS count ,SUM(amount) AS sum FROM commerce_order
      * GROUP BY userid ORDER BY SUM(amount) DESC
      * SELECT col1,SUM(col2) FROM t1  GROUP BY col1  ORDER BY SUM(col2);
@@ -914,12 +932,13 @@ class ASDB extends ASObject{
 
     /**
      * 联合查询模式计数 joinCount
-     * @param  \APS\JoinPrimaryParams  $primaryParams  [primaryParams]
-     * @param  \APS\JoinParams[]       $joinParams     [array of joinParams]
+     * @param JoinPrimaryParams $primaryParams  [primaryParams]
+     * @param JoinParams[] $joinParams     [array of joinParams]
      * @return   ASResult
      * @mark     优化条件说明 https://shezw.com/archives/113/
      */
-    public function joinCount( JoinPrimaryParams $primaryParams, array $joinParams ){
+    public function joinCount( JoinPrimaryParams $primaryParams, array $joinParams ): ASResult
+    {
 
         $table      = $primaryParams->table;
         $primaryKey = $primaryParams->key;
@@ -989,7 +1008,7 @@ class ASDB extends ASObject{
      * @param  int                $page
      * @param  int                $size
      * @param  string             $sort
-     * @param  \APS\JoinParams[]  $joinParams       副表参数(多个副表数组)] $table 必填, $key|$field 可选, $fields 可选, filters (表内过滤)可选,conditions (全局筛选)可选
+     * @param JoinParams[] $joinParams       副表参数(多个副表数组)] $table 必填, $key|$field 可选, $fields 可选, filters (表内过滤)可选,conditions (全局筛选)可选
      * @return ASResult
      * @mark   SELECT * FROM user_account LEFT JOIN user_info ON user_account.userid = user_info.userid
      *                                            LEFT JOIN user_pocket ON user_account.userid = user_pocket.userid AND user_pocket.point > 5000
@@ -1182,7 +1201,8 @@ class ASDB extends ASObject{
 
     /* Database io 表相关操作 */
 
-    public function showTables( string $base = null ){
+    public function showTables( string $base = null ): ASResult
+    {
 
         $this->sign('ASDB->showTables');
 
@@ -1194,7 +1214,8 @@ class ASDB extends ASObject{
 
     }
 
-    public function showColumns( $table ){
+    public function showColumns( $table ): ASResult
+    {
 
         $this->sign('ASDB->showColumns');
 
@@ -1220,7 +1241,8 @@ class ASDB extends ASObject{
 
 
     // 创建表
-    public function newTable( array $_ ){
+    public function newTable( array $_ ): ASResult
+    {
 
         //  @fields array of arrays
         //  @field  key-value array
@@ -1377,7 +1399,8 @@ class ASDB extends ASObject{
 
     }
 
-    public static function generateTableQuery( array $_ ){
+    public static function generateTableQuery( array $_ ): string
+    {
 
         $fields  = $_['fields']  ?? null  ;
         $table   = $_['table']   ?? null  ;
@@ -1560,7 +1583,8 @@ class ASDB extends ASObject{
     }
 
     // 修改表结构  //添加字段
-    public function addfields( array $_ ){
+    public function addfields( array $_ ): ASResult
+    {
 
         $_['func']='ADD';
         return $this->fields($_);
@@ -1568,7 +1592,8 @@ class ASDB extends ASObject{
     }
 
     // 修改表结构  //编辑字段
-    public function updatefields( array $_ ){
+    public function updatefields( array $_ ): ASResult
+    {
 
         $_['func']='CHANGE';
         return $this->fields($_);
@@ -1576,7 +1601,8 @@ class ASDB extends ASObject{
     }
 
     // 建立索引
-    public function index( array $_ ){
+    public function index( array $_ ): ASResult
+    {
 
         $this->sign("ASDB->index");
 
@@ -1599,7 +1625,8 @@ class ASDB extends ASObject{
     }
 
     // 设定唯一索引
-    public function unique( array $_ ){
+    public function unique( array $_ ): ASResult
+    {
 
         $this->sign("ASDB->unique");
 
@@ -1622,7 +1649,8 @@ class ASDB extends ASObject{
 
     // Fulltext索引 分词索引
     // ALTER TABLE base.table ADD FULLTEXT field;
-    public function ngram( array $_ ){
+    public function ngram( array $_ ): ASResult
+    {
 
         $this->sign("ASDB->ngram");
 
@@ -1645,7 +1673,8 @@ class ASDB extends ASObject{
 
     // spatial 空间索引
     // ALTER TABLE base.table ADD FULLTEXT field;
-    public function spatial( array $_ ){
+    public function spatial( array $_ ): ASResult
+    {
 
         $this->sign("spatial");
 
@@ -1668,7 +1697,8 @@ class ASDB extends ASObject{
 
 
     // 修改表结构 //移除字段
-    public function drop( array $_ ){
+    public function drop( array $_ ): ASResult
+    {
 
         $this->sign("ASDB->drop");
 
@@ -1705,7 +1735,8 @@ class ASDB extends ASObject{
 
 
     // 清空数据表
-    public function truncate( string $table ){
+    public function truncate( string $table ): ASResult
+    {
 
         $this->sign("ASDB->truncate");
 
@@ -1720,7 +1751,8 @@ class ASDB extends ASObject{
     }
 
     // 移除数据表
-    public function dropTable( string $table ){
+    public function dropTable( string $table ): ASResult
+    {
 
         $this->sign("ASDB->dropTable");
 
@@ -1736,7 +1768,8 @@ class ASDB extends ASObject{
 
     // 库相关操作
     // !!! 需要数据库Root权限 !!!
-    public function base( array $_=null ){
+    public function base( array $_=null ): ASResult
+    {
 
         $this->sign("ASDB->base");
 
@@ -1761,9 +1794,10 @@ class ASDB extends ASObject{
      * 新数据库
      * newBase
      * @param  string  $base
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function newBase( string $base ){
+    public function newBase( string $base ): ASResult
+    {
 
         $__['base'] = $base;
         $__['func'] = 'CREATE';
@@ -1775,9 +1809,10 @@ class ASDB extends ASObject{
      * 移除数据库
      * dropBase
      * @param  string  $base
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function dropBase( string $base ){
+    public function dropBase( string $base ): ASResult
+    {
 
         $__['base'] = $base;
         $__['func'] = 'DROP';
@@ -1792,7 +1827,8 @@ class ASDB extends ASObject{
      * @param  string  $base
      * @return bool
      */
-    public function hasBase( string $base ){
+    public function hasBase( string $base ): bool
+    {
         $tmpBase = $this->base;
         $this->base = 'information_schema';
         $count = $this->count('SCHEMATA',["SCHEMA_NAME"=>$base])->getContent();
@@ -1808,7 +1844,8 @@ class ASDB extends ASObject{
      * @param  string  $base
      * @return bool
      */
-    public function hasTableInBase( string $table, string $base ){
+    public function hasTableInBase( string $table, string $base ): bool
+    {
 
         if (!$this->hasBase($base)) {
             return false;
@@ -1825,9 +1862,10 @@ class ASDB extends ASObject{
      * generate DataStruct
      * @param  array   $struct
      * @param  string  $base
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function newDataStruct( array $struct, string $base){
+    public function newDataStruct( array $struct, string $base): ASResult
+    {
 
         $this->connect();
 
@@ -1855,9 +1893,10 @@ class ASDB extends ASObject{
      * 根据结构清理数据表
      * clearDataStruct
      * @param  array  $struct
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function clearDataStruct( array $struct ){
+    public function clearDataStruct( array $struct ): ASResult
+    {
 
         $this->connect();
 
@@ -1879,9 +1918,10 @@ class ASDB extends ASObject{
      * autoInsertData
      * @param  array  $dataWithStruct
      * @param  string $base
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function autoInsertData( array $dataWithStruct, string $base = null ){
+    public function autoInsertData( array $dataWithStruct, string $base = null ): ASResult
+    {
 
         if( isset($base) ){ $this->selectDB($base); }
         $addResult = [];
@@ -1904,9 +1944,10 @@ class ASDB extends ASObject{
      * maybeCount
      * @param  array   $target
      * @param  string  $table
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function maybeCount(array $target, string $table ){
+    public function maybeCount(array $target, string $table ): ASResult
+    {
 
         $this->sign("ASDB->maybeCount");
 
@@ -1932,9 +1973,10 @@ class ASDB extends ASObject{
      * @param  array   $target
      * @param  string  $table
      * @param  string|array|null  $fields
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function maybeSearch( array $target, string $table, $fields = null ){
+    public function maybeSearch( array $target, string $table, $fields = null ): ASResult
+    {
 
         $this->sign("ASDB->maybeSearch");
 
@@ -1959,9 +2001,10 @@ class ASDB extends ASObject{
      * exactCount
      * @param  array   $target
      * @param  string  $table
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function exactCount( array $target, string $table ){
+    public function exactCount( array $target, string $table ): ASResult
+    {
 
         $this->sign("ASDB->exactCount");
 
@@ -1988,9 +2031,10 @@ class ASDB extends ASObject{
      * @param  array   $target
      * @param  string  $table
      * @param  null    $fields
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function exactSearch( array $target, string $table, $fields = null ){
+    public function exactSearch( array $target, string $table, $fields = null ): ASResult
+    {
 
         $this->sign("ASDB->exactSearch");
 
@@ -2015,9 +2059,10 @@ class ASDB extends ASObject{
      * blurCount
      * @param  array   $target
      * @param  string  $table
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function blurCount(array $target, string $table ){
+    public function blurCount(array $target, string $table ): ASResult
+    {
 
         $this->sign("ASDB->blurCount");
 
@@ -2040,9 +2085,10 @@ class ASDB extends ASObject{
      * 模糊搜索
      * blurSearch
      * @param  array  $_
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function blurSearch( array $target, string $table, $fields = null ){
+    public function blurSearch( array $target, string $table, $fields = null ): ASResult
+    {
 
         $this->sign("ASDB->blurSearch");
 
@@ -2069,9 +2115,10 @@ class ASDB extends ASObject{
      * @param  string  $value
      * @param  string  $table
      * @param  null    $conditions
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function natureCount( $target, string $value, string $table, $conditions = null){
+    public function natureCount( $target, string $value, string $table, $conditions = null): ASResult
+    {
 
         return $this->natureSearch($target,$value,$table,$conditions,null,true);
     }
@@ -2085,10 +2132,11 @@ class ASDB extends ASObject{
      * @param  string|array|null    $conditions
      * @param  string|array|null    $fields
      * @param  bool    $isCounting
-     * @return \APS\ASResult
+     * @return ASResult
      * @mark   SELECT id,namecn FROM customer WHERE MATCH (namecn,nameen) AGAINST ('测试' IN NATURAL LANGUAGE MODE)
      */
-    public function natureSearch( $target, string $value, string $table, $conditions = null, $fields = null, bool $isCounting = false  ){
+    public function natureSearch( $target, string $value, string $table, $conditions = null, $fields = null, bool $isCounting = false  ): ASResult
+    {
 
         $this->sign($isCounting ? "ASDB->natureCount" : "ASDB->natureSearch");
 
@@ -2115,10 +2163,11 @@ class ASDB extends ASObject{
      * @param  array   $target
      * @param  array   $valueList
      * @param  string  $table
-     * @return \APS\ASResult
+     * @return ASResult
      * @mark   valueList ['+value','-value','~value','>value','<value']
      */
-    public function booleanCount(array $target, array $valueList, string $table ){
+    public function booleanCount(array $target, array $valueList, string $table ): ASResult
+    {
 
         return $this->booleanSearch($target,$valueList,$table,null,true);
     }
@@ -2132,10 +2181,11 @@ class ASDB extends ASObject{
      * @param  string  $table
      * @param  null    $fields
      * @param  bool    $isCounting
-     * @return \APS\ASResult
+     * @return ASResult
      * @mark   valueList ['+value','-value','~value','>value','<value']
      */
-    public function booleanSearch(array $target, array $valueList, string $table ,$fields = null, bool $isCounting = false ){
+    public function booleanSearch(array $target, array $valueList, string $table ,$fields = null, bool $isCounting = false ): ASResult
+    {
 
         $this->sign($isCounting ? "ASDB->booleanCount" : "ASDB->booleanSearch" );
 
@@ -2393,7 +2443,8 @@ class ASDB extends ASObject{
      * @param  String  $value
      * @return string
      */
-    public static function generateLocationValue( String $value ){
+    public static function generateLocationValue( String $value ): string
+    {
 
         $location = explode(',', $value);
         $lng = $location[0];
@@ -2408,7 +2459,8 @@ class ASDB extends ASObject{
      * @param    string                   $field          对应数据库字段
      * @return   string                                   语句 Query String
      */
-    public static function locationSort( $location, string $field = 'location' ){
+    public static function locationSort( $location, string $field = 'location' ): string
+    {
 
         if (isset($location[0])&&isset($location[1])) {
             $location['lng']=$location[0];
@@ -2426,7 +2478,8 @@ class ASDB extends ASObject{
      * @param string $key [description]
      * @return string [type]                                   [description]
      */
-    public function spliceCaseSet( array $kvArrayList , string $key ){
+    public function spliceCaseSet( array $kvArrayList , string $key ): string
+    {
 
         $query = "";
         $keys  = $this->getValidKeys( $kvArrayList );
@@ -2491,7 +2544,8 @@ class ASDB extends ASObject{
      * @param    bool|boolean             $returnKey      [是否输出源符号]
      * @return   string                                   [操作符号]
      */
-    private static function getSymbol( string $input, bool $returnKey = false ){
+    private static function getSymbol( string $input, bool $returnKey = false ): string
+    {
 
         $symbol = '';
         foreach (static::symbols as $key => $value) {

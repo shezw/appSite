@@ -39,9 +39,9 @@ class AliyunOSS extends ASModel{
 
     /**
      * Get an OSSClient instance according to config.
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function initOssClient()
+    public function initOssClient(): ASResult
     {
         try {
             $this->ossClient = new \OSS\OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint, false);
@@ -57,9 +57,9 @@ class AliyunOSS extends ASModel{
     /**
      * 生成签名 Generate Policy Sign
      * @param  string|null  $type  文件类型 File Type
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function policySign(string $type = null)
+    public function policySign(string $type = null): ASResult
     {
 
         $host = getConfig('CUSTOM_OSS_DOMAIN','ALIYUN')
@@ -287,10 +287,9 @@ class AliyunOSS extends ASModel{
      * Upload file to OSS by url
      * @param  string  $url
      * @param  string  $path
-     * @return \APS\ASResult
-     * @throws \OSS\Core\OssException
+     * @return ASResult
      */
-    public function uploadUrlFile(string $url, string $path = 'res')
+    public function uploadUrlFile(string $url, string $path = 'res'): ASResult
     {
 
         $file = static::curlFile($url, 1, 5);
@@ -359,9 +358,9 @@ class AliyunOSS extends ASModel{
      * 从OSS删除文件
      * Remove file from OSS
      * @param  string  $fileURL  完整链接 url
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function removeFile(string $fileURL)
+    public function removeFile(string $fileURL): ASResult
     {
 
         $ossClient = $this->initOssClient();
@@ -432,11 +431,11 @@ class AliyunOSS extends ASModel{
      * CURL下载文件
      * Download file with CURL
      * @param  string       $url      链接地址
-     * @param  int|integer  $type     数据类型  0,1,2,3
-     * @param  int|integer  $timeout  超时
-     * @return \APS\ASResult
+     * @param  int $type     数据类型  0,1,2,3
+     * @param  int $timeout  超时
+     * @return ASResult
      */
-    public static function curlFile(string $url, int $type = 0, int $timeout = 15)
+    public static function curlFile(string $url, int $type = 0, int $timeout = 15): ASResult
     {
 
         $msg = ['code' => 2100, 'status' => 'error', 'msg' => '未知错误！'];

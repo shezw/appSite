@@ -18,7 +18,7 @@ class AccessVerify extends ASModel{
      * @param  string  $origin     验证源   eg: '18xxxxxxxxx' ? 'email@ xxx.com' ...
      * @param  string  $scope      验证作用域
      * @param  int     $duration   有效时长 单位秒 day*24*3600
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function begin( string $origin, int $duration, string $scope = 'common' ):ASResult{
 
@@ -52,7 +52,8 @@ class AccessVerify extends ASModel{
      * @param  string  $scope   验证作用域
      * @return bool
      */
-    public function checkInterval( string $origin, string $scope = 'common' ){
+    public function checkInterval( string $origin, string $scope = 'common' ): bool
+    {
 
         $expire     = time() - ( getConfig('ACCESSVERIFY_INTERVAL') ?? 30 );
         $conditions = "origin='{$origin}' AND scope='{$scope}' AND lasttime>{$expire}";
@@ -69,9 +70,10 @@ class AccessVerify extends ASModel{
      * @param  string  $origin  验证源   eg: '18xxxxxxxxx' ? 'email@ xxx.com' ...
      * @param  string  $code    验证码   eg: 123456
      * @param  string  $scope   验证作用域
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function validate( string $origin, string $code, string $scope = 'common' ){
+    public function validate( string $origin, string $code, string $scope = 'common' ): ASResult
+    {
 
         $conditions = ['origin'=>$origin,'scope'=>$scope];
 
@@ -94,9 +96,10 @@ class AccessVerify extends ASModel{
      * 设置为过期
      * setExpire
      * @param  array|string  $conditions
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function setExpire( $conditions ){
+    public function setExpire( $conditions ): ASResult
+    {
 
         return $this->getDB()->update(['expire'=>0],static::$table, $conditions);
     }
@@ -105,9 +108,10 @@ class AccessVerify extends ASModel{
     /**
      * 清理过期验证信息
      * clear expired verify
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function clearVerify(){
+    public function clearVerify(): ASResult
+    {
 
         $t  = time() - 3 * Time::DAY ;
         return $this->getDB()->remove(static::$table,"expire<{$t}");

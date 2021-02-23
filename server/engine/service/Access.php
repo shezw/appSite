@@ -28,7 +28,7 @@ class Access extends ASModel{
      *
      * @param  \APS\User|null  $user
      */
-    function __construct( ?User $user = null ){
+    function __construct( User $user = null ){
 
         parent::__construct(true);
 
@@ -39,7 +39,7 @@ class Access extends ASModel{
     }
 
     # 初始化权限
-    private function init():void{
+    private function init(){
 
         if($this->inited){ return ;}
 
@@ -84,7 +84,7 @@ class Access extends ASModel{
      * 授权 颁发token
      * authorize and return token
      * @param  int|null  $duration
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function authorize( int $duration = Time::THIRTY ):ASResult{
 
@@ -105,9 +105,10 @@ class Access extends ASModel{
      * 更新令牌
      * updateAuthorize
      * @param  int  $duration
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function updateAuthorize( int $duration = Time::THIRTY ){
+    public function updateAuthorize( int $duration = Time::THIRTY ): ASResult
+    {
 
         if( !$this->checkAuthorize() ){
             $this->error(9999,i18n('AUTH_VER_FAL'));
@@ -120,7 +121,8 @@ class Access extends ASModel{
      * checkAuthorize
      * @return bool
      */
-    private function checkAuthorize(){
+    private function checkAuthorize(): bool
+    {
 
         $hashParams = ['ACCESS_CHECK_TOKEN',$this->user->userid,$this->user->scope];
 

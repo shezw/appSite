@@ -21,7 +21,8 @@ namespace APS;
  */
 class Point extends ASModel {
 
-    public function bonus( string $userid, string $rule ){
+    public function bonus( string $userid, string $rule ): ASResult
+    {
 
         $getRuleSetting = _ASSetting()->read($rule,'POINTBONUS_RULES');
 
@@ -58,9 +59,9 @@ class Point extends ASModel {
 
 
 
-    public function increase( string $userid, int $amount,string $payer='system', string $type ='income', string $title= NULL ,$description= NULL ){
+    public function increase( string $userid, int $amount,string $payer='system', string $type ='income', string $title= NULL ,$description= NULL ):ASResult {
 
-        $increase = POCKET::increase($userid,$amount,'point');
+        $increase = UserPocket::increase($userid,$amount,'point');
         if(RESULT::isSucceed($increase)){
             $DB = DEAL::add([
                 'type'=>$type,
@@ -76,7 +77,7 @@ class Point extends ASModel {
         return RESULT::feedback(0,'增长成功',$amount,'POINT::increase');
     }
 
-    public function decrease( string $userid, int $amount, string $type ='decrease', string $title = NULL , $description = NULL  ){
+    public function decrease( string $userid, int $amount, string $type ='decrease', string $title = NULL , $description = NULL  ):ASResult {
 
         if(!POCKET::enough($userid,$amount,'point')){
             $DB = POCKET::clear($userid,'point');

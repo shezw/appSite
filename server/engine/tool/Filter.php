@@ -28,8 +28,14 @@ class Filter{
 		return $arr[$key]!=='' ? $arr[$key] : NULL;
 	}
 
-	//过滤字符串内不合适内容
-	public static function sanitize( $data = null ){
+    /**
+     * 过滤字符串内不合适内容
+     * Filter illegal content inside the string
+     * @param null $data
+     * @return ASResult
+     */
+	public static function sanitize( $data = null ): ASResult
+    {
 
 		// 检测必填项
         if( !isset($data) ){ return ASResult::shared(-500,'No data'); }
@@ -78,8 +84,14 @@ class Filter{
 			
 	}
 
-
-	public static function stripslashes_array( array &$array = NULL ) { 
+    /**
+     * 修复双斜杠
+     * Fix double stripslashes in array
+     * @param array|null $array
+     * @return array|null
+     */
+	public static function stripslashes_array( array &$array = NULL )
+    {
 		if(!isset($array)){ return NULL; }
 		foreach ($array as $key => $value) {
 
@@ -96,7 +108,7 @@ class Filter{
 	}
 
     /**
-     * 数组全体过滤
+     * 数组全体过滤( 特殊字符斜杠处理 )
      * addslashesAll
      * @param mixed $array
      * @return array|string
@@ -119,7 +131,8 @@ class Filter{
 
 
 	// 将null等数组转化为 空字符串数组
-	public static function spaceInvalid( array $array ){
+	public static function spaceInvalid( array $array ): array
+    {
 
 		foreach ($array as $key => $value) {
 			if (gettype($value)=='array') {
@@ -134,14 +147,20 @@ class Filter{
 
 	}
 
-	// 将null等数组索引删除
-	public static function removeInvalid( array $array ){
+    /**
+     * 移除所有无意义值
+     * Remove all nonsense value from array
+     * @param array $array
+     * @return array
+     */
+	public static function removeInvalid( array $array ): array
+    {
 
 		foreach ($array as $key => $value) {
 			if(gettype($value)=='array'){
 				$array[$key]= Filter::removeInvalid($value);
 			}else{
-				if ( !isset($value) || $value === NULL || $value ==='' || $value === null || $value === 'NULL' || $value ==='null' ) {
+				if ( !isset($value) || $value ==='' || $value === null || $value === 'NULL' || $value ==='null' ) {
 					unset($array[$key]);
 				}else{
 					$array[$key] = gettype($value)=='string' ? trim($value) : $value;
@@ -155,12 +174,13 @@ class Filter{
 	/**
      * 从HTML中截取字符串
 	 * substrHtml
-	 * @param    string                   $str            [输入字符串]
-	 * @param    int                      $num            [截取字长]
-	 * @param    string|null              $more           [更多字符串]
-	 * @return   string                                   [输出字符串]
+	 * @param    string                   $str            输入字符串
+	 * @param    int                      $num            截取字长
+	 * @param    string|null              $more           更多字符串
+	 * @return   string                                   输出字符串
 	 */
-	public static function substrHtml( string $str, int $num, string $more = NULL ){
+	public static function substrHtml( string $str, int $num, string $more = NULL ): string
+    {
 
 		$len = mb_strlen($str,'utf8');
 		
@@ -264,7 +284,8 @@ class Filter{
 	 * @param    string|null              $more           更多字符 (字符会默认占用截取文字空间)
 	 * @return   string
 	 */
-	public static function interceptHtmlText( string $html, int $length = 0, string $more = NULL ){
+	public static function interceptHtmlText( string $html, int $length = 0, string $more = NULL ): string
+    {
 
 		$len = $more ? mb_strlen($more) : 0;
 
@@ -280,13 +301,14 @@ class Filter{
 
 	/**
      * 向数组追加数据
-	 * supplement
+	 * supplement data to an array
 	 * @param    array                    $data             数据
 	 * @param    array|null               $supplementData   追加数据
 	 * @param    array|null               $keys             指定字段追加
 	 * @return   array
 	 */
-	public static function supplement( array $data, array $supplementData = null , array $keys=null ){
+	public static function supplement( array $data, array $supplementData = null , array $keys=null ): array
+    {
 
 		if (!isset($supplementData) || count($supplementData)==0 ){ return $data; }
 		if (!isset($keys)){
@@ -307,13 +329,24 @@ class Filter{
 
 	/**
      * 净化数组
-	 * purify
+	 * Purify
+     *
+     * 净化用于将数组按照指定格式输出
+     * Purify can convert an array to a new struct ( usually a smaller struct than origin array )
+     *
+     * keys数组可以是 一系列key来表示若干个key的名称，例如['key1','key2']，
+     * 也可以是字典类型，[key1:string,key2:int] 用来表示key名称以及对应的类型 或者用 [key1:'enabled',key2:0]的形式表达key名称以及对应的默认值
+     *
+     * The keys can be a list of string as the meaning of ['key1','key2'],
+     * or a key-value dictionary as the meaning of ( 'key':'type' or 'key':'default value' )
+     *
 	 * @param    array|null               $input          输入
 	 * @param    array|null               $keys           过滤字段
 	 * @param    array|null               $convertStruct  转换格式参考
 	 * @return   array                                    输出
 	 */
-	public static function purify( array $input = null, array $keys = null, array $convertStruct = null ){
+	public static function purify( array $input = null, array $keys = null, array $convertStruct = null ): array
+    {
 
 		$output = [];
 
@@ -327,21 +360,32 @@ class Filter{
 
 		foreach ($keys as $k => $v) {
 			
-			if(gettype($k)=='number'||gettype($k)=='integer'){ // 只提取字段 不关注格式和默认
-				isset($input[$v]) && $output[$v] = $input[$v];
-				if(isset($convertStruct) && isset($convertStruct[$v]) && $convertStruct[$v]=='ASjson'){
-					$output[$v] = ENCRYPT::ASJsonEncode($input[$v]);
-				}
-			}else{ // 带有类型和默认值的提取
+			if(gettype($k)=='number'||gettype($k)=='integer'){
+            // 只提取字段 不关注格式和默认
+            // Care about key only
 
-				if( in_array($v, ENCRYPT::$types) ){ // 只有类型 不含默认值
+				if(isset($input[$v]) && $input[$v] !== ''){
+                    $output[$v] = $input[$v];
+                }
+				if(isset($convertStruct) && isset($convertStruct[$v]) && $convertStruct[$v]=='ASjson'){
+					$output[$v] = Encrypt::ASJsonEncode($input[$v]);
+				}
+			}else{
+            // 带有类型和默认值的提取
+            // Care about the value type or default value
+
+				if( in_array($v, Encrypt::$types) ){
+                // 只有类型 不含默认值
+                // Value type only
 					
-					if( isset($input[$k]) ){ $output[$k] = ENCRYPT::convertValue($v,$input[$k]);}
+					if( isset($input[$k]) ){ $output[$k] = Encrypt::convertValue($v,$input[$k]);}
 				
-				}else{ // 含有默认值
+				}else{
+                // 含有默认值
+                // Default value
 				
 					$type = gettype($v);
-					$output[$k] = isset($input[$k]) ? ENCRYPT::convertValue($type,$input[$k]) : $v;
+					$output[$k] = isset($input[$k]) ? Encrypt::convertValue($type,$input[$k]) : $v;
 				}
 			}
 		}
@@ -350,12 +394,13 @@ class Filter{
 
 	/**
      * 数组转化为字符串
-	 * arrayToString
+	 * splice array to string
 	 * @param    array|null               $a              数组
 	 * @param    string|null              $connection     连接符
 	 * @return   string
 	 */
-	public static function arrayToString( array $a = NULL , string $connection = "," ){
+	public static function arrayToString( array $a = NULL , string $connection = "," ): string
+    {
 
 		$s = "";
 		if (!$a) {
@@ -368,13 +413,15 @@ class Filter{
 	}
 
 
-	public static function priceToInt( $price, int $len = 2 ){
+	public static function priceToInt( $price, int $len = 2 ): int
+    {
 
 		return intval((double)$price * pow(10, $len));
 
 	}
 
-	public static function priceToFloat( $price, int $len = 2 ){
+	public static function priceToFloat( $price, int $len = 2 ): float
+    {
 
 		return (double)(((int)$price)/pow(10, $len));
 

@@ -14,10 +14,11 @@ class SMS extends ASObject{
      * verify with SMS
      * @param  string  $mobile  手机号
      * @param  string  $scope   作用域 ( login, verify, findPassword... )
-     * @return \APS\ASResult
+     * @return ASResult
      * @version  1.1
      */
-    public function verify( string $mobile, string $scope = 'verify' ) {
+    public function verify( string $mobile, string $scope = 'verify' ): ASResult
+    {
 
         $beginVerify = AccessVerify::common()->begin($mobile,getConfig('ACCESSVERIFY_VALID')??300,$scope);
 
@@ -50,9 +51,10 @@ class SMS extends ASObject{
      *                                  模板参数会自动填充到对应短信模板，如 验证码是:{$code} 会填充为 验证码是:123456
      * @param  string  $mobile          手机号
      * @param  string  $templateCode    对应模板id
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public  function send( array $params, string $mobile, string $templateCode ){
+    public  function send( array $params, string $mobile, string $templateCode ): ASResult
+    {
 
         switch (getConfig('SMS_PROVIDER')) {
 

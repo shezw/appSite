@@ -1,0 +1,115 @@
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1><a href="../list">{i18n{ manager.sidebar_user }i18n}</a> / <span class="small">{i18n{ manager.userDetail }i18n} - {{detail.userid}}</span></h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item"></div>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="card">
+                <div class="card-header">{i18n{ manager.basicInformation }i18n} </div>
+
+                <div class="card-body">
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane table-responsive active mb-0">
+                            <table class="table table-sm table-nowrap card-tablet table-striped" >
+
+                                <thead>
+                                <tr>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.avatar}i18n} & {i18n{manager.nickname}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>ID:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.username}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.gender}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.mobile}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.email}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.birth}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.group}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.area}i18n}:</span></td>
+                                    <td class=v-m><span class='text-muted'>{i18n{manager.status}i18n}:</span></td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class=v-m><b><span class='avatar w-48'><img src='{{detail.avatar}}' alt='...'></span> {{detail.nickname}}</b></td>
+                                    <td class=v-m><b>{{detail.userid}}</b></td>
+                                    <td class=v-m><b>{{detail.username}}</b></td>
+                                    <td class=v-m><b>{{detail.gender_}}</b></td>
+                                    <td class=v-m><b>{{detail.mobile}}</b></td>
+                                    <td class=v-m><b>{{detail.email}}</b></td>
+                                    <td class=v-m><b>{{detail.birthday}}</b></td>
+                                    <td class=v-m><b>{{detail.groupid}}</b></td>
+                                    <td class=v-m><b>{{detail.areaid}}</b></td>
+                                    <td class=v-m><b>{{detail.status_}}</b></td>
+                                </tr>
+                                </tbody>
+
+                                <thead>
+                                <tr>
+                                    <td class=v-m colspan=10><span class='text-muted'>{i18n{manager.introduce}i18n}:</span></td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class=v-m colspan=10><b>{{detail.description}}</b></td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="card">
+                <div class="card-header">{i18n{ manager.vipInformation }i18n} </div>
+
+                <div class="card-body">
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane table-responsive active mb-0">
+                            <table class="table table-sm table-nowrap card-tablet table-striped" >
+
+                                <thead>
+                                <tr>
+                                    <th class=text-muted>{i18n{manager.vipLevel}i18n}</th>
+                                    <th class=text-muted>{i18n{manager.vipExpire}i18n}</th>
+                                    <th class=text-muted></th>
+                                    <th class=text-muted></th>
+                                    <th class=text-muted></th>
+                                    <th class=text-muted></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class=v-m>{{vip_}}</td>
+                                    <td class=v-m>{{vipexpire_}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+</div>

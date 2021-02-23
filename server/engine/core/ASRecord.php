@@ -70,7 +70,7 @@ class ASRecord extends ASObject{
 
     /**
      * 数据库联接
-     * @var \APS\ASDB
+     * @var ASDB
      */
     public $DB;
 
@@ -90,8 +90,8 @@ class ASRecord extends ASObject{
      * 全局单例
      * shared
      * @param  array|null      $_  日志记录参数
-     * @param  \APS\ASDB|null  $db 指定数据库链接
-     * @return \APS\ASRecord
+     * @param  ASDB|null       $db 指定数据库链接
+     * @return ASRecord
      */
     public static function shared( array $_= null , ASDB $db = null ):ASRecord{
 
@@ -104,10 +104,11 @@ class ASRecord extends ASObject{
     /**
      * 设置独立数据库
      * setDB
-     * @param  \APS\ASDB  $dbInstance
+     * @param ASDB $dbInstance
      * @return $this
      */
-    public function setDB( ASDB $dbInstance ){
+    public function setDB( ASDB $dbInstance ): ASRecord
+    {
         $this->DB = $dbInstance;
         return $this;
     }
@@ -125,7 +126,8 @@ class ASRecord extends ASObject{
      * @param  string  $userid
      * @return $this
      */
-    public function setUserid( string $userid ){
+    public function setUserid( string $userid ): ASRecord
+    {
 
         $this->userid  =  $userid;
         return $this;
@@ -137,7 +139,8 @@ class ASRecord extends ASObject{
      * @param  string  $category
      * @return $this
      */
-    public function setCategory( string $category ){
+    public function setCategory( string $category ): ASRecord
+    {
 
         $this->category  =  $category;
         return $this;
@@ -149,7 +152,8 @@ class ASRecord extends ASObject{
      * @param  string  $itemid
      * @return $this
      */
-    public function setItemid( string $itemid ){
+    public function setItemid( string $itemid ): ASRecord
+    {
 
         $this->itemid  =  $itemid;
         return $this;
@@ -161,7 +165,8 @@ class ASRecord extends ASObject{
      * @param  string  $type
      * @return $this
      */
-    public function setType( string $type ){
+    public function setType( string $type ): ASRecord
+    {
 
         $this->type  =  $type;
         return $this;
@@ -180,9 +185,10 @@ class ASRecord extends ASObject{
      * @param  string  $sign        操作签名
      * @param  string  $recordType  记录分类
      * @param  bool    $saveToFile  以文件形式记录
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function add( $_ = null, $status = null, $itemid = null, $type = null, $content = null, $recordType=null, $userid = null, $sign = null, $saveToFile = false ){
+    public function add( $_ = null, $status = null, $itemid = null, $type = null, $content = null, $recordType=null, $userid = null, $sign = null, $saveToFile = false ): ASResult
+    {
 
         if(!getConfig("RECORD_ENABLE")){ return $this->success("RECORDER CONF IS NOT ENABLED","RECORD->add"); }
 
@@ -258,9 +264,10 @@ class ASRecord extends ASObject{
      * @param  string  $category
      * @param  string  $userid
      * @param  string  $sign
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function log( $_ = null, $status = null, $itemid = null, $type = null, $content = null, $category=null, $userid = null, $sign = null ){
+    public function log( $_ = null, $status = null, $itemid = null, $type = null, $content = null, $category=null, $userid = null, $sign = null ): ASResult
+    {
 
         return $this->add( $_, $status, $itemid, $type, $content, $category, $userid, $sign, true );
     }
@@ -272,7 +279,8 @@ class ASRecord extends ASObject{
      * @param  string       $mode
      * @return string
      */
-    public static function generateLogName( string $pre = null, string $mode = 'hour' ){
+    public static function generateLogName( string $pre = null, string $mode = 'hour' ): string
+    {
 
         $MODES = [
             'month'=>"Ym",
@@ -295,7 +303,8 @@ class ASRecord extends ASObject{
      * @param  string  $mode
      * @return string
      */
-    public static function generateLogLine( $content , $mode = 'json' ){
+    public static function generateLogLine( $content , $mode = 'json' ): string
+    {
 
         switch ($mode) {
             case 'json':
@@ -315,7 +324,8 @@ class ASRecord extends ASObject{
      * getHost
      * @return mixed|string
      */
-    public function getHost(){
+    public function getHost(): string
+    {
 
         return isset($_SERVER["HTTP_REFERER"])||isset($_SERVER["HTTP_ORIGIN"]) ? ($_SERVER["HTTP_REFERER"]?parse_url($_SERVER["HTTP_REFERER"])["host"]:"NO HTTP_REFERER ".$_SERVER["HTTP_ORIGIN"]) : "NAN";
     }

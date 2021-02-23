@@ -90,7 +90,7 @@ class AccessToken extends ASModel
      * @param  string  $userid
      * @param  string  $scope
      * @param  int     $duration
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function addToken( string $userid, string $scope = 'common', int $duration = Time::THIRTY ):ASResult{
 
@@ -123,9 +123,10 @@ class AccessToken extends ASModel
      * @param  string  $token
      * @param  string  $scope
      * @param  int     $duration    有效时长 单位秒
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function updateToken( string $userid, string $token, string $scope = 'common', int $duration = Time::THIRTY  ){
+    public function updateToken( string $userid, string $token, string $scope = 'common', int $duration = Time::THIRTY  ): ASResult
+    {
 
         $CHECK = $this->checkToken($userid,$token,$scope);
         if(!$CHECK->isSucceed()){
@@ -146,7 +147,7 @@ class AccessToken extends ASModel
      * @param  string  $userid
      * @param  string  $token
      * @param  string  $scope
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function checkToken( string $userid, string $token, string $scope='common'):ASResult{
 
@@ -168,7 +169,7 @@ class AccessToken extends ASModel
      * @param  string    $scope     作用域
      * @param  int       $duration  权限时长
      * @param  int|null  $expire    过期时间
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function addUnionToken( string $unionid, string $token, string $scope, int $duration = 0, int $expire = null ):ASResult{
 
@@ -209,7 +210,7 @@ class AccessToken extends ASModel
      * 获取第三方token
      * @param  string $union 第三方标题
      * @param  string $scope 作用域
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function getUnionToken( string $union, string $scope='access_token' ):ASResult{
 
@@ -228,7 +229,7 @@ class AccessToken extends ASModel
      * @param  string    $scope     作用域
      * @param  int       $duration  持续时长
      * @param  int|null  $expire
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function refreshUnionToken( string $unionid, string $token, string $scope = 'access_token', int $duration = 0, int $expire = null ):ASResult{
 
@@ -268,7 +269,8 @@ class AccessToken extends ASModel
     // 谨慎使用,将会清空所有过期(无效)token 同时会丢失token注册、更新记录
     // 为了防止出现意外，这里将清理保护设置为 3 * 24 * 3600 即 清除3天前过期的数据
 
-    public function clearToken(){
+    public function clearToken(): ASResult
+    {
 
         $t  = time()- 3 * Time::DAY ;
         return $this->getDB()->remove(static::$table,"expire<{$t}");

@@ -47,7 +47,7 @@ class Time{
      * 单例
      * common
      * @param  int|null  $specifiedTime
-     * @return \APS\Time
+     * @return Time
      */
 	public static function common(int $specifiedTime = null):Time{
 	    return new static($specifiedTime);

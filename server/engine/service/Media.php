@@ -14,9 +14,10 @@ class Media extends ASModel{
      * 彻底删除媒体文件
      * Remove media form server && OSS
      * @param  string  $uid  [媒体ID]
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function delete( string $uid ){
+    public function delete( string $uid ): ASResult
+    {
 
         $url = $this->detail($uid)->getContent()['url'];
 
@@ -35,9 +36,10 @@ class Media extends ASModel{
      * 查询链接地址
      * Get media URL by uid
      * @param  string  $uid  媒体ID
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getUrl( string $uid ){
+    public function getUrl( string $uid ): ASResult
+    {
 
         $getDetail = $this->detail($uid);
 

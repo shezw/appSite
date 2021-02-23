@@ -17,9 +17,10 @@ class FormRequest extends ASModel{
      * 表单通过回调
      * applyCall
      * @param  string  $requestid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function applyCall( string $requestid ){
+    public function applyCall( string $requestid ): ASResult
+    {
 
         // 检查表单状态是否needpay
         if (!$this->isNeedcall($requestid)){
@@ -58,9 +59,10 @@ class FormRequest extends ASModel{
      * 表单拒绝回调
      * rejectCall
      * @param  string  $requestid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function rejectCall( string $requestid ){
+    public function rejectCall( string $requestid ): ASResult
+    {
 
         // 检查表单状态是否needpay
         if ($this->isNeedcall($requestid)) {
@@ -101,7 +103,8 @@ class FormRequest extends ASModel{
     /////////// 状态确认
 
     // 表单是否存在
-    public function exist( string $requestid ){
+    public function exist( string $requestid ): bool
+    {
 
         $count = $this->getDB()->count(static::$table,['requestid'=>$requestid])->getContent();
         return $count>0;
@@ -109,42 +112,48 @@ class FormRequest extends ASModel{
     }
 
     // 表单是否待支付
-    public function isNeedpay( string $requestid ){
+    public function isNeedpay( string $requestid ): bool
+    {
 
         return $this->isStatus($requestid,'needpay');
 
     }
 
     // 表单是否完成
-    public function isDone( string $requestid ){
+    public function isDone( string $requestid ): bool
+    {
 
         return $this->isStatus($requestid,'done');
 
     }
 
     // 表单是否付款
-    public function isPaid( string $requestid ){
+    public function isPaid( string $requestid ): bool
+    {
 
         return $this->isStatus($requestid,'paid');
 
     }
 
     // 是否被拒绝
-    public function isRejected( string $requestid ){
+    public function isRejected( string $requestid ): bool
+    {
 
         return $this->isStatus($requestid,'rejected');
 
     }
 
     // 是否需要回调
-    public function isNeedcall( string $requestid ){
+    public function isNeedcall( string $requestid ): bool
+    {
 
         return $this->isStatus($requestid,'pending');
 
     }
 
     // 表单是否过期
-    public function isExpired( string $requestid ){
+    public function isExpired( string $requestid ): bool
+    {
 
         $expire = (int)$this->get('expire',$requestid)->getContent();
 
@@ -156,28 +165,28 @@ class FormRequest extends ASModel{
     ////////// 表单操作部分
 
     // 表单已支付
-    public function paid( string $requestid ){
+    public function paid( string $requestid ):ASResult{
 
         return $this->status($requestid,'paid');
 
     }
 
     // 表单完成
-    public function done( string $requestid ){
+    public function done( string $requestid ):ASResult{
 
         return $this->status($requestid,'done');
 
     }
 
     // 拒绝表单
-    public function reject( string $requestid ){
+    public function reject( string $requestid ):ASResult{
 
         return $this->status($requestid,'rejected');
 
     }
 
     // 取消表单
-    public function cancel( string $requestid ){
+    public function cancel( string $requestid ):ASResult{
 
         return $this->status($requestid,'canceled');
 
@@ -185,7 +194,7 @@ class FormRequest extends ASModel{
 
     // 完成退款
 
-    public function refunded( string $requestid ){
+    public function refunded( string $requestid ):ASResult{
 
         return $this->status($requestid,'refunded');
 

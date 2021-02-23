@@ -114,7 +114,7 @@ class JoinParams{
      * @param  string|null  $key
      * @return $this
      */
-    public static function common( string $modelClass, string $key = null ):JoinParams{
+    public static function init(string $modelClass, string $key = null ):JoinParams{
         return new JoinParams($modelClass,$key);
     }
 
@@ -132,7 +132,8 @@ class JoinParams{
      * @param  string  $table
      * @return $this
      */
-    public function at( string $table ){
+    public function at( string $table ): JoinParams
+    {
         $this->table = $table;
         return $this;
     }
@@ -144,7 +145,8 @@ class JoinParams{
      * @param  array | string  $fields
      * @return $this
      */
-    public function get( $fields ){
+    public function get( $fields ): JoinParams
+    {
 
         $this->fields = $fields;
         return $this;
@@ -157,7 +159,8 @@ class JoinParams{
      * @example user_account.groupid
      * @return $this
      */
-    public function equalTo(string $tableAndField ){
+    public function equalTo(string $tableAndField ): JoinParams
+    {
 
         $this->bind = $tableAndField;
         return $this;
@@ -171,7 +174,8 @@ class JoinParams{
      * @param  string|null  $as
      * @return $this
      */
-    public function sum( string $field, string $as = null ){
+    public function sum( string $field, string $as = null ): JoinParams
+    {
 
         if( !in_array($field,$this->sum) ){
             $this->sum[] = $field;
@@ -188,7 +192,8 @@ class JoinParams{
      * @param  string|null  $as
      * @return $this
      */
-    public function count( string $field, string $as = null ){
+    public function count( string $field, string $as = null ): JoinParams
+    {
         if( !in_array($field,$this->count) ){
             $this->count[] = $field;
             $this->countAs[] = $as ?? "count_{$this->table}_{$field}";
@@ -202,7 +207,8 @@ class JoinParams{
      * @param $field
      * @return $this
      */
-    public function groupBy( $field ){
+    public function groupBy( $field ): JoinParams
+    {
         if( !in_array($field,$this->group) ){
             $this->group[] = $field;
         }
@@ -215,7 +221,8 @@ class JoinParams{
      * @param $field
      * @return $this
      */
-    public function groupInResult( $field ){
+    public function groupInResult( $field ): JoinParams
+    {
         if( !in_array($field,$this->groupConditions) ){
             $this->groupConditions[] = $field;
         }
@@ -223,12 +230,14 @@ class JoinParams{
     }
 
 
-    public function withRowFilter( $filter ){
+    public function withRowFilter( $filter ): JoinParams
+    {
         $this->filters = $filter;
         return $this;
     }
 
-    public function withResultFilter( $filter ){
+    public function withResultFilter( $filter ): JoinParams
+    {
         $this->conditions = $filter;
         return $this;
     }
@@ -238,12 +247,42 @@ class JoinParams{
      * 作为子集
      * asSubData
      * @param  string  $alias
-     * @return \APS\JoinParams
+     * @return JoinParams
      */
     public function asSubData( string $alias ):JoinParams{
         $this->alias = $alias;
         return $this;
     }
 
+    /**
+     * Convert to array type
+     * @return array
+     */
+    public function toArray():array{
+
+        return [
+            'class'=>$this->modelClass,
+            'table'=>$this->table,
+            'key'=>$this->key,
+            'fields'=>$this->fields
+        ];
+    }
+
+    /**
+     * 转换objectlist 为 array
+     * Convert ObjectList to Array
+     * @param JoinParams[] $paramList
+     * @return array
+     */
+    public static function listToArrayList(array $paramList = null ):array{
+
+        $arrayList = [];
+        if( !isset($paramList) ){ return $arrayList; }
+        foreach ( $paramList as $i => $p ){
+
+            $arrayList = $p->toArray();
+        }
+        return $arrayList;
+    }
 
 }

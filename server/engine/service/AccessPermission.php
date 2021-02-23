@@ -14,7 +14,8 @@ class AccessPermission extends ASModel{
     public static $primaryid = 'permissionid';
 
     // 新增一个单位权限
-    public function addItemPermission( string $userid,string $itemid, string $itemtype, $expire = 999999999, $info = null, string $status = 'enabled' ){
+    public function addItemPermission( string $userid,string $itemid, string $itemtype, $expire = 999999999, $info = null, string $status = 'enabled' ): ASResult
+    {
 
         $DB = $this->add([
             'data'  => [
@@ -56,9 +57,10 @@ class AccessPermission extends ASModel{
      * @param  int     $page
      * @param  int     $size
      * @param  string  $sort
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function listItemPermission( string $userid, string $itemtype, string $status='enabled', int $page=1, int $size=25, string $sort = ' expire DESC, createtime DESC ' ){
+    public function listItemPermission( string $userid, string $itemtype, string $status='enabled', int $page=1, int $size=25, string $sort = ' expire DESC, createtime DESC ' ): ASResult
+    {
 
         if ( $this->countItemPermission($userid,$itemtype,$status)->getContent()===0) {
 
@@ -85,9 +87,10 @@ class AccessPermission extends ASModel{
      * 查看权限携带信息
      * getPermissionInfo
      * @param  string  $permissionid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getPermissionInfo( string $permissionid ){
+    public function getPermissionInfo( string $permissionid ): ASResult
+    {
 
         $detail = $this->detail($permissionid);
 
@@ -102,9 +105,10 @@ class AccessPermission extends ASModel{
      * @param  string  $userid
      * @param  string  $itemid
      * @param  string  $itemtype
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function checkItemPermission( string $userid, string $itemid, string $itemtype ){
+    public function checkItemPermission( string $userid, string $itemid, string $itemtype ): ASResult
+    {
 
         $t = time();
         $list = $this->list(['expire'=>"[[>]]$t",'userid'=>$userid,'itemid'=>$itemid,'itemtype'=>$itemtype],1,25,'expire DESC, createtime DESC');
@@ -121,9 +125,10 @@ class AccessPermission extends ASModel{
      * @param  int     $expire
      * @param  null    $info
      * @param  string  $status
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function setItemPermission( string $userid, string $itemid, string $itemtype, int $expire, $info = null, string $status = 'enabled' ){
+    public function setItemPermission( string $userid, string $itemid, string $itemtype, int $expire, $info = null, string $status = 'enabled' ): ASResult
+    {
 
         if( $this->countItemPermission($userid,$itemid,$itemtype,null,'enabled') > 0){
 
@@ -146,9 +151,10 @@ class AccessPermission extends ASModel{
      * @param  string  $userid
      * @param  string  $itemid
      * @param  string  $itemtype
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function setItemExpired( string $userid, string $itemid, string $itemtype ){
+    public function setItemExpired( string $userid, string $itemid, string $itemtype ): ASResult
+    {
 
         return $this->setItemPermission($userid,$itemid,$itemtype,0);
 

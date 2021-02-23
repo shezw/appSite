@@ -43,6 +43,7 @@ define("CONFIG",[
 
     'REDIS_HOST'               => '{{redis.host}}',
     'REDIS_PORT'               => {{redis.port}},
+    'REDIS_DB'                 => {{redis.db}},
 
     'SERVER_IP'                => '{{server.ip}}',
 
@@ -200,8 +201,8 @@ define("CONFIG",[
         'SMTP_REPLY_ACCOUNT'   =>  null,         // 回复邮箱地址
         'SMTP_DM_ACCOUNT'      =>  null ,        // 广告邮箱地址
         'SMTP_DM_PASS'         =>  null ,        // 广告邮箱密码
-        'SMTP_SUPPORT_ACCOUNT' =>  null ,	     // 服务邮箱地址
-        'SMTP_SUPPORT_PASS'    =>  null ,	     // 服务邮箱密码
+        'SMTP_SUPPORT_ACCOUNT' =>  null ,        // 服务邮箱地址
+        'SMTP_SUPPORT_PASS'    =>  null ,        // 服务邮箱密码
 
     ],
 
@@ -212,7 +213,7 @@ define("CONFIG",[
     'QQSMTP_DM_ACCOUNT'       => null ,   // 广告邮箱地址
     'QQSMTP_DM_PASS'          => null ,   // 广告邮箱密码
     'QQSMTP_SUPPORT_ACCOUNT'  => null ,   // 服务邮箱地址
-    'QQSMTP_SUPPORT_PASS'     => null ,	// 服务邮箱密码
+    'QQSMTP_SUPPORT_PASS'     => null , // 服务邮箱密码
     'QQSMTP_REPLY_ACCOUNT'    => null,    // 回复邮箱地址
 
     /* 媒体上传管理设置 */

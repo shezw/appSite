@@ -39,7 +39,7 @@ class I18n{
 
     /**
      * 缓存数据库
-     * @var \APS\ASRedis
+     * @var ASRedis
      */
 	private $Redis;
 
@@ -96,7 +96,7 @@ class I18n{
      * @param  String  $lang
      * @param  bool    $forceRefresh  强制刷新语言包
      */
-	public function setLang( String $lang , bool $forceRefresh = false ):void {
+	public function setLang( String $lang , bool $forceRefresh = false ) {
 	    $this->lang = $lang;
 
         $this->loadDictionary($forceRefresh);
@@ -111,7 +111,7 @@ class I18n{
      * 检查语言包是否加载
      * checkDictionary
      */
-	public function checkDictionary():void {
+	public function checkDictionary() {
         if( !$this->dictionaryLoaded ){
             $this->loadDictionary();
         }
@@ -122,7 +122,7 @@ class I18n{
      * loadDictionary
      * @param bool $refresh 强制刷新
      */
-    public function loadDictionary( bool $refresh = false ):void{
+    public function loadDictionary( bool $refresh = false ){
 
         if( !$this->getRedis()->isEnabled() ){
             _ASError()->add( ASResult::shared(606,"Redis is not enabled",null,'I18N->loadDictionary') );
@@ -148,7 +148,7 @@ class I18n{
      * @param  string  $directory
      * @param  bool    $refresh
      */
-    public function supplementWith( string $directory, bool $refresh = false ):void{
+    public function supplementWith( string $directory, bool $refresh = false ){
 
         $fileID = "i18n_{$directory}_{$this->lang}";
         if( !in_array( $directory,$this->customDirectories ) ){
@@ -177,7 +177,7 @@ class I18n{
      * cacheToRedis
      * @param  string  $fileID
      */
-    private function cacheToRedis( string $fileID ):void{
+    private function cacheToRedis( string $fileID ){
 
         foreach ( $this->dictionary as $key => $value ){
 
@@ -227,7 +227,7 @@ class I18n{
      * checkClientLanguage
      * @return string|null
      */
-    public function checkClientLanguage(): ?string {
+    public function checkClientLanguage() {
 
         $lang = explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE'])[0];
 

@@ -73,7 +73,7 @@ class Website extends ASRoute {
     {
         parent::__construct($pathFormat, 'HTML');
 
-        $theme = getConfig("theme",'WEBSITE') ?? 'default';
+        $theme = getConfig("theme",'WEBSITE') ?? 'boomerang';
         $sitePath = getConfig('SITE_PATH') ?? '/';
         $this->constants = [
             'SiteDir'   => SITE_DIR,

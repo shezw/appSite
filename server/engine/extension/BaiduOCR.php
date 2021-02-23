@@ -25,7 +25,14 @@ class BaiduOCR extends ASObject{
         $this->sk = $sk ?? getConfig('ORC_BAIDU_SK','BAIDUYUN');
     }
 
-    public function passportOCR( string $url ){
+    /**
+     * 获取护照信息
+     * Get passport by OCR
+     * @param string $url
+     * @return ASResult
+     */
+    public function passportOCR( string $url ): ASResult
+    {
 
         $ocr = new AipOcr($this->id,$this->ak,$this->sk);
         $res = $ocr->passport(AliyunOSS::getBase64($url,true));
@@ -52,7 +59,14 @@ class BaiduOCR extends ASObject{
 
     }
 
-    public function companyOCR( string $url ){
+    /**
+     * Get Company Data by OCR
+     * 获取企业信息
+     * @param string $url
+     * @return ASResult
+     */
+    public function companyOCR( string $url ): ASResult
+    {
 
         $ocr = new AipOcr($this->id,$this->ak,$this->sk);
         $res = $ocr->businessLicense(AliyunOSS::getBase64($url,true));

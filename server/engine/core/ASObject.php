@@ -34,7 +34,8 @@ abstract class ASObject{
      * @param $content
      * @return $this
      */
-	public function take( $content ){
+	public function take( $content ): ASObject
+    {
 		$this->setContent( $content );
 		return $this;
 	}

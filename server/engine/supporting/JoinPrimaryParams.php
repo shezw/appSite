@@ -78,7 +78,7 @@ class JoinPrimaryParams{
      * common
      * @param  string       $modelClass
      * @param  string|null  $key
-     * @return \APS\JoinPrimaryParams
+     * @return JoinPrimaryParams
      */
     public static function common( string $modelClass, string $key = null ):JoinPrimaryParams{
         return new JoinPrimaryParams($modelClass,$key);
@@ -98,7 +98,8 @@ class JoinPrimaryParams{
      * @param  string  $table
      * @return $this
      */
-    public function at( string $table ){
+    public function at( string $table ): JoinPrimaryParams
+    {
         $this->table = $table;
         return $this;
     }
@@ -110,7 +111,8 @@ class JoinPrimaryParams{
      * @param  array | string  $fields
      * @return $this
      */
-    public function get( $fields ){
+    public function get( $fields ): JoinPrimaryParams
+    {
 
         $this->fields = $fields;
         return $this;
@@ -124,7 +126,8 @@ class JoinPrimaryParams{
      * @param  string|null  $as
      * @return $this
      */
-    public function sum( string $field, string $as = null ){
+    public function sum( string $field, string $as = null ): JoinPrimaryParams
+    {
 
         if( !in_array($field,$this->sum) ){
             $this->sum[] = $field;
@@ -141,7 +144,8 @@ class JoinPrimaryParams{
      * @param  string|null  $as
      * @return $this
      */
-    public function count( string $field, string $as = null ){
+    public function count( string $field, string $as = null ): JoinPrimaryParams
+    {
         if( !in_array($field,$this->count) ){
             $this->count[] = $field;
             $this->countAs[] = $as ?? "count_{$this->table}_{$field}";
@@ -155,17 +159,27 @@ class JoinPrimaryParams{
      * @param $field
      * @return $this
      */
-    public function groupBy( $field ){
+    public function groupBy( $field ): JoinPrimaryParams
+    {
         if( !in_array($field,$this->group) ){
             $this->group[] = $field;
         }
         return $this;
     }
 
-    public function withResultFilter( array $filter = null ){
+    public function withResultFilter( array $filter = null ): JoinPrimaryParams
+    {
         $this->conditions = $filter;
         return $this;
     }
 
+    public function toArray():array{
 
+        return [
+            'class'=>$this->modelClass,
+            'table'=>$this->table,
+            'key'=>$this->key,
+            'fields'=>$this->fields
+        ];
+    }
 }

@@ -42,9 +42,10 @@ class UserComment extends ASModel{
      *                                 featured
      *                                 createtime
      *                                 lasttime
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function commentList( string $itemid , string $itemType, $page=1, $size=25 , $sort = null, array $moreFilters = null ){
+    public function commentList( string $itemid , string $itemType, $page=1, $size=25 , $sort = null, array $moreFilters = null ): ASResult
+    {
 
         $filter = $moreFilters ?? [];
         $filter['itemid'] = $itemid;
@@ -67,9 +68,10 @@ class UserComment extends ASModel{
      *                                 status
      *                                 createtime
      *                                 lasttime
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countComment( string $itemid , string $itemType, array $moreFilters = null ){
+    public function countComment( string $itemid , string $itemType, array $moreFilters = null ): ASResult
+    {
 
         $filter = $moreFilters ?? [];
         $filter['itemid'] = $itemid;
@@ -87,7 +89,8 @@ class UserComment extends ASModel{
      * @param  array|null  $moreFilters
      * @return bool
      */
-    public function isCommented( string $itemid , string $itemType, array $moreFilters = null ){
+    public function isCommented( string $itemid , string $itemType, array $moreFilters = null ): bool
+    {
 
         return $this->countComment( $itemid,$itemType,$moreFilters )->getContent() > 0;
     }
@@ -109,9 +112,10 @@ class UserComment extends ASModel{
      *                                 featured
      *                                 createtime
      *                                 lasttime
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function replyList( string $uid , $page=1, $size=25 , $sort = null, array $moreFilters = null ){
+    public function replyList( string $uid , $page=1, $size=25 , $sort = null, array $moreFilters = null ): ASResult
+    {
 
         $filter = $moreFilters ?? [];
         $filter['itemid'] = $uid;
@@ -135,9 +139,10 @@ class UserComment extends ASModel{
      *                                 featured
      *                                 createtime
      *                                 lasttime
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countReply( string $uid, array $moreFilters = null ){
+    public function countReply( string $uid, array $moreFilters = null ): ASResult
+    {
 
         $filter = $moreFilters ?? [];
         $filter['itemid'] = $uid;
@@ -154,7 +159,8 @@ class UserComment extends ASModel{
      * @param  array|null  $moreFilters
      * @return bool
      */
-    public function isReplied( string $uid , array $moreFilters = null ){
+    public function isReplied( string $uid , array $moreFilters = null ): bool
+    {
 
         return $this->countReply( $uid,$moreFilters )->getContent() > 0;
     }
@@ -171,9 +177,10 @@ class UserComment extends ASModel{
      * @param  int         $size
      * @param  null        $sort
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function myCommentList( string $itemid , string $itemType, $page=1, $size=25 , $sort = null, array $moreFilters = null ){
+    public function myCommentList( string $itemid , string $itemType, $page=1, $size=25 , $sort = null, array $moreFilters = null ): ASResult
+    {
 
         if( isset($this->userid) ){ return $this->error(150,'Need Userid instance','UserComment->myCommentList'); }
 
@@ -189,9 +196,10 @@ class UserComment extends ASModel{
      * @param  string      $itemid
      * @param  string      $itemType
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countMyComment( string $itemid , string $itemType, array $moreFilters = null ){
+    public function countMyComment( string $itemid , string $itemType, array $moreFilters = null ): ASResult
+    {
 
         if( isset($this->userid) ){ return $this->error(150,'Need Userid instance','UserComment->myCommentList'); }
 
@@ -207,7 +215,7 @@ class UserComment extends ASModel{
      * @param  string      $itemid
      * @param  string      $itemType
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult|bool
+     * @return ASResult|bool
      */
     public function hasCommenedTo( string $itemid , string $itemType, array $moreFilters = null ){
 
@@ -228,9 +236,10 @@ class UserComment extends ASModel{
      * @param  int         $size
      * @param  null        $sort
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function myReplyList( string $uid , $page=1, $size=25 , $sort = null, array $moreFilters = null ){
+    public function myReplyList( string $uid , $page=1, $size=25 , $sort = null, array $moreFilters = null ): ASResult
+    {
 
         if( isset($this->userid) ){ return $this->error(150,'Need Userid instance','UserComment->myCommentList'); }
 
@@ -245,9 +254,10 @@ class UserComment extends ASModel{
      * countMyReply
      * @param  string      $uid
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countMyReply( string $uid, array $moreFilters = null ){
+    public function countMyReply( string $uid, array $moreFilters = null ): ASResult
+    {
 
         if( isset($this->userid) ){ return $this->error(150,'Need Userid instance','UserComment->myCommentList'); }
 
@@ -262,7 +272,7 @@ class UserComment extends ASModel{
      * hasRepliedTo specific comment
      * @param  string  $uid
      * @param  array   $moreFilters
-     * @return \APS\ASResult|bool
+     * @return ASResult|bool
      */
     public function hasRepliedTo( string $uid, array $moreFilters){
 

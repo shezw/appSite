@@ -93,7 +93,7 @@ class UserPocket extends ASModel{
      * 初始化用户钱包
      * init
      * @param  array  $params
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function init( array $params ):ASResult {
 
@@ -108,9 +108,10 @@ class UserPocket extends ASModel{
      * addition
      * @param  int     $size
      * @param  string  $field
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function addition( int $size = 1, string $field = 'point' ){
+    public function addition( int $size = 1, string $field = 'point' ): ASResult
+    {
 
         $this->params = ['field'=>$field,'conditions'=>"userid='{$this->userid}'",'size'=>$size];
         $this->result = $this->getDB()->increase($field,static::$table,['userid'=>$this->userid],$size);
@@ -128,9 +129,10 @@ class UserPocket extends ASModel{
      *
      * @param  int     $size
      * @param  string  $field
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function reduce( int $size = 1, string $field = 'point' ){
+    public function reduce( int $size = 1, string $field = 'point' ): ASResult
+    {
 
         $this->params = ['field'=>$field,'conditions'=>["userid"=>$this->userid],'size'=>$size];
         $this->result = $this->getDB()->decrease($field,static::$table,["userid"=>$this->userid],$size);
@@ -143,9 +145,10 @@ class UserPocket extends ASModel{
      * 增加积分
      * addition point
      * @param  int  $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function additionPoint( int $size = 1 ){
+    public function additionPoint( int $size = 1 ): ASResult
+    {
 
         return $this->addition($size,'point');
     }
@@ -154,9 +157,10 @@ class UserPocket extends ASModel{
      * 减少积分
      * reduce point
      * @param  int  $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function reducePoint( int $size = 1 ){
+    public function reducePoint( int $size = 1 ): ASResult
+    {
 
         return $this->reduce($size,'point');
     }
@@ -165,9 +169,10 @@ class UserPocket extends ASModel{
      * 增加余额
      * addition balance
      * @param  int  $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function additionBalance( int $size = 1 ){
+    public function additionBalance( int $size = 1 ): ASResult
+    {
 
         return $this->addition($size,'balance');
     }
@@ -176,9 +181,10 @@ class UserPocket extends ASModel{
      * 减少余额
      * reduce balance
      * @param  int  $size
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function reduceBalance( int $size = 1 ){
+    public function reduceBalance( int $size = 1 ): ASResult
+    {
 
         return $this->reduce($size,'balance');
     }
@@ -188,9 +194,10 @@ class UserPocket extends ASModel{
      * 钱包余额
      * balance
      * @param  string  $mode
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function balance( string $mode = 'point' ){ // balance | point
+    public function balance( string $mode = 'point' ): ASResult
+    { // balance | point
 
         return $this->get($mode,$this->userid);
     }
@@ -202,7 +209,8 @@ class UserPocket extends ASModel{
      * @param  string  $mode      钱包或积分
      * @return bool
      */
-    public function enough( $quantity, $mode='point' ){
+    public function enough( $quantity, $mode='point' ): bool
+    {
 
         $quantity = (double)$quantity;
         return $this->count(['userid'=>$this->userid,$mode=>"[[>=]]$quantity"])['content']>0;
@@ -214,7 +222,8 @@ class UserPocket extends ASModel{
      * @param  int  $size
      * @return bool
      */
-    public function enoughBalance( int $size = 1 ){
+    public function enoughBalance( int $size = 1 ): bool
+    {
 
         return $this->enough($size,'balance');
     }
@@ -224,7 +233,8 @@ class UserPocket extends ASModel{
      * @param  int  $size
      * @return bool
      */
-    public function enoughPoint( int $size = 1 ){
+    public function enoughPoint( int $size = 1 ): bool
+    {
 
         return $this->enough($size,'point');
     }
@@ -232,31 +242,31 @@ class UserPocket extends ASModel{
     /**
      * 禁用钱包
      * blockPocket
-     * @param  string|null  $userid
-     * @return \APS\ASResult
+     * @param  string|null  $uid
+     * @return ASResult
      */
-    public function block(string $userid = null){ return $this->status($this->userid,'blocked'); }
+    public function block(string $uid = null): ASResult{ return $this->status($this->userid,'blocked'); }
 
     /**
      * 锁定钱包
      * lock
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function lock(){ return $this->status($this->userid,'locked'); }
+    public function lock():ASResult { return $this->status($this->userid,'locked'); }
 
     /**
      * 解除锁定钱包
      * unlock
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function unlock(){ return $this->status($this->userid,'enabled'); }
+    public function unlock():ASResult { return $this->status($this->userid,'enabled'); }
 
     /**
      * 异常锁定钱包
      * exception
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function exception(){ return $this->status($this->userid,'exception'); }
+    public function exception():ASResult { return $this->status($this->userid,'exception'); }
 
 
     /**
@@ -264,7 +274,8 @@ class UserPocket extends ASModel{
      * isLocked
      * @return bool
      */
-    public function isLocked( ){
+    public function isLocked( ): bool
+    {
 
         return $this->count(['userid'=>$this->userid,'status'=>"[[IN]]('locked','exception') "])->getContent() >0;
 
@@ -274,9 +285,10 @@ class UserPocket extends ASModel{
      * 清算账户
      * clearPocket
      * @param  string  $mode
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function clear( string $mode='balance' ){
+    public function clear( string $mode='balance' ): ASResult
+    {
 
         $this->record('POCKET_CLEAR','POCKET->clear',['mode'=>$mode,'userid'=>$this->userid]);
 

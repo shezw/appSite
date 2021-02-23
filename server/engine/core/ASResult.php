@@ -57,7 +57,7 @@ class ASResult
      * @param  string|null  $message
      * @param  null         $content
      * @param  string|null  $sign
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public static function shared( int $status = 0, string $message = null, $content = null, string $sign = null ):ASResult{
         $result = new static();
@@ -102,7 +102,7 @@ class ASResult
      * 设置状态码 SetStatus
      * @param  Int  $status
      */
-    public function setStatus( Int $status ):void{
+    public function setStatus( Int $status ){
         $this->status = $status;
     }
 
@@ -118,7 +118,7 @@ class ASResult
      * 设置消息 setMessage
      * @param  String  $msg
      */
-    public function setMessage( String $msg ):void {
+    public function setMessage( String $msg ) {
         $this->message = $msg;
     }
 
@@ -134,7 +134,7 @@ class ASResult
      * 设置主体内容 setContent
      * @param $content
      */
-    public function setContent( $content ):void {
+    public function setContent( $content ) {
         $this->content = $content;
     }
 
@@ -150,7 +150,7 @@ class ASResult
      * 设置签名 setSign
      * @param  String  $sign
      */
-    public function setSign( String $sign ):void {
+    public function setSign( String $sign ) {
         $this->sign = $sign;
     }
 

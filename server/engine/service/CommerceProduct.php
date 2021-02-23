@@ -47,6 +47,7 @@ class CommerceProduct extends ASModel{
         'viewtimes','sort','featured','status','createtime','lasttime'
     ];
     public static $depthStruct  = [
+        'details'=>'ASJson',
         'features'=>'ASJson',
         'isvirtual'=>'int',
         'price'=>'float',

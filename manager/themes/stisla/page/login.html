@@ -1,0 +1,68 @@
+<div id="app">
+    <section class="section">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+                    <div class="login-brand">
+                        <img src="{{constants.siteLogoW}}" alt="logo" width="100" class="shadow-light rounded-circle">
+                    </div>
+
+                    [if[::error::
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>{{error.message}}</strong>
+
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+
+                    </div>]if]
+
+                    [if[::maxErrorTimes>3::
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{i18n{ manager.loginErrorWarning }i18n}</strong>
+
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>]if]
+
+                    <div class="card card-primary">
+                        <div class="card-header"><h4>{i18n{ manager.login }i18n}</h4></div>
+
+                        <div class="card-body">
+                            <form method="POST" action="loginProcess" class="needs-validation" novalidate="">
+                                <div class="form-group">
+                                    <label for="account">{i18n{ manager.account }i18n}</label>
+                                    <input id="account" type="text" class="form-control"  placeholder="{i18n{ manager.accountPlaceHolder }i18n}" name="account" requiredtabindex="1" required autofocus>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="d-block">
+                                        <label for="password" class="control-label">{i18n{ manager.password }i18n}</label>
+                                        <div class="float-right">
+                                            <a href="findPassword" class="text-small">
+                                                {i18n{ manager.forgetPass }i18n}?
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <input id="password" type="password" class="form-control form-control-appended" placeholder="{i18n{ manager.enterPassword }i18n}" name="password" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                                        {i18n{ manager.login }i18n}
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="simple-footer">
+                        Copyright &copy; {{description}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

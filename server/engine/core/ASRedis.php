@@ -33,6 +33,7 @@ class ASRedis extends ASObject{
      * @var \Redis | null
      */
 	private $connection;
+
 	private $connected = false;
 	private $enabled = 0;
 
@@ -67,7 +68,7 @@ class ASRedis extends ASObject{
         $this->host = $host ?? CONFIG['REDIS_HOST'] ?? '127.0.0.1';
         $this->port = $port ?? CONFIG['REDIS_PORT'] ?? 6379;
 		$this->password = $password;
-        $this->dbId = $dbId;
+        $this->dbId = $dbId ?? CONFIG['REDIS_DB'] ?? 1;
 
 		$this->connect();
 	}
@@ -89,7 +90,8 @@ class ASRedis extends ASObject{
 	 * connect to Redis
 	 * @return   ASRedis ( 连接尝试后会修改 enabled属性 成功1 失败-1 默认0 )
 	 */
-	public function connect(){
+	public function connect(): ASRedis
+    {
 
 		if(!class_exists('Redis')){
             _ASError()->add( $this->error(2000,'Redis Class not exist.','ASRedis->connect') );
@@ -123,7 +125,8 @@ class ASRedis extends ASObject{
 	 * isEnabled
 	 * @return   boolean
 	 */
-	public function isEnabled(){
+	public function isEnabled(): bool
+    {
 
 		$this->connect();
 
@@ -136,7 +139,8 @@ class ASRedis extends ASObject{
 	 * close
 	 * @return   boolean
 	 */
-	public function close(){
+	public function close(): bool
+    {
 
 		if( $this->connected ){
 
@@ -156,10 +160,11 @@ class ASRedis extends ASObject{
 	 * cache
 	 * @param    mixed                 $params         操作参数(将自动转为hash)
 	 * @param    mixed                 $value          值
-	 * @param    int|integer           $expireDuration 有效时间
+	 * @param    int                   $expireDuration 有效时间
 	 * @return   bool
 	 */
-	public function cache( $params, $value , int $expireDuration = 3600 ){
+	public function cache( $params, $value , int $expireDuration = 3600 ): bool
+    {
 
 		$this->sign('ASRedis->cache');
 
@@ -175,7 +180,8 @@ class ASRedis extends ASObject{
 	 * @param    mixed           $params         查询参数
 	 * @return   boolean
 	 */
-	public function has( $params ){
+	public function has( $params ): bool
+    {
 
 		$this->sign('ASRedis->has');
 		$hashID = is_string($params) ? $params : Encrypt::hashID($params);
@@ -186,9 +192,10 @@ class ASRedis extends ASObject{
      * 获取缓存
 	 * read cache
 	 * @param    mixed           $params     查询参数
-	 * @return   \APS\ASResult
+	 * @return   ASResult
 	 */
-	public function read( $params ){
+	public function read( $params ): ASResult
+    {
 
 		$this->sign('ASRedis->read');
 		$hashID = is_string($params) ? $params : Encrypt::hashID($params);
@@ -214,7 +221,8 @@ class ASRedis extends ASObject{
 	 * @return   boolean
 	 *@version  1.0
 	 */
-	public function track(string $setid, string $uniqueId, $hashID ){
+	public function track(string $setid, string $uniqueId, $hashID ): bool
+    {
 
 		if( gettype($hashID) == 'array' ){ $hashID = is_string($hashID) ? $hashID : Encrypt::hashID($hashID); }
 		return $this->connection->sAdd("$setid:$uniqueId",$hashID);
@@ -231,7 +239,8 @@ class ASRedis extends ASObject{
 	 * @param    string                   $uniqid         表唯一ID
 	 * @return bool
 	 */
-	public function clear( string $setid, string $uniqid ){
+	public function clear( string $setid, string $uniqid ): bool
+    {
 
 		$this->sign('ASRedis->clear');
 
@@ -263,10 +272,11 @@ class ASRedis extends ASObject{
      * set key & value
      * @param  string       $key
      * @param  string       $value
-     * @param  int|integer  $expireDuration
+     * @param  int          $expireDuration
      * @return bool
      */
-	public function set( $key , $value , int $expireDuration = 0 ){
+	public function set( $key , $value , int $expireDuration = 0 ): bool
+    {
 
 		if( $expireDuration>0 ){
 
@@ -285,7 +295,8 @@ class ASRedis extends ASObject{
 
 	}
 
-	public function remove( $key ){
+	public function remove( $key ): int
+    {
 
 		return $this->connection->del($key);
 
@@ -316,7 +327,8 @@ class ASRedis extends ASObject{
         }
     }
 
-	public function analysisKeys(){
+	public function analysisKeys(): array
+    {
 
 		$keys = $this->connection->keys('*');
 
@@ -346,7 +358,8 @@ class ASRedis extends ASObject{
 
 	}
 
-	public function flush(){
+	public function flush(): bool
+    {
 
 		return $this->connection->flushDb();
 

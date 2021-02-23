@@ -98,7 +98,7 @@ class IBChain extends ASModel {
      *                                 5. 比对当前块和临时块的Hash是否相同
      *                                 5.1 相同 插入成功
      *                                 5.2 不同 插入失败
-     * @return \APS\ASResult|\APS\Block
+     * @return ASResult|Block
      */
     public function addBlock($content, string $userid = null, string $itemid = null, string $itemtype = null, string $saasid = null ){
 
@@ -153,7 +153,8 @@ class IBChain extends ASModel {
      * isAdding
      * @return bool
      */
-    public function isAdding(){
+    public function isAdding(): bool
+    {
 
         if(_ASSetting()->switchStatus('locking','IBChain')){
             return true;
@@ -166,7 +167,7 @@ class IBChain extends ASModel {
     /**
      * 标记正在添加
      * markAdding
-     * @return \APS\ASResult|bool
+     * @return ASResult|bool
      */
     public function markAdding(){
         return _ASSetting()->switchOn('locking','IBChain');
@@ -175,7 +176,7 @@ class IBChain extends ASModel {
     /**
      * 结束添加状态
      * endAdding
-     * @return \APS\ASResult|bool
+     * @return ASResult|bool
      */
     public function endAdding(){
         return _ASSetting()->switchOff('locking','IBChain');
@@ -186,7 +187,8 @@ class IBChain extends ASModel {
      * verify
      * @return  bool
      */
-    public function verify(){
+    public function verify(): bool
+    {
 
         if(empty($this->context) && $this->current['content']['id']===1 ){
             return true;
@@ -204,9 +206,10 @@ class IBChain extends ASModel {
      * 从数据建立块
      * getBlockFromData
      * @param  array  $blockInfo
-     * @return \APS\Block
+     * @return Block
      */
-    public function getBlockFromData( array $blockInfo ){
+    public function getBlockFromData( array $blockInfo ): Block
+    {
 
         return new Block( $blockInfo['data'], $blockInfo['index'], $blockInfo['timestamp'], $blockInfo['hash'] );
 
@@ -215,9 +218,10 @@ class IBChain extends ASModel {
     /**
      * 创建创世区块
      * init Creation Block
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function initCreation(){
+    public function initCreation(): ASResult
+    {
 
         $time = time();
         $info = [ 'engine'=>'appsite','createtime'=>$time ];

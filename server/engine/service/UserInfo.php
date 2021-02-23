@@ -20,6 +20,7 @@ namespace APS;
         - weiboid      微博ID
         - appleUUID    苹果UUID
         - qqid         qqID
+        - deviceID     设备ID     用于推送等功能
         - status       状态 enabled
         - realstatus   实名状态
  * @package APS\service\User
@@ -39,7 +40,7 @@ class UserInfo extends ASModel{
         'gallery',
         'realname','idnumber',
         'country','province','city','company',
-        'wechatid','weiboid','qqid','appleUUID',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
         'status','realstatus',
     ];
     public static $updateFields = [
@@ -47,7 +48,7 @@ class UserInfo extends ASModel{
         'gallery',
         'realname','idnumber',
         'country','province','city','company',
-        'wechatid','weiboid','qqid','appleUUID',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
         'status','realstatus',
     ];
     public static $detailFields = [
@@ -55,14 +56,14 @@ class UserInfo extends ASModel{
         'gallery',
         'realname','idnumber',
         'country','province','city','company',
-        'wechatid','weiboid','qqid','appleUUID',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
         'status','realstatus',
     ];
     public static $publicDetailFields = [
         'userid','vip','vipexpire',
         'gallery',
         'realname','idnumber',
-        'country','province','city','company',
+        'country','province','city','company','deviceID',
         'status','realstatus',
     ];
     public static $overviewFields = [
@@ -76,7 +77,7 @@ class UserInfo extends ASModel{
         'userid','vip','vipexpire',
         'realname','idnumber',
         'country','province','city','company',
-        'wechatid','weiboid','qqid','appleUUID',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
         'status','realstatus',
     ];
     public static $publicListFields = [
@@ -89,7 +90,7 @@ class UserInfo extends ASModel{
         'userid','vip','vipexpire',
         'realname','idnumber',
         'country','province','city','company',
-        'wechatid','weiboid','qqid','appleUUID',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
         'status','realstatus',
     ];
     public static $depthStruct = [
@@ -100,7 +101,7 @@ class UserInfo extends ASModel{
         'gallery'=>'ASJson',
     ];
 
-    function __construct( ?string $userid = null ){
+    function __construct( string $userid = null ){
 
         parent::__construct(true);
         $this->userid = $userid;
@@ -110,7 +111,7 @@ class UserInfo extends ASModel{
      * 初始化用户信息
      * init
      * @param  array  $params
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function init( array $params ):ASResult {
 

@@ -57,9 +57,10 @@ class Block{
      * 新块
      * new block
      * @param $data
-     * @return \APS\Block
+     * @return Block
      */
-    public function add( $data ){
+    public function add( $data ): Block
+    {
 
         return new Block( $data, $this->index+1, time(), $this->generateHash() );
     }
@@ -69,7 +70,8 @@ class Block{
      * generateHash
      * @return string
      */
-    public function generateHash(  ){
+    public function generateHash(  ): string
+    {
 
         return hash('sha256',$this->encode());
     }
@@ -89,11 +91,13 @@ class Block{
         ],256);
     }
 
-    public function getId(){
+    public function getId(): int
+    {
         return $this->index;
     }
 
-    public function getHash(){
+    public function getHash(): string
+    {
         return $this->hash;
     }
 

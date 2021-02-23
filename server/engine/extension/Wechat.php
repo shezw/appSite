@@ -94,7 +94,7 @@ class Wechat extends ASObject{
     /**
      * 通用单例
      * common
-     * @return \APS\Wechat
+     * @return Wechat
      */
     public static function common():Wechat{
         return new Wechat();
@@ -109,14 +109,15 @@ class Wechat extends ASObject{
      *                        userid        ?string
      *                        callbackurl   ?string
      * @param  string  $callbackURI
-     * @return \APS\ASResult | void
+     * @return ASResult | void
      */
-    public function getInfo($params, string $callbackURI = 'wxLogin' ){
+    public function getInfo($params, string $callbackURI = 'wxLogin' ): ASResult
+    {
 
         if (isset($params['code'])) {
             return $this->oauthCallback($params);
         }else{
-            return $this->oauthRequest($params,$callbackURI);
+            $this->oauthRequest($params,$callbackURI);
         }
 
     }
@@ -150,9 +151,10 @@ class Wechat extends ASObject{
      * 网页授权回调 接收用户信息
      * oauthCallback
      * @param $params
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function oauthCallback($params) {
+    public function oauthCallback($params): ASResult
+    {
 
         $isPc     = isset($params['device']) && $params['device']!=='mobile';
         $wechat   = $isPc ? new \WeOpen\Oauth($this->getConfig()) : new \WeChat\Oauth($this->getConfig());
@@ -194,9 +196,10 @@ class Wechat extends ASObject{
      * 微信小程序快速登录
      * miniProgramLogin
      * @param $params
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function miniProgramLogin( $params ){
+    public function miniProgramLogin( $params ): ASResult
+    {
 
         $config = [ 'appid'=> getConfig('WXMINI_ID','WECHAT'), 'appsecret'=> getConfig('WXMINI_SECRET','WECHAT') ];
 
@@ -223,9 +226,10 @@ class Wechat extends ASObject{
      * oauthLogin
      * @param          $params
      * @param  string  $scope
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function oauthLogin( $params , $scope = 'common' ){
+    public function oauthLogin( $params , $scope = 'common' ): ASResult
+    {
 
         $userInfo = isset($params['unionid'])||isset($params['openid']) ? $params : $this->getInfo($params,'miniProgram');
         $wechatid = $userInfo['unionid'] ?? $userInfo['openid'];
@@ -285,9 +289,10 @@ class Wechat extends ASObject{
      * 绑定微信
      * bind wechatid to user account
      * @param $params
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function bind( $params ){
+    public function bind( $params ): ASResult
+    {
 
         $userInfo = isset($params['unionid'])||isset($params['openid']) ? $params : $this->getInfo($params,'bindWechat');
         $wechatid = $userInfo['unionid'] ?? $userInfo['openid'];
@@ -309,9 +314,10 @@ class Wechat extends ASObject{
      * jsapiPay
      * @param $openid
      * @param $order
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function jsapiPay( string $openid, CommerceOrder $order ){
+    public function jsapiPay( string $openid, CommerceOrder $order ): ASResult
+    {
 
         $wechat = new \WeChat\Pay($this->getConfig());
 
@@ -396,9 +402,10 @@ class Wechat extends ASObject{
      * refund
      * @param  string    $orderid
      * @param  int|NULL  $refundAmount      单位统一为分 即 amount 100 = 1元
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function refund( string $orderid, int $refundAmount = null ){
+    public function refund( string $orderid, int $refundAmount = null ): ASResult
+    {
 
         // 获得订单详情
         $order = CommerceOrder::instance($orderid);
@@ -433,9 +440,10 @@ class Wechat extends ASObject{
     /**
      * 退款回调
      * refundCallback
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function refundCallback(){
+    public function refundCallback(): ASResult
+    {
 
         $wechat   = new \WeChat\Pay($this->getConfig());
         try {
@@ -547,9 +555,10 @@ class Wechat extends ASObject{
      * 获取微信jssdk config
      * getJssdkConfig
      * @param $url
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getJssdkConfig($url){
+    public function getJssdkConfig($url): ASResult
+    {
 
         $wechat = new \WeChat\Script($this->getConfig());
 
@@ -568,7 +577,8 @@ class Wechat extends ASObject{
 
 
 
-    public static function getResultData( array $result ){
+    public static function getResultData( array $result ): array
+    {
 
         $data['paymenttradeno'] =  $result['transaction_id']         ;  // 微信支付订单号
         $data['orderid']        =  $result['out_trade_no']           ;  // 订单号

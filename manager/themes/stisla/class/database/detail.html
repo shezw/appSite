@@ -1,0 +1,92 @@
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1><a href="./view">{i18n{ manager.sidebar_systemSettingDatabase }i18n}</a> / <span class="small">{{table}} {i18n{ manager.tableDetail }i18n}</span></h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item"></div>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="tab-content">
+
+                                <div class="tab-pane table-responsive active mb-0" id="tab_mysql" data-toggle="lists" data-options='{"valueNames": ["goal-rows", "goal-length", "goal-size","goal-indexSize","goal-createTime","goal-lastTime"]}'>
+                                    <table class="table table-sm table-nowrap card-tablet table-striped" >
+                                        <thead>
+                                        <tr>
+
+                                            <th>{i18n{ mysql.columnComment }i18n}</th>
+                                            <th>{i18n{ mysql.fieldName }i18n}</th>
+                                            <th>{i18n{ mysql.fieldType }i18n}</th>
+                                            <th>{i18n{ mysql.isNullAble }i18n}</th>
+                                            <th>{i18n{ mysql.keyType }i18n}</th>
+                                            <th>{i18n{ mysql.defaultValue }i18n}</th>
+                                            <th>{i18n{ mysql.autoIncrement }i18n}</th>
+                                            <th>{i18n{ mysql.indexName }i18n}</th>
+                                            <th>{i18n{ mysql.indexType }i18n}</th>
+                                            <th>{i18n{ mysql.indexCount }i18n}</th>
+                                            <th>{i18n{ mysql.indexSortType }i18n}</th>
+
+                                            <th>
+
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="list">
+                                        ||loop??tableColumns??
+                                        <tr>
+                                            <td class='p-2'>{{COLUMN_COMMENT}}</td>
+                                            <td class='p-2'>{{COLUMN_NAME}}</td>
+                                            <td class='p-2'>{{COLUMN_TYPE}}</td>
+                                            <td class='p-2 [if[::IS_NULLABLE=NO::text-muted]if]'>{{IS_NULLABLE}}</td>
+                                            <td class='p-2'>{{COLUMN_KEY}}</td>
+                                            <td class='p-2'>{{COLUMN_DEFAULT}}</td>
+                                            <td class='p-2'>{{EXTRA}}</td>
+                                            <td class='p-2'>{{INDEX_NAME}}</td>
+                                            <td class='p-2'>{{INDEX_TYPE}}</td>
+                                            <td class='p-2'>{{CARDINALITY}}</td>
+                                            <td class='p-2'>{{COLLATION}}</td>
+                                            <td class="p-2 text-right">
+                                                <div class="dropdown">
+                                                    <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-h"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a href="#!" class="dropdown-item">
+                                                            Action
+                                                        </a>
+                                                        <a href="#!" class="dropdown-item">
+                                                            Another action
+                                                        </a>
+                                                        <a href="#!" class="dropdown-item">
+                                                            Something else here
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        loop||
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </section>
+</div>

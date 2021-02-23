@@ -34,7 +34,17 @@ if( file_exists( SERVER_DIR.'custom/autoload.php' ) ){
     include  SERVER_DIR.'custom/autoload.php';
 }
 
+if( file_exists(SERVER_DIR.'custom.php') ){
+    include SERVER_DIR.'custom.php';
+}
+
 //\APS\ASSetting::common()->set('regist',['title'=>'系统奖励','description'=>'注册平台用户成功','value'=>100,'limit'=>1],'注册平台用户成功','POINTBONUS_RULES');
 
 //_ASRedis()->flush();
-_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' , true );
+
+# Change the default language
+session_start();
+if( isset($_GET['setI18n']) ){ $_SESSION['i18n'] = $_GET['setI18n']; }
+
+_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' , false );
+//_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' , true );

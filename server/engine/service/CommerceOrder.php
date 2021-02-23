@@ -177,7 +177,8 @@ class CommerceOrder extends ASModel{
      * @param $uid
      * @return \APS\CommerceOrder
      */
-    public static function instance( string $uid ){
+    public static function instance( string $uid ): CommerceOrder
+    {
 
         $order = static::common();
         $order->initDetail($uid);
@@ -189,7 +190,7 @@ class CommerceOrder extends ASModel{
      * 实例化数据
      * initDetail
      * @param  string  $uid
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function initDetail( string $uid ):ASResult{
         if( $this->instantiated ){ return $this->success(); }
@@ -245,9 +246,10 @@ class CommerceOrder extends ASModel{
      * @param  string      $ticket
      * @param  array|null  $moreFilters
      * @param  bool        $publicMode
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getOrderByTicket( string $ticket , array $moreFilters = null, bool $publicMode = false ){
+    public function getOrderByTicket( string $ticket , array $moreFilters = null, bool $publicMode = false ): ASResult
+    {
 
         $ticketValidDuration = getConfig('ORDER_TICKET_VALID_DURATION') ?? 3600*24*60;
         $t = time()- $ticketValidDuration ;
@@ -269,9 +271,10 @@ class CommerceOrder extends ASModel{
      * getOrderPublicByTicket
      * @param  string      $ticket
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getOrderPublicByTicket( string $ticket, array $moreFilters = null ){
+    public function getOrderPublicByTicket( string $ticket, array $moreFilters = null ): ASResult
+    {
         return $this->getOrderByTicket($ticket,$moreFilters,true);
     }
 
@@ -285,9 +288,10 @@ class CommerceOrder extends ASModel{
      * @param  int         $size
      * @param  string      $sort
      * @param  bool        $publicMode
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function orderListByIdNumber( string $idNumber, array $moreFilters = null, int $page = 1, int $size = 15, string $sort = 'createtime DESC', bool $publicMode = false ){
+    public function orderListByIdNumber( string $idNumber, array $moreFilters = null, int $page = 1, int $size = 15, string $sort = 'createtime DESC', bool $publicMode = false ): ASResult
+    {
 
         $ticketValidDuration = getConfig('ORDER_TICKET_VALID_DURATION') ?? 0;
         $t = $ticketValidDuration>0 ? time()- $ticketValidDuration :0;
@@ -308,9 +312,10 @@ class CommerceOrder extends ASModel{
      * @param  int         $page
      * @param  int         $size
      * @param  string      $sort
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function orderPublicListByIdNumber(string $idNumber, array $moreFilters = null, int $page = 1, int $size = 15, string $sort = 'createtime DESC'){
+    public function orderPublicListByIdNumber(string $idNumber, array $moreFilters = null, int $page = 1, int $size = 15, string $sort = 'createtime DESC'): ASResult
+    {
         return $this->orderListByIdNumber( $idNumber,$moreFilters,$page,$size,$sort,true );
     }
 
@@ -319,9 +324,10 @@ class CommerceOrder extends ASModel{
      * 核销订单
      * writeOff
      * @param  string  $uid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function writeOff( string $uid ){
+    public function writeOff( string $uid ): ASResult
+    {
 
         $call = $this->successCall( $uid );
 
@@ -344,11 +350,12 @@ class CommerceOrder extends ASModel{
      * @param  int          $page
      * @param  int          $size
      * @param  string|NULL  $sort
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function listWithUserInfo( $params, int $page = 1, int $size=20, string $sort = null ){
+    public function listWithUserInfo( $params, int $page = 1, int $size=20, string $sort = null ): ASResult
+    {
 
-        return $this->joinList( $params, null, [JoinParams::common('APS\UserInfo')->at('userid')->equalTo('commerce_order.userid')->asSubData('user')], $page , $size , $sort);
+        return $this->joinList( $params, null, [JoinParams::init('APS\UserInfo')->at('userid')->equalTo('commerce_order.userid')->asSubData('user')], $page , $size , $sort);
 
     }
 
@@ -360,9 +367,10 @@ class CommerceOrder extends ASModel{
      * Run callback api
      * @param  string  $uid
      * @param  string  $mode
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function callback( string $uid, string $mode = 'callback' ){
+    public function callback( string $uid, string $mode = 'callback' ): ASResult
+    {
 
         $callbacks = $this->detail($uid)->getContent()[$mode];
 
@@ -381,16 +389,16 @@ class CommerceOrder extends ASModel{
 
 
     // 成功回调
-    public function successCall( string $uid ){ return $this->callback($uid,'callback'); }
+    public function successCall( string $uid ):ASResult{ return $this->callback($uid,'callback'); }
 
     // 退款回调
-    public function refundCall( string $uid ){ return $this->callback($uid,'refundcallback'); }
+    public function refundCall( string $uid ):ASResult{ return $this->callback($uid,'refundcallback'); }
 
     // 违约回调
-    public function breachCall( string $uid ){ return $this->callback($uid,'breachCallback'); }
+    public function breachCall( string $uid ):ASResult{ return $this->callback($uid,'breachCallback'); }
 
     // 清空回调
-    public function clearCall( string $uid, string $mode = 'ALL' ){
+    public function clearCall( string $uid, string $mode = 'ALL' ):ASResult{
 
         $data = $mode=='ALL' ? ['callback'=>'SET_NULL','refundcallback'=>'SET_NULL','breachcallback'=>'SET_NULL'] : [$mode=>'SET_NULL'];
         $data['status'] = 'done';
@@ -406,9 +414,10 @@ class CommerceOrder extends ASModel{
      * 订单支付成功回调
      * payback order
      * @param  string  $uid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function payback( string $uid ){
+    public function payback( string $uid ): ASResult
+    {
 
         $this->initDetail($uid);
 
@@ -446,7 +455,8 @@ class CommerceOrder extends ASModel{
      * @param  float   $paymentAmount
      * @return bool
      */
-    public function amountCheck( string $uid, float $paymentAmount ){
+    public function amountCheck( string $uid, float $paymentAmount ): bool
+    {
 
         $this->initDetail($uid);
 
@@ -459,7 +469,8 @@ class CommerceOrder extends ASModel{
 
     // 退款回调
 
-    public function refund( string $uid ){
+    public function refund( string $uid ): ASResult
+    {
 
         $this->initDetail($uid);
 
@@ -476,7 +487,8 @@ class CommerceOrder extends ASModel{
 
     // 开始退款
 
-    public function beginRefund( string $uid ){
+    public function beginRefund( string $uid ): ASResult
+    {
 
         if ( !$this->canRefund($uid) ) { return $this->take($uid)->error(650,i18n('ORD_REF_AEX'),'CommerceOrder->beginRefund'); }
 
@@ -490,7 +502,8 @@ class CommerceOrder extends ASModel{
 
 
     // 是否推广订单
-    public function isPromoted( string $uid ){
+    public function isPromoted( string $uid ): bool
+    {
 
         return $this->count(['uid'=>$uid,'promoterid'=>'[[NOT]]NULL'])->getContent()>0;
 
@@ -503,22 +516,23 @@ class CommerceOrder extends ASModel{
     // 订单状态检查
 
     // 订单是否待支付
-    public function isNeedpay( string $uid ){ return $this->isStatus($uid,'needpay'); }
+    public function isNeedpay( string $uid ):ASResult{ return $this->isStatus($uid,'needpay'); }
 
     // 订单是否完成
-    public function isDone( string $uid ){ return $this->isStatus($uid,'done'); }
+    public function isDone( string $uid ):ASResult{ return $this->isStatus($uid,'done'); }
 
     // 订单是否付款
-    public function isPaid( string $uid ){ return $this->isStatus($uid,'paid'); }
+    public function isPaid( string $uid ):ASResult{ return $this->isStatus($uid,'paid'); }
 
     // 订单是否退款中
-    public function isRefunding( string $uid ){ return $this->isStatus($uid,'paid'); }
+    public function isRefunding( string $uid ):ASResult{ return $this->isStatus($uid,'paid'); }
 
     // 检查是否可以
-    public function isNeedcall( string $uid ){ return $this->isStatus($uid,'needcall'); }
+    public function isNeedcall( string $uid ):ASResult{ return $this->isStatus($uid,'needcall'); }
 
     // 订单是否过期
-    public function isExpired( string $uid ){
+    public function isExpired( string $uid ): bool
+    {
 
         $expire = (int)$this->get('expire',$uid)->getContent();
 
@@ -528,7 +542,8 @@ class CommerceOrder extends ASModel{
 
     // 是否可以退款
 
-    public function canRefund( string $uid ){
+    public function canRefund( string $uid ): bool
+    {
 
         $this->initDetail($uid);
 
@@ -538,19 +553,20 @@ class CommerceOrder extends ASModel{
     // 订单状态更新
 
     // 已支付
-    public function paid( string $uid ){ return $this->status($uid,'paid'); }
+    public function paid( string $uid ):ASResult{ return $this->status($uid,'paid'); }
 
     // 取消
-    public function cancel( string $uid ){ return $this->status($uid,'canceled'); }
+    public function cancel( string $uid ):ASResult{ return $this->status($uid,'canceled'); }
 
     // 退款完成
-    public function refunded( string $uid ){ return $this->status($uid,'refunded'); }
+    public function refunded( string $uid ):ASResult{ return $this->status($uid,'refunded'); }
 
 
 
     // 处理过期订单
 
-    public function clearExpire( string $userid=NULL ){
+    public function clearExpire( string $userid=NULL ): ASResult
+    {
 
         $time        = time()-(3600*24*7);
 
@@ -580,7 +596,8 @@ class CommerceOrder extends ASModel{
 
 
     // 订单总量
-    public function totalOrder( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalOrder( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -589,7 +606,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 订单总量
-    public function totalAmount( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalAmount( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -598,7 +616,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 已核销订单总量
-    public function totalWriteoff( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalWriteoff( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -607,7 +626,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 已取消订单总量
-    public function totalCancel( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalCancel( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -616,7 +636,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 已过期订单总量
-    public function totalExpire( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalExpire( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -625,7 +646,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 订单总量
-    public function totalAmountOrder( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalAmountOrder( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -634,7 +656,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 已核销订单总量
-    public function totalAmountWriteoff( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalAmountWriteoff( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -643,7 +666,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 已取消订单总量
-    public function totalAmountCancel( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalAmountCancel( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -652,7 +676,8 @@ class CommerceOrder extends ASModel{
     }
 
     // 已过期订单总量
-    public function totalAmountExpire( int $starttime = 0, int $endtime = 9999999999 ){
+    public function totalAmountExpire( int $starttime = 0, int $endtime = 9999999999 ): ASResult
+    {
 
         $conditions = "createtime>={$starttime} AND createtime<={$endtime} ";
 
@@ -662,7 +687,8 @@ class CommerceOrder extends ASModel{
 
 
 
-    public function totalAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 , string $amountMode = 'count' ){
+    public function totalAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 , string $amountMode = 'count' ): ASResult
+    {
 
         $time  = new Time();
         if ($duration>=86400){ $format = 'Y-m-d'; }else if($duration>=3600){ $format = 'm-d H:00'; }else{ $format = 'm-d H:i'; }
@@ -675,7 +701,7 @@ class CommerceOrder extends ASModel{
             $t = new Time($endtime-$i*$duration);
             $_ = [
                 'time'=>$t->time,
-                'time_'=>$t->customOutput(),
+                'time_'=>$t->customOutput($format),
             ];
             switch ($amountMode){
                 case 'amount':
@@ -696,19 +722,19 @@ class CommerceOrder extends ASModel{
     }
 
 
-    public function totalAmountAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 ){
+    public function totalAmountAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 ):ASResult{
 
         return $this->totalAnalysis($starttime,$endtime,$duration,'amount');
     }
 
 
-    public function writeoffAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 ){
+    public function writeoffAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 ):ASResult{
 
         return $this->totalAnalysis($starttime,$endtime,$duration,'writeOff');
     }
 
 
-    public function originAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 ){
+    public function originAnalysis( int $starttime = 0 , int $endtime = 9999999999 , int $duration = 86400 ):ASResult{
 
         $conditions = "createtime>=$starttime AND createtime<=$endtime";
         $count = $this->getDB()->sumByGroup('itemtype',static::$table,['amount','quantity'],'itemtype',$conditions);

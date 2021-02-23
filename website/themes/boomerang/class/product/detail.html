@@ -1,0 +1,83 @@
+<section class="hero">
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <ol class="breadcrumb justify-content-center">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="blog.html">Blog</a></li>
+            <li class="breadcrumb-item active">Fashion, purpose &amp; freedom        </li>
+        </ol>
+        <!-- Hero Content-->
+        <div class="hero-content pb-5 text-center">
+            <h2 class="mb-3 font-size-lg">{{detail.title}}</h2>
+            <h1 class="mb-5">{{detail.details.titlecn}}</h1>
+            <div class="row">
+                <div class="col-xl-8 offset-xl-2"><p class="text-muted mb-0"><a href=""><img src="{{author.avatar}}" alt="" class="w-2rem rounded-circle mr-2"></a> By <a href="#" class="text-muted font-weight-bold">{{author.nickname}}</a> <span class="mx-1">|</span> January 16, 2016 in <a href="blog.html" class="font-weight-bold">Fashion</a> <span class="mx-1">|</span> <a href="#" class="text-muted">2 comments</a></p></div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-10 mx-auto"><img class="img-fluid mb-5" src="{{detail.cover}}!bannerxxl" alt=""></div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 col-lg-10 mx-auto">
+                <p class="lead mb-5">
+                    {{detail.description}}
+                </p>
+                <div class="text-content text-lg">
+                    {{detail.introduce}}
+                </div>
+
+
+<!--                <div class="comments mt-5">-->
+<!--                    <h6 class="comments-heading text-uppercase text-muted mb-4">2 comments</h6>-->
+
+
+<!--                    <div class="row mb-4">-->
+<!--                        <div class="col-3 col-md-2 text-center-xs">-->
+<!--                            <p><img class="img-fluid rounded-circle" src="img/photo/blog-avatar2.jpg" alt=""></p>-->
+<!--                        </div>-->
+<!--                        <div class="col-9 col-md-10">-->
+<!--                            <h5>Julie Alma</h5>-->
+<!--                            <p class="text-uppercase text-sm text-muted"><i class="far fa-clock"></i> September 23, 2017 at 12:00 am</p>-->
+<!--                            <p class="text-muted">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>-->
+<!--                            <p><a class="btn btn-link text-primary" href="#"><i class="fa fa-reply"></i> Reply</a></p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    -->
+<!--                </div>-->
+
+
+                <!-- comment form-->
+                <div class="comment-form my-5">
+                    <h6 class="text-uppercase mb-5">Leave a comment</h6>
+                    <form class="form" id="comment-form" method="post" action="#">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="name">Name <span class="required">*</span></label>
+                                    <input class="form-control form-control-underlined" id="name" type="text">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="email">Email <span class="required">*</span></label>
+                                    <input class="form-control form-control-underlined" id="email" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="form-label" for="comment">Comment <span class="required">*</span></label>
+                            <textarea class="form-control form-control-underlined" id="comment" rows="4"></textarea>
+                        </div>
+                        <button class="btn btn-outline-dark" type="submit"><i class="far fa-comment"></i> Comment                                   </button>
+                    </form>
+                </div>
+                <!-- /comment form-->
+            </div>
+        </div>
+    </div>
+</section>

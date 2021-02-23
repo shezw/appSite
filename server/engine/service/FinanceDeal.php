@@ -22,7 +22,7 @@ class FinanceDeal extends ASModel{
 
 
     // 计数系统收入
-    public function countSystemIncome(array $filters)
+    public function countSystemIncome(array $filters): ASResult
     {
 
         $filters['payee'] = "system";
@@ -31,7 +31,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 计数系统支出
-    public function countSystemExpend(array $filters)
+    public function countSystemExpend(array $filters): ASResult
     {
 
         $filters['payee'] = "system";
@@ -40,7 +40,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 系统收入列表
-    public function listSystemIncome(array $filters, int $page = 1, int $size = 15, string $sort = null)
+    public function listSystemIncome(array $filters, int $page = 1, int $size = 15, string $sort = null): ASResult
     {
 
         $filters['payee'] = "system";
@@ -49,7 +49,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 系统支出列表
-    public function listSystemExpend(array $filters, int $page = 1, int $size = 15, string $sort = null)
+    public function listSystemExpend(array $filters, int $page = 1, int $size = 15, string $sort = null): ASResult
     {
 
         $filters['payer'] = "system";
@@ -59,7 +59,7 @@ class FinanceDeal extends ASModel{
 
 
     // 获得账目统计
-    public function totalSum(string $userid, string $identity = 'payee', int $starttime = null, int $endtime = null)
+    public function totalSum(string $userid, string $identity = 'payee', int $starttime = null, int $endtime = null):ASResult
     {
 
         if (!$starttime || !$endtime) {
@@ -82,14 +82,14 @@ class FinanceDeal extends ASModel{
 
 
     // 获得收入统计
-    public function totalIncome(string $userid, int $starttime = null, int $endtime = null)
+    public function totalIncome(string $userid, int $starttime = null, int $endtime = null):ASResult
     {
 
         return $this->totalSum($userid, 'payee', $starttime ?? 1, $endtime ?? 9999999999);
     }
 
     // 获得支出统计
-    public function totalExpend(string $userid, int $starttime = null, int $endtime = null)
+    public function totalExpend(string $userid, int $starttime = null, int $endtime = null):ASResult
     {
 
         return $this->totalSum($userid, 'payer', $starttime ?? 1, $endtime ?? 9999999999);
@@ -97,7 +97,7 @@ class FinanceDeal extends ASModel{
 
 
     // 获得30日收入
-    public function thirtyIncome(string $userid)
+    public function thirtyIncome(string $userid):ASResult
     {
 
         $time = new Time();
@@ -105,10 +105,11 @@ class FinanceDeal extends ASModel{
     }
 
     // 获得30日 每日收入
-    public function thirtyIncomeList(string $userid)
+    public function thirtyIncomeList(string $userid):ASResult
     {
 
         $time = new Time();
+        $list = [];
 
         for ($i = 30; $i > 0; $i--) {
 
@@ -121,7 +122,7 @@ class FinanceDeal extends ASModel{
 
 
     // 获得30日支出
-    public function thirtyExpend(string $userid)
+    public function thirtyExpend(string $userid):ASResult
     {
 
         $time = new Time();
@@ -129,7 +130,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 获得30日 每日支出
-    public function thirtyExpendList(string $userid)
+    public function thirtyExpendList(string $userid):ASResult
     {
 
         $time = new Time();
@@ -145,7 +146,7 @@ class FinanceDeal extends ASModel{
 
 
     // 获得7日收入
-    public function weekIncome(string $userid)
+    public function weekIncome(string $userid):ASResult
     {
 
         $time = new Time();
@@ -154,7 +155,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 获得7日支出
-    public function weekExpend(string $userid)
+    public function weekExpend(string $userid):ASResult
     {
 
         $time = new Time();
@@ -163,7 +164,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 获得昨日收入
-    public function yesterdayIncome(string $userid)
+    public function yesterdayIncome(string $userid):ASResult
     {
 
         $time = new Time();
@@ -172,7 +173,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 获得昨日支出
-    public function yesterdayExpend(string $userid)
+    public function yesterdayExpend(string $userid):ASResult
     {
 
         $time = new Time();
@@ -181,7 +182,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 获得当日收入
-    public function todayIncome(string $userid)
+    public function todayIncome(string $userid):ASResult
     {
 
         $time = new Time();
@@ -190,7 +191,7 @@ class FinanceDeal extends ASModel{
     }
 
     // 获得当日支出
-    public function todayExpend(string $userid)
+    public function todayExpend(string $userid):ASResult
     {
 
         $time = new Time();

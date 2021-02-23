@@ -21,7 +21,7 @@ class Relation extends ASModel{
      * @param  string       $relationtype
      * @param  string|null  $type
      * @param  null         $rate
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function bind( string $itemid, string $itemtype, string $relationid, string $relationtype, string $type = null, $rate = null ):ASResult{
 
@@ -36,9 +36,10 @@ class Relation extends ASModel{
      * @param  string       $relationid
      * @param  string       $relationtype
      * @param  string|null  $type
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getBindId( string $itemid, string $itemtype, string $relationid, string $relationtype, string $type = null ){
+    public function getBindId( string $itemid, string $itemtype, string $relationid, string $relationtype, string $type = null ): ASResult
+    {
 
         $find = $this->find( $itemid,$itemtype,$relationid,$relationtype,$type );
 
@@ -53,7 +54,7 @@ class Relation extends ASModel{
      * @param  string       $relationid
      * @param  string       $relationtype
      * @param  string|null  $type
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function find( string $itemid, string $itemtype, string $relationid, string $relationtype, string $type = null ):ASResult{
 
@@ -62,7 +63,8 @@ class Relation extends ASModel{
 
 
     // 批量绑定
-    public function binds( string $itemid, string $itemtype, array $relationids, string $relationtype, string $type = null, $rate = null ){
+    public function binds( string $itemid, string $itemtype, array $relationids, string $relationtype, string $type = null, $rate = null ): ASResult
+    {
 
         $list = [];
 
@@ -74,7 +76,8 @@ class Relation extends ASModel{
     }
 
     // 解除
-    public function unBind( string $uid ){
+    public function unBind( string $uid ): ASResult
+    {
         return static::common()->remove($uid);
     }
 
@@ -86,9 +89,10 @@ class Relation extends ASModel{
      *              string $itemtype
      *              array $relationids
      *              string $relationtype
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function unBinds( array $filters ){
+    public function unBinds( array $filters ): ASResult
+    {
 
         if( isset($filters['relationids']) ){ $filters['relationid'] = Filter::arrayToString($filters['relationids']); }
         $filters = Filter::purify($filters,static::$countFilters);
@@ -105,7 +109,7 @@ class Relation extends ASModel{
      * @param  int     $page
      * @param  int     $size
      * @param  string  $sort
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function boundList(string $relationClass, string $keyField, array $filters = [], int $page = 1, int $size = 15, string $sort = null ):ASResult{
 
@@ -115,7 +119,7 @@ class Relation extends ASModel{
         $params = JoinPrimaryParams::common('APS\Relation',static::$primaryid)->get('*')->withResultFilter($filters);
 
         $joinParams = [];
-        $joinParams[] = JoinParams::common($relationClass, $keyField)->get('*');
+        $joinParams[] = JoinParams::init($relationClass, $keyField)->get('*');
 
         $this->DBJoinGet($params,$joinParams,$page,$size,$sort??static::$table.".createtime DESC");
         return $this->feedback();
@@ -126,7 +130,7 @@ class Relation extends ASModel{
      * 已绑定 计数
      * boundCount
      * @param  array  $filters  static::$countFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function boundCount( array $filters = [] ):ASResult{
 

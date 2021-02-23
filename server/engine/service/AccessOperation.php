@@ -30,7 +30,8 @@ class AccessOperation extends ASModel{
         'mergeparents'=>'ASJson',
     ];
 
-    public function newOperation( string $title, string $description, string $scope = 'common', string $parentid = null){
+    public function newOperation( string $title, string $description, string $scope = 'common', string $parentid = null): ASResult
+    {
 
         if ( $this->has([
             'title'=>$title,
@@ -100,9 +101,10 @@ class AccessOperation extends ASModel{
      * find
      * @param  string  $operation
      * @param  string  $scope
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function find( string $operation, string $scope = 'common' ){
+    public function find( string $operation, string $scope = 'common' ): ASResult
+    {
 
         $list = $this->list(['title'=>$operation,'scope'=>$scope]);
 
@@ -114,7 +116,7 @@ class AccessOperation extends ASModel{
      * Cancel operation access of group
      * @param  string  $groupid
      * @param  string  $uid
-     * @return \APS\ASResult
+     * @return ASResult
      */
     public function ban( string $groupid, string $uid ):ASResult{
 
@@ -129,9 +131,10 @@ class AccessOperation extends ASModel{
      * grant operation access to group
      * @param  string  $groupid
      * @param  string  $uid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function grant( string $groupid, string $uid ){
+    public function grant( string $groupid, string $uid ): ASResult
+    {
 
         return Relation::common()->bind($groupid,UserGroup::$table,$uid,static::$table);
     }

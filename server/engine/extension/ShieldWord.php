@@ -1,7 +1,7 @@
 <?php
 
 namespace APS;
-?
+
 /**
  * 屏蔽词 ? 重新考虑
  * ShieldWorld
@@ -15,7 +15,7 @@ class ShieldWord extends ASModel{
      * @param  array|string $input      输入词
      * @param  bool         $rewrite    是否重写敏感词
      * @param  null         $shieldList
-     * @return \APS\ASResult  int | string | string[]
+     * @return ASResult  int | string | string[]
      */
     public function inspection( $input, $rewrite = false, $shieldList = null ){
 
@@ -25,14 +25,14 @@ class ShieldWord extends ASModel{
         if (gettype($input)=='array') {
             foreach ($input as $key => $value) {
                 if($rewrite){
-                    $checker[$key] = SHIELDWORD::inspection($value,$rewrite,$blockList);
+                    $checker[$key] = $this->inspection($value,$rewrite,$blockList);
                 }else{
-                    $checker += SHIELDWORD::inspection($value,$rewrite,$blockList);
+                    $checker += $this->inspection($value,$rewrite,$blockList);
                 }
             }
         }elseif(gettype($input)=='string'){
             for ($i=0; $i < count($blockList); $i++) {
-                $rewrite ? $checker=str_replace($blockList[$i],SHIELDWORD::converBlocks($blockList[$i]),$checker) : $checker += substr_count($input,$blockList[$i]);
+                $rewrite ? $checker=str_replace($blockList[$i],static::converBlocks($blockList[$i]),$checker) : $checker += substr_count($input,$blockList[$i]);
             }
         }
 
@@ -40,7 +40,8 @@ class ShieldWord extends ASModel{
     }
 
 
-    public static function converBlocks( string $input ){
+    public static function converBlocks( string $input ): string
+    {
 
         $convers = '';
 
@@ -54,38 +55,28 @@ class ShieldWord extends ASModel{
     /**
      * 查询屏蔽词列表
      * getBlockList
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function getBlockList(  ){
+    public function getBlockList(  ): ASResult
+    {
 
-        $conditions = SQL::spliceCondition([
-            // 'accountid' => $_['accountid'],
-            // 'status'    => $_['status'],
+        $conditions = ASDB::spliceCondition([
             'status'=>'enabled'
         ]);
 
-        if (SHIELDWORD::count(['status'=>'enabled'])['content']<=0){ return RESULT::feedback(400,['SYS_NON'],0,'SHIELDWORD::list');}
+        if ($this->count(['status'=>'enabled'])->getContent()<=0){ return $this->error(400,i18n('SYS_NON'),'ShieldWord->getBlockList');}
 
-        $data = [
-            'fields'     => 'title',
-            'table'      => 'system_shieldword',
-            'sort'       => 'createtime DESC',
-            'page'       => 1,
-            'size'       => 10000,
-            'conditions' => $conditions,
-        ];
+        $res = $this->getDB()->get('title',static::$table,$conditions,1,10000,'createtime DESC');
 
-        $res = $GLOBALS['sql']->get($data);
-        if (!RESULT::isSucceed($res)) { return $res; }
+        if( !$res->isSucceed() ){ return $res; }
 
         $shieldList=[];
 
-        for ($i=0; $i < count($res['content']); $i++) {
-            $shieldList[] = $res['content'][$i]['title'];
+        for ($i=0; $i < count($res->getContent()); $i++) {
+            $shieldList[] = $res->getContent()[$i]['title'];
         }
 
-        return RESULT::feedback(0,['SYS_GET_SUC'],$shieldList,'SHIELDWORD::getBlockList');
-
+        return $this->take($shieldList)->success(i18n('SYS_GET_SUC'),'ShieldWord->getBlockList');
     }
 
 

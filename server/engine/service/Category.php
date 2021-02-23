@@ -90,9 +90,9 @@ class Category extends ASModel {
      * @param  int         $size
      * @param  null        $sort
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function listChild( string $uid, $page = 1, $size = 50, $sort = null, array $moreFilters = null ){
+    public function listChild( string $uid, $page = 1, $size = 50, $sort = null, array $moreFilters = null ):ASResult{
 
         $moreFilters = $moreFilters ?? [];
         $moreFilters['parentid'] = $uid;
@@ -105,9 +105,9 @@ class Category extends ASModel {
      * count Child category
      * @param  string      $uid
      * @param  array|null  $moreFilters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-    public function countChild( string $uid, array $moreFilters = null ){
+    public function countChild( string $uid, array $moreFilters = null ):ASResult{
 
         $moreFilters = $moreFilters ?? [];
         $moreFilters['parentid'] = $uid;

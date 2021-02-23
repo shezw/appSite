@@ -9,7 +9,7 @@ namespace APS;
  */
 class SampleModel extends ASModel{
 
-    protected static $table = 'item_sample';
+    public static $table = 'item_sample';
     protected static $addFields = [
         'sampleid','title','gallery','status','createtime','sort','featured'
     ];

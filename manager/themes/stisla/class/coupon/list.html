@@ -1,0 +1,213 @@
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+
+        <div class="section-body">
+
+            <div class="row">
+                <div class="col-12">
+
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-auto">
+
+                                    <a class="btn btn-md btn-primary "href="./add">
+                                        <i class="fas fa-plus-circle"></i> Add a new Coupon
+                                    </a>
+                                    <a class="btn btn-md btn-outline-success"href="./bulkAdd">
+                                        <i class="fas fa-plus-circle"></i> Bulk Add
+                                    </a>
+                                </div>
+
+                            </div>
+
+                        </div></div></div></div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="card">
+                <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col">
+
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link [if[::constants.Params.status=enabled::active]if]" href="#" onclick="Aps.query.addFilter('status','enabled')">
+                                    {i18n{ status.enabled }i18n}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link [if[::constants.Params.status=trash::active]if]" href="#" onclick="Aps.query.addFilter('status','trash')">
+                                    {i18n{ status.trash }i18n}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link [if[::constants.Params.status=used::active]if]" href="#" onclick="Aps.query.addFilter('status','used')">
+                                    {i18n{ status.used }i18n}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link [not[::constants.Params.status::active]not]" href="#" onclick="Aps.query.removeFilter('status')">
+                                    {i18n{ status.all }i18n}
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <div class="col-auto">
+                        <div class="dropdown my-1">
+
+                            <button class="btn btn-sm dropdown-toggle [not[::constants.Params.sort::btn-outline-primary]not] [if[::constants.Params.sort::btn-primary]if]" type="button" id="dropdownMenuButtonViewtimes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {i18n{ manager.sort }i18n}
+                            </button>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonViewtimes" style="">
+                                <a class="dropdown-item" onclick="Aps.query.removeFilter('order');" >{i18n{ status.default }i18n}</a>
+                                <a class="dropdown-item" onclick="Aps.query.addFilter('order','createtime DESC');" >{i18n{ manager.createtime }i18n} <i class="fas fa-arrow-down"></i></a>
+                                <a class="dropdown-item" onclick="Aps.query.addFilter('order','createtime ASC');" >{i18n{ manager.createtime }i18n} <i class="fas fa-arrow-up"></i></a>
+                                <a class="dropdown-item" onclick="Aps.query.addFilter('order','amount DESC');" >{i18n{ manager.amount }i18n} <i class="fas fa-arrow-down"></i></a>
+                                <a class="dropdown-item" onclick="Aps.query.addFilter('order','amount ASC');" >{i18n{ manager.amount }i18n} <i class="fas fa-arrow-up"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <div class="dropdown my-1">
+                            <button class="btn btn-sm btn-white dropdown-toggle [not[::constants.Params.size::btn-outline-primary]not] [if[::constants.Params.size::btn-primary]if]" type="button" id="dropdownMenuButtonSize" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fe fe-list mr-1"></span> {i18n{ manager.sizePerPage }i18n} [not[::constants.Params.size::10]not]{{constants.Params.size}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonSize" style="">
+                                <a class="dropdown-item" href="" onclick="Aps.query.removeFilter('size');">{i18n{default}i18n}</a>
+
+                                <a class="dropdown-item" href="" onclick="Aps.query.addFilter('size','8');">8</a>
+
+                                <a class="dropdown-item" href="" onclick="Aps.query.addFilter('size','12');">12</a>
+
+                                <a class="dropdown-item" href="" onclick="Aps.query.addFilter('size','24');">24</a>
+
+                                <a class="dropdown-item" href="" onclick="Aps.query.addFilter('size','48');">48</a>
+
+                                <a class="dropdown-item" href="" onclick="Aps.query.addFilter('size','120');">120</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+
+                            <div class="tab-content">
+
+                                <div class="tab-pane table-responsive active mb-0">
+                                    <table class="table table-sm card-table table-striped" >
+                                        <thead>
+                                        <tr>
+                                            <th>Coupon Code</th>
+                                            <th>Amount($)</th>
+                                            <th>Limit Min($)</th>
+                                            <th>Limit User</th>
+                                            <th>{i18n{ manager.createtime }i18n}</th>
+                                            <th>{i18n{ manager.status }i18n}</th>
+                                            <th>{i18n{ manager.more }i18n}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="list">
+                                        [not[::couponList::
+                                        <tr>
+                                            <td colspan="10">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-12 col-md-8 col-xl-6 py-5">
+
+                                                        <h2>
+                                                            {i18n{SYS_NON}i18n}
+                                                        </h2>
+
+                                                        <button class="btn btn-primary lift" onclick="Aps.router.back(-1)">
+                                                            {i18n{ back }i18n}
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ]not]
+
+                                        ||loop??couponList??
+                                        <tr class="col-6 col-md-4 col-lg-12">
+                                            <td class="p-2">{{uid}}</td>
+                                            <td class="p-2">{{amount}}</td>
+                                            <td class="p-2">{{min}}</td>
+                                            <td class="p-2">{{userid}}</td>
+                                            <td class="p-2">{{createtime_}}</td>
+                                            <td class="p-2 [if[::status=trash::text-muted]if]">{{status_}}</td>
+                                            <td class="p-2 text-right">
+                                                <div class="dropdown">
+                                                    <a href="#" class="dropdown-ellipses " role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        &nbsp; <i class="fas fa-ellipsis-v a-text-l"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+
+                                                        [if[::status=enabled::
+                                                        <a class="dropdown-item" onclick="MANAGER.trash('{{uid}}','CommerceCoupon');"><span class="fas fa-trash-alt mr-2 text-warning"></span>{i18n{ manager.trash }i18n}</a>
+                                                        <a class="dropdown-item" onclick="MANAGER.preRemove('{{uid}}','CommerceCoupon');"><span class="fas fa-times mr-2 text-danger"></span>{i18n{ manager.delete }i18n}</a>
+                                                        ]if]
+
+                                                        [if[::status^trash,offline::
+                                                        <a class="dropdown-item" onclick="MANAGER.recover('{{uid}}','CommerceCoupon');"><span class="fas fa-check-circle mr-2 text-success"></span>{i18n{ manager.accept }i18n}</a>
+                                                        <a class="dropdown-item" onclick="MANAGER.remove('{{uid}}','CommerceCoupon');"><span class="fas fa-times mr-2 text-danger"></span>{i18n{ manager.delete }i18n}</a>
+                                                        ]if]
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        loop||
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+
+                                    [if[::pager.first::
+                                    <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','1')">{i18n{ firstPage }i18n}</a></li>
+                                    ]if]
+
+                                    [if[::pager.prev::
+                                    <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.prev}}')">{i18n{ prevPage }i18n}</a></li>
+                                    ]if]
+
+                                    ||loop??pager.list??
+                                    [if[::current:: <li class="page-item active"><a class="page-link" href="#" >{{page}}</a></li> ]if]
+                                    [not[::current::<li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{page}}')">{{page}}</a></li> ]not]
+                                    loop||
+
+                                    [if[::pager.next::
+                                    <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.next}}')">{i18n{ nextPage }i18n}</a></li>
+                                    ]if]
+
+                                    [if[::pager.last::
+                                    <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.last}}')">{i18n{ lastPage }i18n} ({{pager.last}})</a></li>
+                                    ]if]
+
+                                </ul>
+                            </nav>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+

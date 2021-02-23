@@ -99,7 +99,7 @@ abstract class ASModel extends ASBase {
 
     /**
      * Redis缓存
-     * @var \APS\ASRedis
+     * @var ASRedis
      */
 	protected $Redis;
 
@@ -134,10 +134,10 @@ abstract class ASModel extends ASBase {
      * 添加数据
      * add data to Database
      * @param  array  $data
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function add( array $data )
-	{
+	public function add( array $data ): ASResult
+    {
 		$data = Filter::purify($data,static::$addFields,static::$depthStruct); // 使用字段数据进行过滤
         $data = Filter::removeInvalid($data);
 
@@ -180,7 +180,7 @@ abstract class ASModel extends ASBase {
     /**
      * 函数注入(插入数据返回结果之前)
      * Do something before add result returning
-     * @param  \APS\ASResult  $result  即将返回的结果
+     * @param ASResult $result  即将返回的结果
      * @param  array          $data    插入数据
      */
 	public function beforeAddReturn( ASResult &$result, array $data ){  }
@@ -190,9 +190,10 @@ abstract class ASModel extends ASBase {
      * 批量添加
      * adds
      * @param  array  $list
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function adds( array $list ){
+	public function adds( array $list ): ASResult
+    {
 
 		$this->beforeAdds($list);
 
@@ -228,12 +229,13 @@ abstract class ASModel extends ASBase {
 
     /**
      * 更新单行数据
-     * update data with itemid
+     * update data with uid
      * @param  array   $data
-     * @param  string  $itemid
-     * @return \APS\ASResult
+     * @param  string  $uid
+     * @return ASResult
      */
-	public function update( array $data , string $itemid ){
+	public function update( array $data , string $uid ): ASResult
+    {
 
         if( isset(static::$depthStruct) && in_array('ASJson',array_values(static::$depthStruct))  ){
             foreach ( static::$depthStruct as $key => $type ){
@@ -248,31 +250,32 @@ abstract class ASModel extends ASBase {
 		$data = Filter::purify($data,static::$updateFields);
 
 		if (count($data)<1) {
-		    return $this->take($itemid)->error(603,i18n('SYS_PARA_REQ'),static::$table.'->update');
+		    return $this->take($uid)->error(603,i18n('SYS_PARA_REQ'),static::$table.'->update');
 		}
 
-		$conditions = static::$primaryid."='{$itemid}'";
+		$conditions = static::$primaryid."='{$uid}'";
 
 		$this->DBUpdate($data,$conditions);
-		$this->setId($itemid);
+		$this->setId($uid);
 		$this->record('ITEM_UPDATE',static::$table.'->update');
 
-		$this->beforeUpdateReturn( $this->result,$itemid );
+		$this->beforeUpdateReturn( $this->result,$uid );
 
         static::$rds_auto_cache
         && $this->_clearSet(static::class,'list')
-        && $this->getRedis()->remove([$itemid,true])
-        && $this->getRedis()->remove([$itemid,false]);
+        && $this->getRedis()->remove([$uid,true])
+        && $this->getRedis()->remove([$uid,false]);
 
 		return $this->feedback();
 	}
 
 	public function beforeUpdate( array &$data ){}
-	public function beforeUpdateReturn( ASResult &$result,string $itemid ){}
+	public function beforeUpdateReturn( ASResult &$result,string $uid ){}
 
-	public function publicUpdate( array $data, string $itemid, string $userid ){
+	public function publicUpdate(array $data, string $uid, string $userid ): ASResult
+    {
 
-		$DETAIL = $this->detail($itemid)->getContent();
+		$DETAIL = $this->detail($uid)->getContent();
 
 		$authorId = $DETAIL['authorid'] ?? $DETAIL['userid'] ?? $DETAIL['receiveid'];
 
@@ -280,49 +283,51 @@ abstract class ASModel extends ASBase {
 		    return $this->take($userid)->error(9990,i18n('ACC_PROS_CHK_FAL'),"ITEM::publicRemove");
 		}
 
-		return $this->update($data,$itemid);
+		return $this->update($data,$uid);
 	}
 
     /**
      * 移除
      * remove
-     * @param  string  $itemid
-     * @return \APS\ASResult
+     * @param  string  $uid
+     * @return ASResult
      */
-	public function remove( string $itemid ){
+	public function remove( string $uid ): ASResult
+    {
 
-		$this->beforeRemove($itemid);
+		$this->beforeRemove($uid);
 
-		$conditions = static::$primaryid."='$itemid'";
+		$conditions = static::$primaryid."='$uid'";
 
-        $this->setId($itemid);
+        $this->setId($uid);
 		$this->DBRemove($conditions);
 		$this->record('ITEM_REMOVE',static::$table.'->remove');
 
-		$this->beforeRemoveReturn($this->result,$itemid);
+		$this->beforeRemoveReturn($this->result,$uid);
 
         static::$rds_auto_cache
         && $this->_clearSet(static::class,'list')
         && $this->_clearSet(static::class,'count')
-        && $this->getRedis()->remove([$itemid,true])
-        && $this->getRedis()->remove([$itemid,false]);
+        && $this->getRedis()->remove([$uid,true])
+        && $this->getRedis()->remove([$uid,false]);
 
 		return $this->feedback();
 	}
 
-	public function beforeRemove( string &$itemid ){}
-	public function beforeRemoveReturn( ASResult &$result,string $itemid ){}
+	public function beforeRemove( string &$uid ){}
+	public function beforeRemoveReturn( ASResult &$result,string $uid ){}
 
     /**
      * 开放接口移除
      * publicRemove
-     * @param  string  $itemid
+     * @param  string  $uid
      * @param  string  $userid
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function publicRemove( string $itemid, string $userid ){
+	public function publicRemove(string $uid, string $userid ): ASResult
+    {
 
-		$DETAIL = $this->detail($itemid)->getContent();
+		$DETAIL = $this->detail($uid)->getContent();
 
 		$authorId = $DETAIL['authorid'] ?? $DETAIL['userid'] ?? $DETAIL['receiveid'];
 
@@ -330,40 +335,41 @@ abstract class ASModel extends ASBase {
 		    return $this->take($userid)->error(9990,i18n('ACC_PROS_CHK_FAL'),"ITEM::publicRemove");
 		}
 
-		return $this->remove($itemid);
+		return $this->remove($uid);
 	}
 
     /**
      * 查询唯一数据详情
      * Get detail by itemid
-     * @param  string  $itemid
+     * @param  string  $uid
      * @param  bool    $public
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function detail( string $itemid , $public = false ){
+	public function detail(string $uid , $public = false ): ASResult
+    {
 
-        $this->RedisHash = [$itemid,$public];
+        $this->RedisHash = [$uid,$public];
 
         if( static::$rds_auto_cache && $this->_hasCache() ){
             return $this->_getCache();
         }
 
-		$this->beforeDetail($itemid);
+		$this->beforeDetail($uid);
 
 		$params = [ 
 			'fields'     => ($public === true && isset($this->publicDetailFields) ) ? $this->publicDetailFields : static::$detailFields ,
 			'table'      => static::$table,
-			'conditions' => static::$primaryid."='{$itemid}'"
+			'conditions' => static::$primaryid."='{$uid}'"
 		];
 
 		$this->DBGet($params['fields'],$params['conditions'],1,1);
-		$this->setId($itemid);
+		$this->setId($uid);
 
 		if($this->result->isSucceed()){
 		    $this->result->setContent($this->convert($this->result->getContent()[0]));
 		}
 
-		$this->beforeDetailReturn( $this->result,$itemid );
+		$this->beforeDetailReturn( $this->result,$uid );
 
 		static::$rds_auto_cache
         && $this->result->isSucceed()
@@ -372,19 +378,20 @@ abstract class ASModel extends ASBase {
 		return $this->feedback();
 	}
 
-	public function beforeDetail( string &$itemid ){}
-	public function beforeDetailReturn( ASResult &$result, string $itemid ){}
+	public function beforeDetail( string &$uid ){}
+	public function beforeDetailReturn( ASResult &$result, string $uid ){}
 
 
     /**
      * 获取公开接口详情
      * Detail for with public fields
-     * @param  string  $itemid
-     * @return \APS\ASResult
+     * @param  string  $uid
+     * @return ASResult
      */
-	public function publicDetail( string $itemid ){
+	public function publicDetail( string $uid ): ASResult
+    {
 
-		return $this->detail($itemid,true);
+		return $this->detail($uid,true);
 	}	
 
 
@@ -392,38 +399,39 @@ abstract class ASModel extends ASBase {
      * 通过ID获取对应字段值
      * get value at $key field by itemid
      * @param  string  $key
-     * @param  string  $itemid
-     * @return \APS\ASResult
+     * @param  string  $uid
+     * @return ASResult
      */
-	public function get( string $key , string $itemid ){
+	public function get( string $key , string $uid ): ASResult
+    {
 
-		$this->beforeGet($key,$itemid);
+		$this->beforeGet($key,$uid);
 
-		$this->DBGet($key, [static::$primaryid=>$itemid]);
-		$this->setId($itemid);
+		$this->DBGet($key, [static::$primaryid=>$uid]);
+		$this->setId($uid);
 
         if($this->result->isSucceed()){ $this->result->setContent($this->convert($this->result->getContent()[0][$key])) ; }
 
-		$this->beforeGetReturn( $this->result, $itemid );
+		$this->beforeGetReturn( $this->result, $uid );
 
 		return $this->feedback();
 	}
 
-	public function beforeGet( string &$key, string &$itemid ){}
-	public function beforeGetReturn( ASResult &$result, string $itemid ){}
+	public function beforeGet( string &$key, string &$uid ){}
+	public function beforeGetReturn( ASResult &$result, string $uid ){}
 
 
     /**
      * 获取概览
      * overview
-     * @param  string  $itemid
-     * @return \APS\ASResult
+     * @param  string  $uid
+     * @return ASResult
      */
-	public function overview( string $itemid )
-	{
+	public function overview( string $uid ): ASResult
+    {
 
-		$this->DBGet(static::$overviewFields ?? static::$detailFields ?? '*', [static::$primaryid=>$itemid] );
-		$this->setId($itemid);
+		$this->DBGet(static::$overviewFields ?? static::$detailFields ?? '*', [static::$primaryid=>$uid] );
+		$this->setId($uid);
 
         if($this->result->isSucceed()){
             $this->result->setContent($this->convert($this->result->getContent()[0]));
@@ -437,9 +445,10 @@ abstract class ASModel extends ASBase {
      * 统计特定数量
      * count
      * @param  array  $filters
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function count( array $filters ){
+	public function count( array $filters ): ASResult
+    {
 
         $this->RedisHash = $filters;
 
@@ -476,9 +485,10 @@ abstract class ASModel extends ASBase {
      * Count contents in item table
      * @param  array   $filters
      * @param  string  $type
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function countContent( array $filters , string $type ){
+	public function countContent( array $filters , string $type ): ASResult
+    {
 
  		return $this->countContentInTable($filters,"item_{$type}");
 	}
@@ -488,9 +498,10 @@ abstract class ASModel extends ASBase {
      * Count contents in specific table
      * @param  array   $filters
      * @param  string  $table
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function countContentInTable( array $filters, string $table ){
+	public function countContentInTable( array $filters, string $table ): ASResult
+    {
 
 	    $this->setTable($table);
 
@@ -509,9 +520,10 @@ abstract class ASModel extends ASBase {
 	 * @param    int|integer              $size           翻页-页长
 	 * @param    string|null              $sort           排序字段
 	 * @param    boolean                  $public         是否公开列表
-	 * @return   \APS\ASResult                            结果对象
+	 * @return   ASResult                            结果对象
 	 */
-	public function list( array $filters , int $page=1, int $size=25, string $sort = null , $public = false ){
+	public function list( array $filters , int $page=1, int $size=25, string $sort = null , $public = false ): ASResult
+    {
 		
 		$this->RedisHash = [$filters,$page,$size,$sort,$public];
 
@@ -545,7 +557,8 @@ abstract class ASModel extends ASBase {
 	public function beforeListReturn( ASResult &$result ){  }
 
 	// 获取公开接口列表
-	public function publicList( array $filters , int $page=1, int $size=25, string $sort = null ){
+	public function publicList( array $filters , int $page=1, int $size=25, string $sort = null ): ASResult
+    {
 
 		return $this->list($filters,$page,$size,$sort,true);
 	}
@@ -556,11 +569,12 @@ abstract class ASModel extends ASBase {
 	 * @param    array                    $filters        [主表条件]
      * @param  JoinParams[]|array|string[]   $mergeJoins
      * @param  JoinParams[]|array|string[]   $subJoins
-	 * @return   \APS\ASResult
+	 * @return   ASResult
 	 */
-	public function joinCount(  array $filters = null, array $mergeJoins = null, array $subJoins = null ){
+	public function joinCount(  array $filters = null, array $mergeJoins = null, array $subJoins = null ): ASResult
+    {
 
-	    $primaryParams = JoinPrimaryParams::common(__CLASS__);
+	    $primaryParams = JoinPrimaryParams::common(static::class);
 	    if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
 		return $this->advancedJoinCount( $primaryParams ,$mergeJoins,$subJoins );
 	}
@@ -571,9 +585,10 @@ abstract class ASModel extends ASBase {
      * @param  JoinPrimaryParams $primaryParams
      * @param  JoinParams[]|array|string[]   $mergeJoins
      * @param  JoinParams[]|array|string[]   $subJoins
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function advancedJoinCount( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null ){
+	public function advancedJoinCount( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null ): ASResult
+    {
 
 		$this->beforeJoinCount( $primaryParams,$mergeJoins,$subJoins );
 
@@ -595,12 +610,13 @@ abstract class ASModel extends ASBase {
      * 多表联合检测是否存在
 	 * joinHas
 	 * @param    array|null               $filters        主表条件
-	 * @param    \APS\JoinParams[]|null   $joins          合并查询表
+	 * @param    JoinParams[]|null   $joins          合并查询表
 	 * @return   boolean
 	 */
-	public function joinHas(  array $filters = null, array $joins = null ){
+	public function joinHas(  array $filters = null, array $joins = null ): bool
+    {
 
-	    $primaryParams = JoinPrimaryParams::common( __CLASS__ );
+	    $primaryParams = JoinPrimaryParams::common( static::class );
 	    $primaryParams->withResultFilter($filters);
 
 	    $joinParams = [];
@@ -627,11 +643,12 @@ abstract class ASModel extends ASBase {
 	 * @param    int|integer              $page           页
 	 * @param    int|integer              $size           大小
 	 * @param    string|null              $sort           排序
-	 * @return   \APS\ASResult
+	 * @return   ASResult
 	 */
-	public function joinList( array $filters = null, array $mergeJoins = null, array $subJoins = null, int $page = 1, int $size = 20, string $sort = null ){
+	public function joinList( array $filters = null, array $mergeJoins = null, array $subJoins = null, int $page = 1, int $size = 20, string $sort = null ): ASResult
+    {
 
-        $primaryParams = JoinPrimaryParams::common(__CLASS__);
+        $primaryParams = JoinPrimaryParams::common(static::class);
         if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
 
 		return $this->advancedJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
@@ -640,17 +657,18 @@ abstract class ASModel extends ASBase {
     /**
      * Description
      * advancedJoinList
-     * @param  \APS\JoinPrimaryParams|null  $primaryParams
+     * @param JoinPrimaryParams|null  $primaryParams
      * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
      * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
      * @param  int                          $page
      * @param  int                          $size
      * @param  string|null                  $sort
-     * @return \APS\ASResult|mixed
+     * @return ASResult|mixed
      */
-	public function advancedJoinList( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null, int $page =1, int $size = 20, string $sort = null ){
+	public function advancedJoinList( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null, int $page =1, int $size = 20, string $sort = null ): ASResult
+    {
 		
-		$this->RedisHash = [$primaryParams,$mergeJoins,$subJoins,$page,$size,$sort];
+		$this->RedisHash = [$primaryParams->toArray(),JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins),$page,$size,$sort];
 		
 		if( static::$rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
 
@@ -694,25 +712,26 @@ abstract class ASModel extends ASBase {
     /**
      * 多表联合详情
      * joinDetail
-     * @param  string      $itemid      索引ID
+     * @param  string      $uid      索引ID
      * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
      * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
-     * @return   \APS\ASResult
+     * @return   ASResult
      */
-	public function joinDetail( string $itemid, array $mergeJoins = null, array $subJoins = null ){
+	public function joinDetail(string $uid, array $mergeJoins = null, array $subJoins = null ): ASResult
+    {
 		
-		$this->RedisHash = [$itemid,$mergeJoins,$subJoins];
+		$this->RedisHash = [$uid,JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins)];
 		
 		if( static::$rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
 
-		$this->beforeJoinDetail($itemid,$mergeJoins,$subJoins);
+		$this->beforeJoinDetail($uid,$mergeJoins,$subJoins);
 
-		$primaryParams = JoinPrimaryParams::common(static::class)->get(static::$detailFields)->withResultFilter([static::$primaryid=>$itemid]);
+		$primaryParams = JoinPrimaryParams::common(static::class)->get(static::$detailFields)->withResultFilter([static::$primaryid=>$uid]);
 
 		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
 		
 		$this->DBJoinGet( $primaryParams, $joinParams, 1, 1 );
-		$this->setId($itemid);
+		$this->setId($uid);
 
 		if($this->result->isSucceed()){
 
@@ -738,11 +757,11 @@ abstract class ASModel extends ASBase {
     /**
      * 查询前参数处理
      * beforeJoinDetail
-     * @param  string      $itemid
+     * @param  string      $uid
      * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
      * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
      */
-	public function beforeJoinDetail( string &$itemid, array &$mergeJoins = null, array &$subJoins = null ){  }
+	public function beforeJoinDetail(string &$uid, array &$mergeJoins = null, array &$subJoins = null ){  }
 	public function beforeJoinDetailReturn( ASResult &$result ){  }
 
 
@@ -756,7 +775,8 @@ abstract class ASModel extends ASBase {
 	 * @param    bool|boolean             $isSubJoin      是否作为子集结果
 	 * @return   array                                    结果参数
 	 */
-	public function fillJoinParams( array $joins = null , bool $isSubJoin = false ){
+	public function fillJoinParams( array $joins = null , bool $isSubJoin = false ): array
+    {
 
 		$joinParamsArray = [];
 
@@ -769,7 +789,7 @@ abstract class ASModel extends ASBase {
             if( is_integer($k) && is_string($v) ){
 
                 # Quick Mode 快速模式
-                $joinParam = JoinParams::common( $v );
+                $joinParam = JoinParams::init( $v );
 
                 if( $isSubJoin ){
                     $joinParam->asSubData( $v );
@@ -778,7 +798,7 @@ abstract class ASModel extends ASBase {
             }else if( is_string($k) && is_string($v) ){
 
                 # K-v Mode
-                $joinParam = JoinParams::common( $v );
+                $joinParam = JoinParams::init( $v );
 
                 if( $isSubJoin ){
                     $joinParam->asSubData( $k );
@@ -805,7 +825,8 @@ abstract class ASModel extends ASBase {
      * Is cache(Redis) supported in environment
      * @return bool
      */
-    public function _isCacheEnabled(){
+    public function _isCacheEnabled(): bool
+    {
 
         return $this->getRedis()->isEnabled();
     }
@@ -816,7 +837,8 @@ abstract class ASModel extends ASBase {
      * @param  string|null  $hash  缓存哈希
      * @return bool
      */
-    public function _hasCache( $hash = null ){
+    public function _hasCache( $hash = null ): bool
+    {
 
         return $this->_isCacheEnabled() && $this->getRedis()->has( $hash ?? $this->RedisHash );
     }
@@ -835,11 +857,12 @@ abstract class ASModel extends ASBase {
      * 缓存数据
      * Cache data to Redis server
      * @param  mixed    $hash
-     * @param  \APS\ASResult    $result
+     * @param ASResult $result
      * @param  int    $expireDuration
      * @return bool
      */
-    public function _cache( $hash = null, ASResult $result = null, int $expireDuration = 3600  ){
+    public function _cache( $hash = null, ASResult $result = null, int $expireDuration = 3600  ): bool
+    {
         return $this->_isCacheEnabled() && $this->getRedis()->cache( $hash ?? $this->RedisHash, ($result ?? $this->result)->toArray(),$expireDuration);
     }
 
@@ -853,7 +876,8 @@ abstract class ASModel extends ASBase {
      * @param $hashID
      * @return bool
      */
-    public function _trackCache( $set,$id,$hashID ){
+    public function _trackCache( $set,$id,$hashID ): bool
+    {
 
         if(!$this->getRedis()->isEnabled()){ return false; }
         return $this->getRedis()->track($set,$id,$hashID);
@@ -866,14 +890,16 @@ abstract class ASModel extends ASBase {
      * @param $id
      * @return bool
      */
-    public function _clearSet( $set,$id ){
+    public function _clearSet( $set,$id ): bool
+    {
         if(!$this->getRedis()->isEnabled()){ return false; }
         return $this->getRedis()->clear($set,$id);
     }
 
 
 	// 搜索
-	public function search( string $keyword, array $filters = null , int $page=1, int $size=25, string $sort = null ){
+	public function search( string $keyword, array $filters = null , int $page=1, int $size=25, string $sort = null ): ASResult
+    {
 
 		$filters = $filters ? $filters : [];
 		$filters['KEYWORD'] = $keyword;
@@ -890,7 +916,8 @@ abstract class ASModel extends ASBase {
      * @param  array|null  $struct
      * @return array
      */
-	public function convert( array $data , array $struct = null ){
+	public function convert( array $data , array $struct = null ): array
+    {
 
 		if( !$struct && !static::$depthStruct ){ return $data; }
 
@@ -935,93 +962,104 @@ abstract class ASModel extends ASBase {
     /**
      * 设置状态
      * status
-     * @param  string  $itemid
+     * @param  string  $uid
      * @param  string  $status
-     * @return \APS\ASResult
+     * @return ASResult
      */
-	public function status( string $itemid, string $status ){
+	public function status(string $uid, string $status ): ASResult
+    {
 
-		$this->beforeStatus($itemid,$status);
+		$this->beforeStatus($uid,$status);
 
-		return $this->update(['status'=>$status],$itemid);
+		return $this->update(['status'=>$status],$uid);
 	}
 
-	public function beforeStatus( string &$itemid, string &$status ){  }
+	public function beforeStatus( string &$uid, string &$status ){  }
 
-	public function block(   string $itemid ){ return $this->status($itemid,'disabled'); }	// 禁用
-	public function trash(   string $itemid ){ return $this->status($itemid,'trash');    }	// 垃圾桶
-	public function sketch(  string $itemid ){ return $this->status($itemid,'sketch');   } // 草稿箱
-	public function offline( string $itemid ){ return $this->status($itemid,'offline');  }	// 下线
-	public function online(  string $itemid ){ return $this->status($itemid,'enabled');  }	// 上线
-	public function recover( string $itemid ){ return $this->status($itemid,'enabled');  }	// 恢复
-	public function done(    string $itemid ){ return $this->status($itemid,'done');     }	// 完成
-	public function expire(  string $itemid ){ return $this->status($itemid,'expired');  }	// 过期
-    public function pending( string $itemid ){ return $this->status($itemid,'pending');  }	// 等待中
-    public function pedding( string $itemid ){ return $this->status($itemid,'pedding');  }	// 等待中?
+	public function block(   string $uid ):ASResult { return $this->status($uid,'disabled'); }	// 禁用
+	public function trash(   string $uid ):ASResult { return $this->status($uid,'trash');    }	// 垃圾桶
+	public function sketch(  string $uid ):ASResult { return $this->status($uid,'sketch');   }    // 草稿箱
+	public function offline( string $uid ):ASResult { return $this->status($uid,'offline');  }	// 下线
+	public function online(  string $uid ):ASResult { return $this->status($uid,'enabled');  }	// 上线
+	public function recover( string $uid ):ASResult { return $this->status($uid,'enabled');  }	// 恢复
+	public function done(    string $uid ):ASResult { return $this->status($uid,'done');     }	// 完成
+	public function expire(  string $uid ):ASResult { return $this->status($uid,'expired');  }	// 过期
+    public function pending( string $uid ):ASResult { return $this->status($uid,'pending');  }	// 等待中
+    public function pedding( string $uid ):ASResult { return $this->status($uid,'pedding');  }	// 等待中?
 
 	// 设为精选
-	public function setFeature( string $itemid, int $featured=1 ){
+	public function setFeature( string $uid, int $featured=1 ): ASResult
+    {
 
-		return $this->update(['featured'=>$featured],$itemid);
+		return $this->update(['featured'=>$featured],$uid);
 
 	}
 
 	// 取消精选
-	public function cancelFeature( string $itemid ){
+	public function cancelFeature( string $uid ): ASResult
+    {
 
-		return $this->update(['featured'=>0],$itemid);
+		return $this->update(['featured'=>0],$uid);
 
 	}
 
 	// 调整排序
-	public function setSort( string $itemid, int $sort=0 ){
+	public function setSort( string $uid, int $sort=0 ): ASResult
+    {
 
-		return $this->update(['sort'=>$sort],$itemid);
-
-	}
-
-	public function increaseSort( string $itemid, int $size = 1 ){
-
-		return $this->increase( 'sort', static::$primaryid."='{$itemid}'" , $size );
+		return $this->update(['sort'=>$sort],$uid);
 
 	}
 
-	public function decreaseSort( string $itemid, int $size = 1 ){
+	public function increaseSort( string $uid, int $size = 1 ): ASResult
+    {
 
-		return $this->increase( 'sort', static::$primaryid."='{$itemid}'" , 0 - $size );
+		return $this->increase( 'sort', static::$primaryid."='{$uid}'" , $size );
+
+	}
+
+	public function decreaseSort( string $uid, int $size = 1 ): ASResult
+    {
+
+		return $this->increase( 'sort', static::$primaryid."='{$uid}'" , 0 - $size );
 
 	}
 
     // view 被查看一次
-    public function view( string $itemid , int $size = 1 ){
+    public function view( string $uid , int $size = 1 ): ASResult
+    {
 
-		return $this->increase( 'viewtimes', static::$primaryid."='{$itemid}'" , $size );
+		return $this->increase( 'viewtimes', static::$primaryid."='{$uid}'" , $size );
 
     }
 
     // 字段增长
-    public function increase( string $field, $conditions = null , float $size = 1 ){
+    public function increase( string $field, $conditions = null , float $size = 1 ): ASResult
+    {
 
         return $this->getDB()->increase($field,static::$table,$conditions,$size);
     }
 
     // 字段减少
-    public function decrease( string $field, $conditions = null , float $size = 1 ){
+    public function decrease( string $field, $conditions = null , float $size = 1 ): ASResult
+    {
 
         return $this->getDB()->increase($field,static::$table,$conditions,0 -$size);
     }
 
 	// 检测是否当前状态
-	public function isStatus( string $itemid , string $status ){
+	public function isStatus( string $uid , string $status ): bool
+    {
 
-		return $this->count([static::$primaryid=>$itemid,'status'=>$status])->getContent() == 1;
+		return $this->count([static::$primaryid=>$uid,'status'=>$status])->getContent() == 1;
 
 	}
 
 	// 检测当前ID是否存在数据库中
-	public function isExist( string $itemid ){
+	public function isExist( string $uid ): bool
+    {
 
-		return $this->count([static::$primaryid=>$itemid])->getContent() > 0;
+		return $this->count([static::$primaryid=>$uid])->getContent() > 0;
 	}
 
 }

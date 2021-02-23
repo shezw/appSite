@@ -14,7 +14,7 @@ abstract class ASAPI extends ASObject{
 
     /**
      * 当前接口访问者
-     * @var \APS\User
+     * @var User
      */
     protected $user;
 
@@ -66,10 +66,11 @@ abstract class ASAPI extends ASObject{
      * Init by system call
      * @param  string          $className
      * @param  null            $params
-     * @param  \APS\User|null  $user
-     * @return \APS\ASAPI
+     * @param User|null  $user
+     * @return ASAPI
      */
-    public static function systemInit( string $className, $params = null, User $user = null ){
+    public static function systemInit( string $className, $params = null, User $user = null ): ASAPI
+    {
 
         $route = explode( '\\', trim($className,'\\') );
         ASRoute::loadAPIFile( $route[0],$route[1] );

@@ -1,0 +1,166 @@
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+
+            <div class="header mb-3 mt-5">
+                <div class="header-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+
+                            <h6 class="header-pretitle">
+                                AppSite
+                            </h6>
+
+                            <h1 class="header-title">
+                                {i18n{ manager.Install }i18n}
+                            </h1>
+
+                        </div>
+
+                        <div class="col-12 col-lg-2 text-right">
+
+                            <button class="btn [if[::constants.Lang=en-WW::btn-primary]if] mr-3" type="button" onclick="Aps.query.addFilter('setI18n','en-WW')">
+                                English
+                            </button>
+
+                            <button class="btn [if[::constants.Lang=zh-CN::btn-primary]if]" type="button" onclick="Aps.query.addFilter('setI18n','zh-CN');">
+                                简体中文
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+
+                            <ul class="nav nav-tabs nav-overflow header-tabs">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link active">
+                                        {i18n{ manager.EnvCheck }i18n}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        {i18n{ manager.linkDB }i18n}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        {i18n{ manager.setConfig }i18n}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        {i18n{ manager.done }i18n}
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped card-table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <a href="#" class="text-muted">
+                                        {i18n{ manager.Item }i18n}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="#" class="text-muted">
+                                        {i18n{ manager.AtLeast }i18n}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="#" class="text-muted">
+                                        {i18n{ manager.Recommend }i18n}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="#" class="text-muted">
+                                        {i18n{ manager.Current }i18n}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="#" class="text-muted">
+                                        {i18n{ manager.Status }i18n}
+                                    </a>
+                                </th>
+                                <th colspan="2">
+                                    <a href="#" class="text-muted">
+                                        {i18n{ manager.Comment }i18n}
+                                    </a>
+                                </th>
+                            </tr>
+                            </thead>
+
+
+                            <tbody class="list">
+
+                            ||loop??environments??
+                            <tr>
+
+                                <td class="orders-order">
+                                    {{title}}
+                                </td>
+                                <td class="orders-product">
+                                    {{least}}
+                                </td>
+                                <td class="orders-date">
+                                    {{recommend}}
+                                </td>
+                                <td class="orders-total">
+                                    {{current}}
+                                </td>
+                                <td class="orders-status">
+
+                                    [if[::status=perfect::
+                                    <div class="badge badge-success">
+                                        {i18n{ manager.Perfect }i18n}
+                                    </div>]if]
+
+                                    [if[::status=ok::
+                                    <div class="badge badge-warning">
+                                        {i18n{ manager.Ok }i18n}
+                                    </div>]if]
+                                    [if[::status=failed::
+                                    <div class="badge badge-danger">
+                                        {i18n{ manager.Failed }i18n}
+                                    </div>]if]
+
+                                </td>
+                                <td class="orders-method">
+                                    {{comment}}
+                                </td>
+                            </tr>
+                            loop||
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+            [if[::canNext::
+            <button type="button" class="btn btn-lg btn-primary lift" onclick="javascript:location.href='?step=linkDB';">
+                {i18n{ manager.next }i18n}
+            </button>
+            ]if]
+
+
+        </div>
+    </div>
+</div>

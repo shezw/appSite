@@ -1,0 +1,228 @@
+
+<section class="slice sct-color-1">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="block block-post">
+                    <div class="mb-4">
+                        <h3 class="heading heading-2 strong-400 text-normal">{{detail.title}}</h3>
+                        <div class="row">
+
+                            <div class="col-auto">
+                                <img src="{{author.avatar}}" class="avatar avatar-sm mr-2">
+                                <a href="#" class="strong-600">{{author.nickname}}</a>
+                            </div>
+
+                            <div class="col-auto pt-2">
+                                {{detail.createtime_}}
+                            </div>
+
+                            <div class="col pt-2 ">
+                                {{commentCount}} {i18n{ article.comments }i18n}
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="block-image">
+                        <img src="{{detail.cover}}" class="rounded">
+                    </div>
+
+                    <div class="block-body block-post-body">
+                        <h3 class="heading heading-4 strong-400 text-normal">
+                            {{detail.description}}
+                        </h3>
+                        {{detail.introduce}}
+
+                        <div class="tagcloud tagcloud--style-1 clearfix">
+                            ||loop??detail.tags??
+                            <a href="#"><span>{{value}}</span></a>
+                            loop||
+                        </div>
+                    </div>
+
+                    <div class="block-post-comment-action mt-5">
+                        <div class="row align-items-center">
+                            <div class="col col-md-6 col-12">
+                                <h5 class="heading heading-5 strong-500">
+                                    {{commentCount}} {i18n{ article.comments }i18n}
+                                </h5>
+                            </div>
+
+                            <div class="col col-md-6 col-12 text-right">
+                                <a href="#form_comment" class="heading heading-sm strong-500 scroll-me">
+                                    Add your comment
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="block-post-comments block-post-comments--style-1">
+
+                        ||loop??comments??
+                        <li>
+                            <div class="block block-comment">
+                                <div class="block-image">
+                                    <img src="{{author.avatar}}" class="img-circle">
+                                </div>
+                                <div class="block-body">
+                                    <div class="block-body-inner">
+                                        <h3 class="heading heading-6">
+                                            <a href="#">{{author.nickname}}</a>
+                                        </h3>
+                                        <span class="comment-date">{{createtime_}}</span>
+                                        <p class="comment-text">
+                                            {{content}}
+                                        </p>
+                                        <div class="comment-options">
+                                            <a href="#">Like</a>
+<!--                                            <a href="#">Reply</a>-->
+<!--                                            <a href="#">Report</a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        loop||
+
+                    </ul>
+
+                    <!-- Comment form -->
+                    <div id="form_comment" class="feature feature--boxed-border feature--bg-3 mt-5">
+                        <div class="px-3">
+                            <div class="text-center">
+                                <h5 class="heading heading-3 strong-400 mb-4">
+                                    Add your comment
+                                </h5>
+                                <p class="">
+                                    Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt labore.
+                                </p>
+                            </div>
+
+                            <form class="form-default mt-5" role="form">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="" class="text-uppercase sr-only">Message</label>
+                                            <textarea class="form-control" rows="5" placeholder=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="" class="text-uppercase sr-only">Name</label>
+                                            <input type="text" class="form-control input-lg" placeholder="Name">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="" class="text-uppercase sr-only">Email</label>
+                                            <input type="email" class="form-control input-lg" placeholder="Email">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="" class="text-uppercase sr-only">Website</label>
+                                            <input type="text" class="form-control input-lg" placeholder="Website">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-styled btn-base-4 mt-1">Post comment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sidebar sidebar--style-1">
+
+                    <!-- Recent Articles -->
+                    <div class="sidebar-object">
+                        <div class="section-title section-title--style-1">
+                            <h3 class="section-title-inner heading-sm strong-500">
+                                Related articles
+                            </h3>
+                        </div>
+
+
+                        <ul class="list-recent">
+
+                            ||loop??relatedArticles??
+                            <li class="clearfix">
+                                <span class="post-author"><a href="./{{uid}}">{{title}}</a><br>{{createtime_}}</span>
+<!--                                <span class="post-entry">{{description}}</span>-->
+                            </li>
+                            loop||
+
+                        </ul>
+                    </div>
+
+                        <!-- Popular topics -->
+                    <div class="sidebar-object">
+                        <div class="section-title section-title--style-1">
+                            <h3 class="section-title-inner heading-sm strong-500">
+                                Latest comments
+                            </h3>
+                        </div>
+
+                        <ul class="list-recent">
+
+                            ||loop??latestComments??
+                            <li class="clearfix">
+                                <a href="#" class="post-thumb"><img src="{{article.cover}}" alt=""></a>
+                                <span class="post-author"><a href="#">{{author.nickname}}</a><br>{{createtime_}}</span>
+                                <span class="post-entry">{{content}}</span>
+                            </li>
+                            loop||
+
+                        </ul>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="sidebar-object">
+                        <div class="section-title section-title--style-1">
+                            <h3 class="section-title-inner heading-sm strong-500">
+                                Categories
+                            </h3>
+                        </div>
+
+                        <ul class="categories categories--style-2">
+
+                            ||loop??categories??
+                            <li>
+                                <a href="" onclick="Aps.query.addFilter('categoryid',{{uid}})">{{title}}</a>
+                            </li>
+                            loop||
+
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-object">
+                        <div class="section-title section-title--style-1">
+                            <h3 class="section-title-inner heading-sm strong-500">
+                                Archive
+                            </h3>
+                        </div>
+
+                        <ul class="categories categories--style-2">
+                            <li>
+                                <a href="#">2021.2</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

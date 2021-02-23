@@ -101,7 +101,8 @@ class UserGroup extends ASModel
      * @param  string  $uid
      * @return \APS\ASResult
      */
-    public function getNameById( string $uid ){
+    public function getNameById( string $uid ): ASResult
+    {
 
         return $this->get('groupname',$uid);
     }
@@ -116,7 +117,8 @@ class UserGroup extends ASModel
      * @param  string  $sort
      * @return \APS\ASResult
      */
-    public function getChild( string $uid, int $page=1, int $size=100, string $sort = 'sort DESC, level DESC, createtime DESC' ){
+    public function getChild( string $uid, int $page=1, int $size=100, string $sort = 'sort DESC, level DESC, createtime DESC' ): ASResult
+    {
 
         if (!$this->hasChild($uid)) {
             return $this->error(400,i18n('SYS_NON'),'USERGROUP->getChild');
@@ -131,7 +133,8 @@ class UserGroup extends ASModel
      * @param  string  $uid
      * @return bool
      */
-    public function hasChild( string $uid ){
+    public function hasChild( string $uid ): bool
+    {
 
         return $this->count(['parentid'=>$uid])->getContent() > 0;
     }

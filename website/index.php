@@ -14,7 +14,7 @@ define('TIME_START',microtime(true));
 include_once dirname(__DIR__).'/server/autoload.php';
 
 define('SITE_DIR' , __DIR__.'/');
-define('THEME_DIR', SITE_DIR .'themes/'. (getConfig("theme",'WEBSITE') ?? 'default').'/' );
+define('THEME_DIR', SITE_DIR .'themes/'. (getConfig("theme",'WEBSITE') ?? 'boomerang').'/' );
 
 
 /** 设定网站本地化语言

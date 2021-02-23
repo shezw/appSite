@@ -1,0 +1,119 @@
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+
+        <div class="section-header">
+
+            <h1><span class="small">{i18n{ manager.categoryAdd }i18n}</span></h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item"><a href="./list"> {i18n{back}i18n} {i18n{ manager.sidebar_category }i18n}</a></div>
+            </div>
+
+        </div>
+        <div class="section-body">
+            <div class="row justify-content-center">
+
+
+                <div class="col-12 col-lg-10 col-xl-8">
+
+                    <form class="my-3">
+
+
+                        <div class="row">
+
+                            <div class="col-6 col-md-6">
+
+                                <div class="form-group a-field valid require" a-field-type="input" a-field-length="32" a-field-name="title">
+
+                                    <label>
+                                        {i18n{ manager.categoryTitle }i18n} * {i18n{ manager.required }i18n}
+                                    </label>
+
+                                    <input type="text" class="form-control a-field-main" >
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group a-field require valid " a-field-type="input" a-field-length="255" a-field-name="type">
+                                <!-- <label>{i18n{ manager.type }i18n} * </label> -->
+
+                                <input type="hidden" class="form-control a-field-main" value="product" placeholder="{i18n{ manager.type }i18n}">
+
+                            </div>
+
+                            <div class="col-12">
+
+                                <div class="form-group a-field valid" a-field-type="input" a-field-length="64" a-field-name="description">
+
+                                    <label>
+                                        {i18n{ manager.description }i18n} ({i18n{manager.optional}i18n})
+                                    </label>
+
+                                    <input type="text" class="form-control a-field-main" >
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="form-group a-field valid" a-field-switch="cover,gallery,video,audio" a-field-type='input' a-field-length="255" a-field-name="cover" id="uploadContainer">
+
+                            <label class="mb-1">{i18n{ manager.cover }i18n} ({i18n{ manager.coverFormat }i18n})  ({i18n{manager.optional}i18n})</label>
+
+                            <small class="form-text text-muted">
+                                {i18n{ manager.coverDescription }i18n}
+                            </small>
+
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <div>
+                                        <img id="imagePreview" src="{{constants.ThemePath}}assets/img/example-image.jpg" alt="..." class="rounded a-w-10">
+                                    </div>
+
+                                    <div class="input-group my-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="cover-url">{i18n{url}i18n}:</span>
+                                        </div>
+                                        <input id="image" type="text" disabled="disabled" class="form-control a-field-main" placeholder="{i18n{ manager.chooseFileTip }i18n}" value="" readonly aria-describedby="cover-url">
+                                    </div>
+
+                                    <input class="btn btn-sm btn-secondary" type="button" id="broseImage" value="{i18n{ manager.chooseFile }i18n}">
+                                    <input class="btn btn-sm btn-outline-info" type="button" id="clearImage" value="{i18n{ manager.clear }i18n}" onclick="VD('#image').value('')">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <hr class="my-5">
+
+                        <div class="row">
+
+                            <div class="col-12 col-md-6 mb-3">
+                                <button class="btn btn-block btn-primary" onclick="MANAGER.add( null, 'Category' )">
+                                    <i class="far fa-paper-plane"></i> {i18n{ manager.submit }i18n}
+                                </button>
+                            </div>
+
+
+                        </div>
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+

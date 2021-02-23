@@ -1,0 +1,152 @@
+<section class="slice sct-color-1">
+    <div class="container">
+        <div class="row cols-md-space cols-sm-space cols-xs-space">
+            <div class="col-lg-8">
+                <div class="card-wrapper">
+
+                    ||loop??articles??
+
+                    <div class="card z-depth-2-top mb-3" onclick="Aps.router.open('detail/{{uid}}')">
+                        <div class="row ">
+                            <div class="col-md-4">
+                                <img src="{{cover}}" class="img-fluid rounded m-3">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h4 class="heading heading-5 strong-600 line-height-1_8">{{title}}</h4>
+                                    <p class="card-text mt-3">
+                                        {{description}}
+                                    </p>
+                                    <div class="row align-items-center mt-4">
+                                        <div class="col-6">
+                                            <div class="block-author">
+                                                <div class="author-image author-image-xs">
+                                                    <img src="{{author.avatar}}" class="avatar avatar-sm mr-2">
+                                                    <a href="#" class="strong-600">{{author.nickname}}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="text-right">
+                                                {{createtime_}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    loop||
+
+                </div>
+
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination mt-5">
+
+                        [if[::pager.first::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','1')">{i18n{ firstPage }i18n}</a></li>
+                        ]if]
+
+                        [if[::pager.prev::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.prev}}')">{i18n{ prevPage }i18n}</a></li>
+                        ]if]
+
+                        ||loop??pager.list??
+                        [if[::current:: <li class="page-item active"><a class="page-link" href="#" >{{page}}</a></li> ]if]
+                        [not[::current::<li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{page}}')">{{page}}</a></li> ]not]
+                        loop||
+
+                        [if[::pager.next::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.next}}')">{i18n{ nextPage }i18n}</a></li>
+                        ]if]
+
+                        [if[::pager.last::
+                        <li class="page-item"><a class="page-link" href="#" onclick="Aps.query.addFilter('page','{{pager.last}}')">{i18n{ lastPage }i18n} ({{pager.last}})</a></li>
+                        ]if]
+
+                    </ul>
+                </nav>
+
+            </div>
+
+            <div class="col-lg-3 ml-auto">
+                <div class="sidebar">
+                    <div class="sidebar-object">
+                        <div class="section-title section-title--style-1 mb-0">
+                            <h3 class="section-title-inner heading-sm strong-600 text-uppercase">
+                                More from <a href="#" class="link">Destiny Erykah</a>
+                            </h3>
+                        </div>
+
+                        <ul class="categories list-border--dotted">
+                            <li>
+                                <a href="#">
+                                    Never changing design will eventually destroy you                                                    </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Get better design results by following 3 simple steps                                                    </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    3 ways you can reinvent design like a pro                                                    </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-object">
+                        <div class="section-title section-title--style-1 mb-0">
+                            <h3 class="section-title-inner heading-sm strong-600 text-uppercase">
+                                More from <a href="#" class="link">Desiree Jinny</a>
+                            </h3>
+                        </div>
+
+                        <ul class="categories list-border--dotted">
+                            <li>
+                                <a href="#">
+                                    15 Lessons about design you need to learn to succeed                                                    </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    White cloud messenger                                                    </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Fascinating design tactics that can help your business grow                                                    </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-object">
+                        <div class="section-title section-title--style-1 mb-0">
+                            <h3 class="section-title-inner heading-sm strong-600 text-uppercase">
+                                More from <a href="#" class="link">Cliff Simon</a>
+                            </h3>
+                        </div>
+
+                        <ul class="categories list-border--dotted">
+                            <li>
+                                <a href="#">
+                                    Paradise cay daily enterprise                                                    </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Answered: Your most burning questions about design                                                    </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Learn how to build your own website with Boomerang                                                    </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</section>

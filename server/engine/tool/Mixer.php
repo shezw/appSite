@@ -25,7 +25,8 @@ class Mixer{
      * @param    string|null              $module         [模板]
      * @return   string
      */
-    public static function mix( array $data = null , string $module = null ){
+    public static function mix( array $data = null , string $module = null ): string
+    {
 
         if (!$data||!$module) return "";
 
@@ -84,7 +85,7 @@ class Mixer{
         return $result;
     }
 
-    public static function mixLoops( &$data, &$module ):void{
+    public static function mixLoops( &$data, &$module ){
 
         $Loops = Mixer::getLoops($module);
         if(empty($Loops)){ return ; }
@@ -164,6 +165,12 @@ class Mixer{
         return $struct;
     }
 
+    /**
+     * Vue 组件在书写的时候，使用{v{ }v}的语法，在mixer完成后端模板渲染的时候，会将vue模块进行恢复，这样就可以和vue通用了
+     * Write Vue component as {v{ }v} and Mixer convert {v{ }v} to {{ }} at the last progress
+     *
+     * @param $module
+     */
     public static function revertVue( & $module ){
 
         if( strstr($module,'{v{') ){
@@ -176,12 +183,16 @@ class Mixer{
     /**
      * 混合判断条件
      * mixConditions
+     *
+     * 没有运算符的检测是否含有该字段，'>,<,>=,<=,='会进行数据比对，'^'会检测数据是否存在于字符串中，'.'会进一步检测子集
+     * Check exist while no symbol, Compare value with '>,<,>=,<=,=', Check containable with '^', Check child data with '.'
+     *
      * @param array   &$data    指针 数据
      * @param string  &$module  指针 模板
      * @param boolean $ifOrNotMode 肯定/否定判断
      * @return void $module 修改模板
      */
-    public static function mixConditions( array &$data, string &$module, $ifOrNotMode = true ):void{
+    public static function mixConditions( array &$data, string &$module, $ifOrNotMode = true ){
 
         $conditionStruct = static::getConditions( $module, $ifOrNotMode );
 
@@ -307,7 +318,7 @@ class Mixer{
         return $struct;
     }
 
-    public static function mixFields( &$data, &$module ):void{
+    public static function mixFields( &$data, &$module ){
 
         $struct = Mixer::getFields($module);
         if(empty($struct)){ return ; }
@@ -328,7 +339,8 @@ class Mixer{
         }
     }
 
-    public static function getFields( $module ){
+    public static function getFields( $module ): array
+    {
 
         $result = [];
 
@@ -376,7 +388,8 @@ class Mixer{
     }
 
 
-    public static function getI18nFields( $module ){
+    public static function getI18nFields( $module ): array
+    {
 
         $result = [];
 
@@ -433,7 +446,8 @@ class Mixer{
      * @param mixed  $target 对比值
      * @return   boolean
      */
-    public static function compareValue( $data, ?String $key, string $symbol, $target ){
+    public static function compareValue( $data, string $key, string $symbol, $target ): bool
+    {
 
         if( strstr($key, '.') ){
             $value = Mixer::getSubData( $data, $key );
@@ -466,7 +480,8 @@ class Mixer{
         return $compare;
     }
 
-    public static function structDepth( $input ){
+    public static function structDepth( $input ): array
+    {
 
         if (is_string($input)) {
             return [$input=>1];
@@ -487,7 +502,8 @@ class Mixer{
 
     }
 
-    public static function negate( bool $judge , bool $mode = true ){
+    public static function negate( bool $judge , bool $mode = true ): bool
+    {
 
         return $mode ? $judge : !$judge;
 
