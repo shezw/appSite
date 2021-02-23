@@ -7,3 +7,6 @@
 [submodule "website/static/appsiteJS"]
 	path = website/static/appsiteJS
 	url = https://gitee.com/donsee/appsiteJS.git
+[submodule "server/library/weChatDev"]
+	path = server/library/weChatDev
+	url = https://github.com/shezw/WeChatDeveloper
