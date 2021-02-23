@@ -2,69 +2,13 @@
 
 *.DS_Store
 
-# These two will generate by the installition and working on real program
-config.php
-custom.php
+# These files used for saving configs by auto generation at installation
+# Save them on the repo is not recommended
 
-# custom Models to implement ideas
-/server/custom/model/*
+# 下面三个文件将会在安装时自动生成，用于保存一些配置信息。
+# 不推荐保存到仓库中
 
-# Samples of model
-!/server/custom/model/Sample.php
-!/server/custom/model/SampleModel.php
+/server/config.php
+/website/static/js/config.manager.js
+/website/static/js/config.website.js
 
-
-# custom i18n files
-/server/custom/localization/*
-
-# Samples of i18n file
-!/server/custom/localization/zh-CN.sample.lang
-!/server/custom/localization/en-WW.sample.lang
-
-# custom api files
-/api/custom/*
-!/api/custom/sample
-
-
-# themes for management with the default named stisla
-/manager/themes/*
-!/manager/themes/stisla
-/manager/custom/*
-
-# themes for website
-/website/themes/*
-!/website/themes/default
-!/website/themes/boomerang
-
-#### Static libs (Javascript)
-
-# Ignore for custom libs
-/website/static/libs/*
-
-!/website/static/libs/bootstrap
-!/website/static/libs/jquery
-
-# Hightlight js for Code tag on html
-!/website/static/libs/highlightjs
-
-# jQuery based replacement for select boxes
-!/website/static/libs/select2
-
-# css animate
-!/website/static/libs/animatecss
-
-# Summernote full-text editor
-!/website/static/libs/summernote
-
-# QRCode in js
-!/website/static/libs/qrcode
-
-# Plupload2 & aliyun OSS uploader
-!/website/static/libs/plupload-2.1.2
-!/website/static/libs/aliyun_oss
-
-# Html Clipboard
-!/website/static/libs/clipboard
-
-# Javascript lib of Excel file
-!/website/static/libs/jsxls

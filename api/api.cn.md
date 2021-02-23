@@ -1,5 +1,7 @@
 ### 接口开发使用说明  
 
+简体中文 | [English](api.en.md)
+
 接口使用ASRoute进行路由解析。
 解析格式为: `api/namespace/class/id`
 
@@ -22,16 +24,18 @@ API入口页会优先扫描custom文件夹内对应接口类文件。
 接口类推荐使用 namespace/class.php的方式来创建,需要继承ASAPI类，运行主函数为run()。
 开发接口类时，只需要实现run()函数即可。
 接口类分为 public, system两种，system接口无法从外部入口处调用。
-```
-# 参考 custom/sample/secret.php
-```
-> run()方法需要返回ASResult结果，系统会自动输出到请求来源。
 
+公开API示例 [custom/sample/test](custom/sample/test.php)
 
-#### 示例
-请求接口: `https://yourhost/api/user/regist?username=test&password=pass`
-会进入到API功能，使用user文件夹下的regist类.
-接口中使用 `$this->params` 可以获取到数组格式参数:
+私有API示例 [custom/sample/secret](custom/sample/secret.php)
+
+> run()方法需要返回ASResult结果，系统会自动输出结果到请求来源。
+
+#### 使用说明
+请求接口: `https://yourhost/api/account/regist?username=test&password=pass`
+
+API容器会查找account/regist文件并创建regist实例，执行run函数。
+函数中使用 `$this->params` 可以获取到数组格式的请求参数:
 ```php
 ['username'=>'test','password'=>'pass'];
 ```
