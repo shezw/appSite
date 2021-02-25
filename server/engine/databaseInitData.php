@@ -59,16 +59,16 @@ return [
         ['uid'=>'z8gIV6vw','keyid'=> 'description',    'scope'=>'MANAGER', 'content'=>'AppSite Back-End Management', 'description'=>'后台简介',],
         ['uid'=>'KkSKd0Ha','keyid'=> 'id',             'scope'=>'MANAGER', 'content'=>'appsite_m', 'description'=>'后台识别ID 用于本地缓存',],
         ['uid'=>'KkSKd0HN','keyid'=> 'rootPath',       'scope'=>'MANAGER', 'content'=>'/manager', 'description'=>'自定义根目录,用于隐藏后台地址。需要与Rewrite规则匹配。',],
-        ['uid'=>'c3M0U9us','keyid'=> 'logoUrl',        'scope'=>'MANAGER', 'content'=>'/website/static/appsite/images/logo480.png', 'description'=>'LOGO地址',],
+        ['uid'=>'c3M0U9us','keyid'=> 'logoUrl',        'scope'=>'MANAGER', 'content'=>'/website/static/appsiteJS/images/logo480.png', 'description'=>'LOGO地址',],
         ['uid'=>'RPytxxJ4','keyid'=> 'logoW',          'scope'=>'MANAGER', 'content'=>NULL, 'description'=>'横版logo',],
         ['uid'=>'ceZJtfdS','keyid'=> 'logoH',          'scope'=>'MANAGER', 'content'=>NULL, 'description'=>'竖版logo',],
 
         ['uid'=>'g8GWnSxi','keyid'=> 'title',        'scope'=>'WEBSITE', 'content'=>'AppSite' , 'description'=>'网站名称',],
         ['uid'=>'G0d7NTiK','keyid'=> 'id',           'scope'=>'WEBSITE', 'content'=>'appsite_w', 'description'=>'前台识别ID 用于本地缓存',],
-        ['uid'=>'nCBiLLx7','keyid'=> 'logoUrl',      'scope'=>'WEBSITE', 'content'=>'/website/static/appsite/images/logo480.png', 'description'=>'LOGO地址',],
-        ['uid'=>'yVpZFDd9','keyid'=> 'logoW',        'scope'=>'WEBSITE', 'content'=>NULL, 'description'=>'横版logo',],
-        ['uid'=>'rjFaMzbJ','keyid'=> 'logoH',        'scope'=>'WEBSITE', 'content'=>NULL, 'description'=>'竖版logo',],
-        ['uid'=>'sZUdNGBf','keyid'=> 'defaultAvatar','scope'=>'WEBSITE', 'content'=>'/website/static/appsite/images/avatar.jpg', 'description'=>'默认头像 完整链接'],
+        ['uid'=>'nCBiLLx7','keyid'=> 'logoUrl',      'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo480.png', 'description'=>'LOGO地址',],
+        ['uid'=>'yVpZFDd9','keyid'=> 'logoW',        'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo-W.png', 'description'=>'横版logo',],
+        ['uid'=>'rjFaMzbJ','keyid'=> 'logoH',        'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo-H.png', 'description'=>'竖版logo',],
+        ['uid'=>'sZUdNGBf','keyid'=> 'defaultAvatar','scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/avatar.jpg', 'description'=>'默认头像 完整链接'],
         ['uid'=>'NrR6yLbj','keyid'=> 'imagePreview', 'scope'=>'WEBSITE', 'content'=>NULL, 'description'=> '默认预览 完整链接 '],
 
         /* 安全防护配置 */

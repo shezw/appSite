@@ -56,7 +56,7 @@
 
 
 
-                    <form class="my-4" method="post" action="?step=process">
+                    <form class="my-4" method="post" action="?step=process" name="form">
 
                         <div class="row">
                             <div class="col-12 col-md-6 order-md-2">
@@ -176,7 +176,7 @@
                                         {i18n{ manager.RedisDB }i18n}
                                     </label>
 
-                                    <input type="text" class="form-control" name="redisdb" placeholder="1" value="1">
+                                    <input type="text" class="form-control" name="redisDB" placeholder="1" value="1">
 
                                 </div>
                                 ]if]
@@ -261,7 +261,7 @@
             </div>
 
 
-            <button type="submit" class="btn btn-lg btn-primary lift">
+            <button type="button" class="btn btn-lg btn-primary lift" onclick="document.form.submit();">
                 {i18n{ manager.next }i18n}
             </button>
 

@@ -75,9 +75,11 @@ class Website extends ASRoute {
 
         $theme = getConfig("theme",'WEBSITE') ?? 'boomerang';
         $sitePath = getConfig('SITE_PATH') ?? '/';
+        $staticPath = $sitePath . 'static/';
         $this->constants = [
             'SiteDir'   => SITE_DIR,
             'SitePath'  => $sitePath,
+            'Theme'     => $theme,
             'ThemeDir'  => SITE_DIR."{$theme}/",
             'ThemePath' => "{$sitePath}website/themes/{$theme}/",
             'StaticPath'=> getConfig('STATIC_PATH') ?? "{$sitePath}website/static/",
@@ -85,9 +87,9 @@ class Website extends ASRoute {
             'Query'     => $this->querys,
             'Lang'      => _I18n()->currentLang(),
             'title'     => getConfig('title','WEBSITE') ?? 'AppSite',
-            'siteLogo'  => getConfig('logoUrl','WEBSITE'),
-            'siteLogoW' => getConfig('logoW','WEBSITE'),
-            'siteLogoH' => getConfig('logoH','WEBSITE'),
+            'siteLogo'  => getConfig('logoUrl','WEBSITE') ?? $staticPath.'appsiteJS/images/logo480.pgn',
+            'siteLogoW' => getConfig('logoW','WEBSITE') ?? $staticPath.'appsiteJS/images/logo-W.png',
+            'siteLogoH' => getConfig('logoH','WEBSITE') ?? $staticPath.'appsiteJS/images/logo-H.png',
         ];
 
         $this->scope = (getConfig('id','WEBSITE') ?? 'APPSITE') . '_w';

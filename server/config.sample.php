@@ -275,7 +275,7 @@ define("CONFIG",[
         // ID
         'id'    => '{{uid}}_m',
 
-        'theme' => 'Dashkit',
+        'theme' => 'stisla',
 
         // LOGO地址
         'logoUrl' =>  null,
@@ -294,7 +294,7 @@ define("CONFIG",[
 
         'id' => '{{uid}}_w',
 
-        'theme'=>'default',
+        'theme'=>'boomerang',
 
         // LOGO地址
         'logoUrl' =>  null,
