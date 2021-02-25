@@ -60,7 +60,7 @@ class ASRedis extends ASObject{
      * @param  string|null  $password
      * @param  int          $dbId
      */
-	function __construct( string $host = null, int $port = null, string $password = null, int $dbId = 0 ){
+	function __construct( string $host = null, int $port = null, string $password = null, int $dbId = null ){
 
 	    parent::__construct();
 
@@ -68,7 +68,7 @@ class ASRedis extends ASObject{
         $this->host = $host ?? CONFIG['REDIS_HOST'] ?? '127.0.0.1';
         $this->port = $port ?? CONFIG['REDIS_PORT'] ?? 6379;
 		$this->password = $password;
-        $this->dbId = $dbId ?? CONFIG['REDIS_DB'] ?? 1;
+        $this->dbId = $dbId ?? CONFIG['REDIS_DB'] ?? 0;
 
 		$this->connect();
 	}

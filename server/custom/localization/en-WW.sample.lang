@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * English Language Sample
+ * en-WW.lang  PHP Array
+ */
+
+return [
+
+    'Sample_i18n' => 'Sample Internationalization',
+
+    'Sample_i18n_scope' => [
+
+        'zh-CN' => 'Chinese Simply',
+        'en-WW' => 'English Global',
+        'en-US' => 'English USA'
+
+    ]
+];

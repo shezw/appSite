@@ -34,6 +34,20 @@ if (file_exists(SERVER_DIR.'config.php')){
     $step = 'done';
 }
 
+// Fix initial theme path
+switch ( $step ){
+    case 'env':
+    case 'linkDB':
+    case 'setConfig':
+    case 'process':
+
+        $website->setConstant('Theme','stisla');
+        $website->setConstant('ThemePath','/manager/themes/stisla/');
+        $website->setConstant('StaticPath','/website/static/');
+    break;
+}
+
+
 switch ( $step ){
     case 'env':
 
@@ -151,6 +165,11 @@ switch ( $step ){
             'DB_MODE'=> $website->params['dbmode'] == 'database',
             'uid' => Encrypt::shortId(8)
         ];
+
+    # 修复redis数据库选择
+    if( class_exists('Redis') ){
+        _ASRedis()->selectDB( $configData['redis']['db'] );
+    }
 
     # 创建数据库
     # Create database
