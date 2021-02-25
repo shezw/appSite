@@ -7,6 +7,7 @@ $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficie
 
 $website->setTitle('Add category');
 $website->setMenuActive(['content','category','categoryAdd']);
+$website->setSubData('type',$website->params['type']??'product');
 $website->setSubData('random',\APS\Encrypt::shortId(8));
 $website->setSubData('customFooter',"
 ");

@@ -38,7 +38,7 @@
                             <div class="form-group a-field require valid " a-field-type="input" a-field-length="255" a-field-name="type">
                                 <!-- <label>{i18n{ manager.type }i18n} * </label> -->
 
-                                <input type="hidden" class="form-control a-field-main" value="product" placeholder="{i18n{ manager.type }i18n}">
+                                <input type="hidden" class="form-control a-field-main" value="{{type}}" placeholder="{i18n{ manager.type }i18n}">
 
                             </div>
 
@@ -96,7 +96,7 @@
                         <div class="row">
 
                             <div class="col-12 col-md-6 mb-3">
-                                <button class="btn btn-block btn-primary" onclick="MANAGER.add( null, 'Category' )">
+                                <button type="button" class="btn btn-block btn-primary" onclick="MANAGER.add( null, 'Category' )">
                                     <i class="far fa-paper-plane"></i> {i18n{ manager.submit }i18n}
                                 </button>
                             </div>
