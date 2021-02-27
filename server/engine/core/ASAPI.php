@@ -49,6 +49,12 @@ abstract class ASAPI extends ASObject{
 
     protected $params;
 
+    /**
+     * API export mode
+     * Valid modes: 'API','ASAPI,   'RAW',  'HTML',  'JSON','javascript'
+     * @see /server/engine/core/ASRoute.php  export()
+     * @var string
+     */
     public $mode = 'ASAPI';
 
     function __construct( $params = null, User $user = null ){
