@@ -6,12 +6,12 @@ $website->requireGroupLevel(80000,'manager/insufficient');
 $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficient');
 
 $website->params['itemClass'] = 'APS\CommerceProduct';
-$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\CommerceProduct::$countFilters );
+$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\CommerceProduct::filterFields );
 
 $callResult = \APS\ASAPI::systemInit( 'manager\itemList', $website->params, $website->user )->run() ;
 
 $website->setTitle('Products');
-$website->setMenuActive(['commerce','product',$website->params['status']=='trash' ? 'productListTrash' : 'productList']);
+$website->setMenuActive(['commerce','product',$website->params['status']??'all'=='trash' ? 'productListTrash' : 'productList']);
 
 $website->setSubData('productList', $callResult->isSucceed() ? $callResult->getContent()['list'] : null );
 
@@ -19,7 +19,7 @@ $nav = $callResult->getContent()['nav'];
 
 $website->setSubData('pager', $website->structPager( $nav['page'],$nav['size'] , $nav['total'], $website->params));
 
-$getCategory = \APS\Category::common()->list(['type'=>'product']);
+$getCategory = \APS\Category::common()->listByArray(['type'=>'product']);
 if( $getCategory->isSucceed() ){
 
     $website->setSubData('categoryList',$getCategory->getContent());

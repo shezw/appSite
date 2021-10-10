@@ -34,6 +34,119 @@ namespace APS;
  */
 class IBChain extends ASModel {
 
+    /** Static Contents **/
+
+    /**
+     * 表
+     * @var string
+     */
+    const table     = "innerblock_chain";
+    const comment   = "内区块链";
+
+    /**
+     * 主字段
+     * @var string
+     */
+    const primaryid = "blockid";
+
+    /**
+     * 添加支持字段
+     * @var array
+     */
+    const addFields = [
+        'id','uid','saasid','userid','itemid','itemtype',
+        'content','hash','status'
+    ];
+
+    /**
+     * 更新支持字段
+     * @var array
+     */
+    const updateFields = [
+        'status'
+    ];
+
+    /**
+     * 详情支持字段
+     * @var array
+     */
+    const detailFields = [
+        'id','uid','saasid','userid','itemid','itemtype',
+        'content','hash','status','createtime','lasttime',
+    ];
+
+    /**
+     * 开放详情支持字段
+     * @var array
+     */
+    const publicDetailFields = [
+        'id','uid','saasid','userid','itemid','itemtype',
+        'content','hash','status','createtime','lasttime',
+    ];
+
+    /**
+     * 概览支持字段
+     * @var array
+     */
+    const overviewFields = [
+        'id','uid','saasid','userid','itemid','itemtype',
+        'content','hash','status','createtime','lasttime',
+    ];
+
+    /**
+     * 列表支持字段
+     * @var array
+     */
+    const listFields = [
+        'id','uid','saasid','userid','itemid','itemtype',
+        'content','hash','status','createtime','lasttime',
+    ];
+
+    /**
+     * 开放接口列表支持字段
+     * @var array
+     */
+    const publicListFields = [
+        'id','uid','saasid','userid','itemid','itemtype',
+        'content','hash','status','createtime','lasttime',
+    ];
+
+    /**
+     * 过滤字段
+     * @var array
+     */
+    const filterFields = [
+        'id','uid','saasid','userid','itemid','itemtype','hash','status','createtime','lasttime',
+    ];
+
+    /**
+     * 转换格式
+     * @var array
+     */
+    const depthStruct = [
+        'id'=>DBField_Int,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+        'content'=>DBField_ASJson,
+    ];
+
+    const tableStruct = [
+
+        'uid'=>     ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'索引ID' , 'idx'=>DBIndex_Unique ],
+        'saasid'=>  ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'主体ID' , 'idx'=>DBIndex_Index ],
+        'userid'=>  ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'用户ID' , 'idx'=>DBIndex_Index ],
+        'itemtype'=>['type'=>DBField_String,    'len'=>32,  'nullable'=>1,  'cmt'=>'目标类别' , 'idx'=>DBIndex_Index ],
+        'itemid'=>  ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'目标ID' , 'idx'=>DBIndex_Index ],
+
+        'content'=> ['type'=>DBField_RichText,  'len'=>-1,  'nullable'=>1,  'cmt'=>'数据内容(index,hash,data,timestamp) ASJson' ],
+
+        'hash'=>    ['type'=>DBField_String,    'len'=>64,  'nullable'=>0,  'cmt'=>'哈希值 SHA256',    'dft'=>'pending', 'idx'=>DBIndex_Index ],
+        'status'=>  ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'enabled', ],
+
+        'createtime'   =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',                      'idx'=>DBIndex_Index, ],
+        'lasttime'     =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
+
     /**
      * Chain context 链上下文(不包含当前块)
      * 用于存储当前块所处的上下文环境 [ 以blockID初始化时前后各2个, 默认以最新block初始化 上下文为最新2个 ]
@@ -60,13 +173,17 @@ class IBChain extends ASModel {
 
         if(isset($blockID)){
 
-            $checkIndex = _ASDB()->get( ['id'], static::$table, [static::$primaryid => $blockID] );
+            $checkIndex = _ASDB()->get( DBFields::init()->and('id'), static::table, DBConditions::init()->where(static::primaryid)->equal($blockID) );
             $blockIndex = $checkIndex->isSucceed() ? $checkIndex->getContent()['id'] : 0 ;
         }
 
-        $condition = isset($blockIndex) ? ['id'=>'[[<=]]'.$blockIndex] : [];
+        $condition = DBConditions::init();
+        if ( isset($blockIndex) ){
+            $condition->and('id')->lessAnd($blockIndex);
+        }
+        $condition->and(static::primaryid)->equalIf($blockID);
 
-        $listChain = $this->list(array_merge($condition,['uid'=>$blockID]),1,3,'createtime DESC');
+        $listChain = $this->list($condition,1,3,'createtime DESC');
 
         if( !$listChain->isSucceed() ){ return $listChain; }
 
@@ -132,15 +249,15 @@ class IBChain extends ASModel {
 
         $newBlock = $currentBlock->add($content);
 
-        $this->add([
+        $this->add(IBChain::initValuesFromArray([
             'id'=>$newBlock->getId(),
             'hash'=>$newBlock->getHash(),
             'content'=>$newBlock->encode(),
             'userid'=>$userid,
             'itemid'=>$itemid,
             'itemtype'=>$itemtype,
-            'saasid'=>$saasid
-        ]);
+            'saasid'=>saasId()
+        ]));
 
         $this->endAdding();
 
@@ -210,9 +327,7 @@ class IBChain extends ASModel {
      */
     public function getBlockFromData( array $blockInfo ): Block
     {
-
         return new Block( $blockInfo['data'], $blockInfo['index'], $blockInfo['timestamp'], $blockInfo['hash'] );
-
     }
 
     /**
@@ -222,111 +337,14 @@ class IBChain extends ASModel {
      */
     public function initCreation(): ASResult
     {
-
         $time = time();
         $info = [ 'engine'=>'appsite','createtime'=>$time ];
         $hash = hash('sha256',json_encode($info));
 
         $creationBlock = new BLOCK( $info, 1, $time, $hash );
 
-        return $this->add(['id'=>1,'userid'=>'SYSTEM','content'=>$creationBlock->encode(),'hash'=>$hash]);
+        return $this->add( IBChain::initValuesFromArray( ['id'=>1,'userid'=>'SYSTEM','content'=>$creationBlock->encode(),'hash'=>$hash]) );
     }
-
-    /** Static Contents **/
-
-    /**
-     * 表
-     * @var string
-     */
-    public static $table     = "innerblock_chain";
-
-    /**
-     * 主字段
-     * @var string
-     */
-    public static $primaryid = "blockid";
-
-    /**
-     * 添加支持字段
-     * @var array
-     */
-    public static $addFields = [
-        'id','uid','saasid','userid','itemid','itemtype',
-        'content','hash','status'
-    ];
-
-    /**
-     * 更新支持字段
-     * @var array
-     */
-    public static $updateFields = [
-        'status'
-    ];
-
-    /**
-     * 详情支持字段
-     * @var array
-     */
-    public static $detailFields = [
-        'id','uid','saasid','userid','itemid','itemtype',
-        'content','hash','status','createtime','lasttime',
-    ];
-
-    /**
-     * 开放详情支持字段
-     * @var array
-     */
-    public static $publicDetailFields = [
-        'id','uid','saasid','userid','itemid','itemtype',
-        'content','hash','status','createtime','lasttime',
-    ];
-
-    /**
-     * 概览支持字段
-     * @var array
-     */
-    public static $overviewFields = [
-        'id','uid','saasid','userid','itemid','itemtype',
-        'content','hash','status','createtime','lasttime',
-    ];
-
-    /**
-     * 列表支持字段
-     * @var array
-     */
-    public static $listFields = [
-        'id','uid','saasid','userid','itemid','itemtype',
-        'content','hash','status','createtime','lasttime',
-    ];
-
-    /**
-     * 开放接口列表支持字段
-     * @var array
-     */
-    public static $publicListFields = [
-        'id','uid','saasid','userid','itemid','itemtype',
-        'content','hash','status','createtime','lasttime',
-    ];
-
-    /**
-     * 过滤字段
-     * @var array
-     */
-    public static $countFilters = [
-        'id','uid','saasid','userid','itemid','itemtype','hash','status','createtime','lasttime',
-    ];
-
-    /**
-     * 转换格式
-     * @var array
-     */
-    public static $depthStruct = [
-        'id'=>'int',
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'content'=>'ASJson',
-    ];
-
 
 }
 

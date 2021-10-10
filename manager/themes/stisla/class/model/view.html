@@ -1,0 +1,152 @@
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+
+        <div class="section-body">
+
+            <div class="card">
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col">
+
+                        <ul class="nav nav-tabs nav-overflow header-tabs">
+                            <li class="nav-item">
+                                <a class="py-3 nav-link active" href="#" data-toggle="tab" data-target="#tab_custom" aria-expanded="true">
+                                    <span class="text-md">{i18n{ manager.customModels }i18n}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="py-3 nav-link" href="#" data-toggle="tab" data-target="#tab_system" aria-expanded="false">
+                                    <span class="text-md">{i18n{ manager.systemModels }i18n}</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+
+                    <div class="col-12">
+                        <div class="tab-content">
+
+                        <div class="tab-pane table-responsive active mb-0" id="tab_custom" data-toggle="lists" data-options='{"valueNames": ["goal-rows", "goal-length", "goal-size","goal-indexSize","goal-createTime","goal-lastTime"]}'>
+                            <table class="table table-sm table-nowrap card-table table-striped" >
+
+                                <thead>
+                                <tr>
+                                    <th>
+                                        {i18n{ model }i18n}
+                                    </th>
+                                    <th>
+                                        {i18n{ manager.database_Title }i18n}
+                                    </th>
+                                    <th>
+                                        {i18n{ manager.database_Table }i18n}
+                                    </th>
+                                    <th>
+                                    </th>
+                                    <th></th>
+                                </tr>
+
+                                </thead>
+
+                                <tbody class="list">
+                                ||loop??customModels??
+                                <tr>
+                                    <td class="p-2 font-weight-bold a-text-l">{{name}}</td>
+                                    <td class="p-2">{{comment}}</td>
+                                    <td class="p-2">
+                                        [if[::tableExist::<a href="../database/detail?table={{table}}&comment={{comment}}" >
+                                            {{table}}
+                                        </a>]if]
+                                    </td>
+
+
+                                    <td class="p-2 text-right">
+                                        [not[::tableExist::<button class="btn btn-outline-primary" onclick="MANAGER.postFormToAction('manager/generateTableStruct',{class:'{{name}}'},MANAGER.reloadCall)">创建数据表</button>]not]
+                                    </td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item text-danger">
+                                                    Delete Table
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="tab-pane table-responsive mb-0" id="tab_system">
+                            <table class="table table-sm table-nowrap card-table table-striped">
+
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            {i18n{ model }i18n}
+                                        </th>
+                                        <th>
+                                            {i18n{ manager.database_Title }i18n}
+                                        </th>
+                                        <th>
+                                            {i18n{ manager.database_Table }i18n}
+                                        </th>
+                                        <th>
+                                        </th>
+                                        <th></th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody class="list">
+                                ||loop??systemModels??
+                                <tr>
+                                    <td class="p-2 font-weight-bold a-text-l">{{name}}</td>
+                                    <td class="p-2">{{comment}}</td>
+                                    <td class="p-2">
+                                        [if[::tableExist::<a href="../database/detail?table={{table}}&comment={{comment}}" >
+                                        {{table}}
+                                    </a>]if]
+                                    </td>
+
+                                    <td class="p-2 text-right">
+                                        [not[::tableExist::<button class="btn btn-outline-primary" onclick="MANAGER.postFormToAction('manager/generateTableStruct',{class:'{{name}}'},MANAGER.reloadCall)">创建数据表</button>]not]
+                                    </td>
+
+                                    <td class="p-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fe fe-more-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#!" class="dropdown-item text-danger">
+                                                    Delete Table
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                loop||
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+        </div> <!-- / .row -->
+    </div>
+    </section>
+</div>

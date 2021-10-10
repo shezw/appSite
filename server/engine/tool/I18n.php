@@ -163,7 +163,7 @@ class I18n{
 
             $supplementDict = include( $filePath );
 
-            $this->dictionary = array_merge( $this->dictionary, $supplementDict );
+            $this->dictionary = array_merge_recursive( $this->dictionary, $supplementDict );
 
             if( $this->RedisEnabled ){
 

@@ -18,8 +18,8 @@ use APS\User;
  */
 class loginByGoogle extends ASAPI
 {
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {

@@ -13,25 +13,20 @@ use APS\User;
 
 class updateUser extends ASAPI
 {
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    private $userId = '';
-    private $data   = [];
-
-    protected $scope = 'public';
-    public  $mode = 'JSON';
-
-    protected static $groupCharacterRequirement = ['super','manager','editor'];
-    protected static $groupLevelRequirement = 80000;
+    const groupCharacterRequirement = [GroupRole_Super,GroupRole_Manager,GroupRole_Editor];
+    const groupLevelRequirement = GroupLevel_Admin;
 
     public function run(): ASResult
     {
-        $this->userId    = $this->params['userId'];
-        $this->data      = $this->params['data'];
+        $userId = $this->params['userId'];
+        $data = $this->params['data'];
 
-        $user = new User( $this->userId );
+        $user = new User($userId);
 
-        return $user->update( $this->data , $this->userId );
-
+        return $user->updateByArray( $data, $userId);
     }
 
 }

@@ -2,6 +2,13 @@
 
 /** @var \APS\Website $website */
 
+use APS\Article;
+use APS\CommerceOrder;
+use APS\CommerceProduct;
+use APS\DBConditions;
+use APS\User;
+use APS\UserAccount;
+
 $website->requireUser('manager/login');
 $website->setTitle('Dashboard');
 $website->setMenuActive(['dashboard']);
@@ -19,20 +26,20 @@ $website->appendTemplateByFile(THEME_DIR.'page/dashboard.html');
 $website->appendTemplateByFile(THEME_DIR.'common/footer.html');
 
 $website->setSubData('statics',[
-    'userCount'=>\APS\User::common()->count(['groupid'=>'100'])->getContent(),
-    'productCount'=>\APS\CommerceProduct::common()->count([])->getContent(),
-    'orderCount'=>\APS\CommerceOrder::common()->count([])->getContent(),
-    'articleCount'=>\APS\Article::common()->count([])->getContent()
+    'userCount'=> UserAccount::common()->count(DBConditions::init()->where('groupid')->equal(Group_Registered))->getContent(),
+    'productCount'=> CommerceProduct::common()->count(CommerceProduct::emptyCondition())->getContent(),
+    'orderCount'=> CommerceOrder::common()->count(CommerceOrder::emptyCondition())->getContent(),
+    'articleCount'=> Article::common()->count(Article::emptyCondition())->getContent()
 ]);
 
-$products = \APS\CommerceProduct::common()->list(['status'=>'enabled'],1,5,'viewtimes DESC',false);
+$products = CommerceProduct::common()->list(DBConditions::init()->where('status')->equal(Status_Enabled),1,5,'viewtimes DESC',false);
 if ($products->isSucceed()){
     $productList = $products->getContent();
 
     foreach ($productList as $i => $product) {
         $productList[$i]["rate"] = $product["viewtimes"] / 10;
     }
-    $website->setSubData('products', $productList );
+    $website->setSubData('products', $productList);
 }
 
 $website->rend();

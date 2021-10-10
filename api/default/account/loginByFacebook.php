@@ -6,6 +6,7 @@ use APS\AccessToken;
 use APS\AccessVerify;
 use APS\ASAPI;
 use APS\ASResult;
+use APS\DBConditions;
 use APS\Google;
 use APS\Paypal;
 use APS\User;
@@ -21,8 +22,8 @@ use APS\UserInfo;
  */
 class loginByFacebook extends ASAPI
 {
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {
@@ -33,10 +34,10 @@ class loginByFacebook extends ASAPI
             return $this->error(-10,'Not valid field');
         }
 
-        if ( !UserInfo::common()->has(['facebookID'=>$facebookID]) ) { # 未注册
+        if ( !UserInfo::common()->has(DBConditions::init(UserInfo::table)->where('facebookID')->equal($facebookID) ) ){ # 未注册
 
             // start regist
-            $addUser = User::common()->add(['facebookID'=>$facebookID]);
+            $addUser = User::common()->addByArray(['facebookID'=>$facebookID] );
 
             if (!$addUser->isSucceed()){ return $addUser;}
 

@@ -78,7 +78,11 @@ class Mixer{
             }else{
 
                 if (isset($data[$key])) {
-                    $result = is_array($data[$key]) ? json_encode($data[$key],JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK) : $data[$key];
+                    if( gettype($data[$key]) == 'bool' ){
+                        $result = $data[$key] ? '1' : '0';
+                    }else{
+                        $result = is_array($data[$key]) ? json_encode($data[$key],JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK) : $data[$key];
+                    }
                 }
             }
         }
@@ -95,7 +99,7 @@ class Mixer{
             $origin = '||loop'.$single['code'].'loop||';
             $condit = '??'.$single['key'].'??';
 
-            $datas = strstr($single['key'], '.') ? Mixer::getSubData($data,$single['key']) : $data[$single['key']] ;
+            $datas = strstr($single['key'], '.') ? Mixer::getSubData($data,$single['key']) : ($data[$single['key']] ?? null) ;
 
             if ( isset($single['key']) && isset($datas) ) { #
 
@@ -105,6 +109,7 @@ class Mixer{
                     $module =  str_replace( $origin, $single['default'] ?? '', $module);
                     return ;
                 }
+
                 foreach ($datas as $k => $v) {
                     if(is_numeric($k) && !is_array($v) ){
                         $value = ['IDX'=>$k,'NUMBER'=>$k+1,'value'=>$v];
@@ -214,15 +219,15 @@ class Mixer{
                         # 不存在值
                         # value is not exists
 
-                        in_array($value['symbol'], ['>','<','>=','<=','=']) && !Mixer::compareValue($data,$key,$value['symbol'],$value['target']) ||
+                        isset($value['symbol']) && in_array($value['symbol'], ['>','<','>=','<=','=']) && !Mixer::compareValue($data,$key,$value['symbol'],$value['target']) ||
                         # 对比属性值
                         # Compare value
 
-                        $value['symbol']=='^' && !strstr($value['target'],(string)$data[$key]) ||
+                        isset($value['symbol']) && $value['symbol']=='^' && !strstr($value['target'],(string)$data[$key]) ||
                         # 是否包含有属性
                         # Contain value
 
-                        $value['symbol']=='.' && !Mixer::validValue($data,$value['key'])
+                        isset($value['symbol']) && $value['symbol']=='.' && !Mixer::validValue($data,$value['key'])
                         # 是否含有子属性
                         # value has sub data
                     ) :
@@ -232,15 +237,15 @@ class Mixer{
                         # 存在值且不需要判断
                         # value is exists
 
-                        in_array($value['symbol'], ['>','<','>=','<=','=']) && (isset($data[$key])|| Mixer::getSubData($data,$key) )&& Mixer::compareValue($data,$key,$value['symbol'],$value['target']) ||
+                        isset($value['symbol']) && in_array($value['symbol'], ['>','<','>=','<=','=']) && (isset($data[$key])|| Mixer::getSubData($data,$key) )&& Mixer::compareValue($data,$key,$value['symbol'],$value['target']) ||
                         # 对比属性值
                         # Compare value
 
-                        $value['symbol']=='^' && isset($data[$key]) && strstr($value['target'],(string)$data[$key]) ||
+                        isset($value['symbol']) && $value['symbol']=='^' && isset($data[$key]) && strstr($value['target'],(string)$data[$key]) ||
                         # 是否包含有属性
                         # Contain value
 
-                        $value['symbol']=='.' && Mixer::validValue($data,$value['key'])
+                        isset($value['symbol']) && $value['symbol']=='.' && Mixer::validValue($data,$value['key'])
                         # 是否含有子属性
                         # value has sub data
 
@@ -323,18 +328,19 @@ class Mixer{
         $struct = Mixer::getFields($module);
         if(empty($struct)){ return ; }
 
-        foreach ($struct as $key => $value) {
+        foreach ($struct as $symbol => $key) {
 
-            if (gettype($value)=='string') {
+            if (gettype($key)=='string') {
 
-                if (isset($data[$value])) {
-                    $module  =  str_replace($key, (gettype($data[$value])=='array') ? json_encode($data[$value],JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK) : $data[$value], $module);
+                if (isset($data[$key])) {
+                    if( is_bool($data[$key]) ){ $data[$key] = $data[$key]?'true':'false'; }
+                    $module  =  str_replace($symbol, (gettype($data[$key])=='array') ? json_encode($data[$key],JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK) : $data[$key], $module);
                 }else{
-                    $module  =  str_replace($key, '', $module);
+                    $module  =  str_replace($symbol, '', $module);
                 }
 
             }else{
-                $module  =  str_replace($key, Mixer::mixField($data,$value), $module);
+                $module  =  str_replace($symbol, Mixer::mixField($data,$key), $module);
             }
         }
     }
@@ -452,7 +458,7 @@ class Mixer{
         if( strstr($key, '.') ){
             $value = Mixer::getSubData( $data, $key );
         }else{
-            $value = $data[$key];
+            $value = $data[$key] ?? null;
         }
 
         if(!isset($value)){ return false; }

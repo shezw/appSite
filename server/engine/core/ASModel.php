@@ -14,88 +14,98 @@ namespace APS;
 abstract class ASModel extends ASBase {
 
     /**
+     * @var array (name=>[properties])
+     */
+    const tableStruct = [];
+
+    /**
      * 数据表名
      * @var string
      */
-	public static $table;
+	const table = "ASModel";
+
+	const comment = "抽象模型";
 
     /**
      * 主索引字段
      * @var string
      */
-	public static $primaryid;
+	const primaryid = 'uid';
 
     /**
      * 添加支持字段
      * @var array [string]
      */
-    protected static $addFields;
+    const addFields = [];
 
     /**
      * 更新支持字段
      * @var array [string]
      */
-    protected static $updateFields;
+    const updateFields = [];
 
     /**
      * 详情支持字段
      * @var array [string]
      */
-    protected static $detailFields;
+    const detailFields = [];
 
     /**
      * 外部接口详情支持字段
      * @var array [string]
      */
-    protected static $publicDetailFields;
+    const publicDetailFields = [];
 
     /**
      * 概览支持字段
      * @var array [string]
      */
-    protected static $overviewFields;
+    const overviewFields = [];
 
     /**
      * 列表支持字段
      * @var array [string]
      */
-    protected static $listFields;
+    const listFields = [];
 
     /**
      * 外部接口列表支持字段
      * @var array [string]
      */
-    protected static $publicListFields;
+    const publicListFields = [];
 
     /**
-     * 计数查询支持筛选字段
+     * 计数、查询筛选 支持字段 ( 原countFilters )
      * @var array [string]
      */
-    protected static $countFilters;
+    const filterFields = [];
 
     /**
-     * 多重数据结构
-     * @var array [string=>any]
+     * 数据转换规则
+     * @var array
      */
-	protected static $depthStruct    = null;
+    const depthStruct = [
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+    ];
 
     /**
      * 搜索支持字段
      * @var array [string]
      */
-    protected static $searchFilters  = null;
+    const searchFilters  = NULL;
 
     /**
      * 开启日志
      * @var bool
      */
-	protected static $record_enabled = false;
+	const record_enabled = true;
 
     /**
      * 自动使用REDIS缓存
      * @var bool
      */
-    protected static $rds_auto_cache = false;
+    const rds_auto_cache = false;
 
     /**
      * Redis缓存
@@ -109,9 +119,9 @@ abstract class ASModel extends ASBase {
      */
     protected $RedisHash;
 
-    function __construct(bool $enableRecord = true)
+    function __construct()
     {
-        parent::__construct($enableRecord);
+        parent::__construct();
     }
 
     /**
@@ -119,7 +129,8 @@ abstract class ASModel extends ASBase {
      * common
      * @return static
      */
-    public static function common(){
+    public static function common(): ASModel
+    {
         return new static();
     }
 
@@ -133,158 +144,133 @@ abstract class ASModel extends ASBase {
     /**
      * 添加数据
      * add data to Database
-     * @param  array  $data
+     * @param DBValues $data
      * @return ASResult
      */
-	public function add( array $data ): ASResult
+	public function add( DBValues $data ): ASResult
     {
-		$data = Filter::purify($data,static::$addFields,static::$depthStruct); // 使用字段数据进行过滤
-        $data = Filter::removeInvalid($data);
+        $uid = Encrypt::shortId(8);
 
-		if (count($data)<1) { return $this->error(603,i18n('SYS_PARA_REQ'),static::$table.'->add'); }
-
-		$data[static::$primaryid] = isset($data[static::$primaryid]) ? $data[static::$primaryid] : Encrypt::shortId(8);
-
-		if( isset(static::$depthStruct) && in_array('ASJson',array_values(static::$depthStruct))  ){
-		    foreach ( static::$depthStruct as $key => $type ){
-		        if( $type == 'ASJson' ){
-		            $data[$key] = Encrypt::ASJsonEncode( $data[$key] );
-                }
-            }
+        if ( !$data->has(static::primaryid) && isset( static::tableStruct[ static::primaryid ] ) ){
+            $data->set(static::primaryid)->string( $uid );
+        }
+        if ( in_array('saasid',static::addFields) ){
+            $data->set('saasid')->stringIf(saasId());
         }
 
         $this->beforeAdd($data);
 
 		$this->DBAdd($data);
-		$this->setId($data[static::$primaryid] ?? 'NAN_ID' );
-		$this->record('ITEM_ADD',static::$table.'->add');
+		$this->setId($data->getValue(static::primaryid) ?? 'NAN_ID' );
+		$this->record('ITEM_ADD',static::table.'->add');
 
-		if($this->result->isSucceed()){ $this->result->setContent($data[static::$primaryid]); } // 成功返回单位的索引ID
+		if($this->result->isSucceed()){ $this->result->setContent($uid); } // 成功返回单位的索引ID
 
 		$this->beforeAddReturn( $this->result, $data );
 
-        static::$rds_auto_cache
-        && $this->_clearSet(static::class,'list')
-        && $this->_clearSet(static::class,'count');
-
+        if(static::rds_auto_cache){
+            $this->_clearSet(static::class,'list');
+            $this->_clearSet(static::class,'count');
+        }
 		return $this->feedback();
 	}
 
-	/**
+    /**
+     * 通过数组自动添加
+     * @param array $arrayData
+     * @return ASResult
+     */
+	public function addByArray( array $arrayData ): ASResult{
+	    return $this->add( static::initValuesFromArray($arrayData) );
+    }
+
+    /**
      * 函数注入(插入数据之前)
-	 * Do something before add
-	 * @param    array (key-value)   &$data          插入数据(指针)
-	 */
-	public function beforeAdd( array &$data ){  }
+     * Do something before add
+     * @param DBValues $data
+     */
+	public function beforeAdd( DBValues &$data ){  }
 
     /**
      * 函数注入(插入数据返回结果之前)
      * Do something before add result returning
-     * @param ASResult $result  即将返回的结果
-     * @param  array          $data    插入数据
+     * @param ASResult $result 即将返回的结果
+     * @param DBValues $data 插入数据
      */
-	public function beforeAddReturn( ASResult &$result, array $data ){  }
+	public function beforeAddReturn( ASResult &$result, DBValues $data ){  }
 
-
-    /**
-     * 批量添加
-     * adds
-     * @param  array  $list
-     * @return ASResult
-     */
-	public function adds( array $list ): ASResult
-    {
-
-		$this->beforeAdds($list);
-
-		for ($i=0; $i < count($list); $i++) { 
-			if(count($list[$i])>=1){
-
-				$data = Filter::purify($list[$i],static::$addFields); // 使用字段数据进行过滤
-                $data = Filter::removeInvalid($data);
-				$data[static::$primaryid] = isset($list[$i][static::$primaryid]) ? $list[$i][static::$primaryid] : Encrypt::shortId(8);
-				$data['status'] = $list[$i]['status'] ? $list[$i]['status'] : 'enabled';
-				$dataList[] = $data;
-			}
-		}
-		if (count($dataList)<1) {
-		    return $this->take($list)->error(603,i18n('SYS_PARA_REQ'),static::$table.'->adds');
-		}
-
-		$this->DBAdds($dataList);
-		$this->setId('IDLIST');
-		$this->record('ITEM_ADDS',static::$table.'->adds');
-
-		$this->beforeAddsReturn($this->result, $list);
-
-        static::$rds_auto_cache
-        && $this->_clearSet(static::class,'list')
-        && $this->_clearSet(static::class,'count');
-
-		return $this->feedback();
-	}
-
-	public function beforeAdds( array &$list ){}
-	public function beforeAddsReturn( ASResult &$result, array $list ){}
 
     /**
      * 更新单行数据
      * update data with uid
-     * @param  array   $data
-     * @param  string  $uid
+     * @param DBValues $data
+     * @param string $uid
      * @return ASResult
      */
-	public function update( array $data , string $uid ): ASResult
+	public function update( DBValues $data , string $uid ): ASResult
     {
+        $data->purify(static::updateFields);
 
-        if( isset(static::$depthStruct) && in_array('ASJson',array_values(static::$depthStruct))  ){
-            foreach ( static::$depthStruct as $key => $type ){
-                if( $type == 'ASJson' ){
-                    $data[$key] = Encrypt::ASJsonEncode( $data[$key] );
-                }
-            }
-        }
+//        if( isset(static::depthStruct) && in_array('ASJson',array_values(static::depthStruct))  ){
+//            foreach ( static::depthStruct as $key => $type ){
+//                if( $type == 'ASJson' ){
+//                    $data[$key] = Encrypt::ASJsonEncode( $data[$key] );
+//                }
+//            }
+//        }
 
 		$this->beforeUpdate($data);
+//
+//		$data = Filter::purify($data,static::updateFields);
+//
+//		if (count($data)<1) {
+//		    return $this->take($uid)->error(603,i18n('SYS_PARA_REQ'),static::table.'->update');
+//		}
 
-		$data = Filter::purify($data,static::$updateFields);
-
-		if (count($data)<1) {
-		    return $this->take($uid)->error(603,i18n('SYS_PARA_REQ'),static::$table.'->update');
-		}
-
-		$conditions = static::$primaryid."='{$uid}'";
+		$conditions = DBConditions::init(static::table)->where(static::primaryid)->equal($uid);
 
 		$this->DBUpdate($data,$conditions);
 		$this->setId($uid);
-		$this->record('ITEM_UPDATE',static::$table.'->update');
+		$this->record('ITEM_UPDATE',static::table.'->update');
 
 		$this->beforeUpdateReturn( $this->result,$uid );
 
-        static::$rds_auto_cache
-        && $this->_clearSet(static::class,'list')
-        && $this->getRedis()->remove([$uid,true])
-        && $this->getRedis()->remove([$uid,false]);
-
+        if( static::rds_auto_cache ) {
+            $this->_clearSet(static::class, 'list');
+            $this->getRedis()->remove([$uid, true]);
+            $this->getRedis()->remove([$uid, false]);
+        }
 		return $this->feedback();
 	}
 
-	public function beforeUpdate( array &$data ){}
+	public function beforeUpdate( DBValues &$data ){}
 	public function beforeUpdateReturn( ASResult &$result,string $uid ){}
 
-	public function publicUpdate(array $data, string $uid, string $userid ): ASResult
+//	public function publicUpdate(DBValues $data, string $uid, string $userid ): ASResult
+//    {
+//
+//		$DETAIL = $this->detail($uid)->getContent();
+//
+//		$authorId = $DETAIL['authorid'] ?? $DETAIL['userid'] ?? $DETAIL['receiveid'];
+//
+//		if( $authorId!==$userid ){
+//		    return $this->take($userid)->error(9990,i18n('ACC_PROS_CHK_FAL'),"ITEM::publicRemove");
+//		}
+//
+//		return $this->update($data,$uid);
+//	}
+
+    /**
+     * 通过数组数据更新
+     * @param array $data
+     * @param string $uid
+     * @return ASResult
+     */
+    public function updateByArray( array $data, string $uid ): ASResult
     {
+	    return $this->update( static::initValuesFromArray($data), $uid );
+    }
 
-		$DETAIL = $this->detail($uid)->getContent();
-
-		$authorId = $DETAIL['authorid'] ?? $DETAIL['userid'] ?? $DETAIL['receiveid'];
-
-		if( $authorId!==$userid ){
-		    return $this->take($userid)->error(9990,i18n('ACC_PROS_CHK_FAL'),"ITEM::publicRemove");
-		}
-
-		return $this->update($data,$uid);
-	}
 
     /**
      * 移除
@@ -294,23 +280,22 @@ abstract class ASModel extends ASBase {
      */
 	public function remove( string $uid ): ASResult
     {
-
 		$this->beforeRemove($uid);
 
-		$conditions = static::$primaryid."='$uid'";
+        $conditions = DBConditions::init(static::table)->where(static::primaryid)->equal($uid);
 
         $this->setId($uid);
 		$this->DBRemove($conditions);
-		$this->record('ITEM_REMOVE',static::$table.'->remove');
+		$this->record('ITEM_REMOVE',static::table.'->remove');
 
 		$this->beforeRemoveReturn($this->result,$uid);
 
-        static::$rds_auto_cache
-        && $this->_clearSet(static::class,'list')
-        && $this->_clearSet(static::class,'count')
-        && $this->getRedis()->remove([$uid,true])
-        && $this->getRedis()->remove([$uid,false]);
-
+		if( static::rds_auto_cache ){
+            $this->_clearSet(static::class,'list');
+            $this->_clearSet(static::class,'count');
+            $this->getRedis()->remove([$uid,true]);
+            $this->getRedis()->remove([$uid,false]);
+        }
 		return $this->feedback();
 	}
 
@@ -324,19 +309,19 @@ abstract class ASModel extends ASBase {
      * @param  string  $userid
      * @return ASResult
      */
-	public function publicRemove(string $uid, string $userid ): ASResult
-    {
-
-		$DETAIL = $this->detail($uid)->getContent();
-
-		$authorId = $DETAIL['authorid'] ?? $DETAIL['userid'] ?? $DETAIL['receiveid'];
-
-		if( $authorId!==$userid ){
-		    return $this->take($userid)->error(9990,i18n('ACC_PROS_CHK_FAL'),"ITEM::publicRemove");
-		}
-
-		return $this->remove($uid);
-	}
+//	public function publicRemove(string $uid, string $userid ): ASResult
+//    {
+//
+//		$DETAIL = $this->detail($uid)->getContent();
+//
+//		$authorId = $DETAIL['authorid'] ?? $DETAIL['userid'] ?? $DETAIL['receiveid'];
+//
+//		if( $authorId!==$userid ){
+//		    return $this->take($userid)->error(9990,i18n('ACC_PROS_CHK_FAL'),"ITEM::publicRemove");
+//		}
+//
+//		return $this->remove($uid);
+//	}
 
     /**
      * 查询唯一数据详情
@@ -350,19 +335,22 @@ abstract class ASModel extends ASBase {
 
         $this->RedisHash = [$uid,$public];
 
-        if( static::$rds_auto_cache && $this->_hasCache() ){
+        if( static::rds_auto_cache && $this->_hasCache() ){
             return $this->_getCache();
         }
 
 		$this->beforeDetail($uid);
 
+        $fields     = DBFields::initBySimpleList( ($public && !empty(static::publicDetailFields)) ? static::publicDetailFields : static::detailFields );
+        $conditions = DBConditions::init(static::table)->where(static::primaryid)->equal($uid)->limitWith(0,1);
+
 		$params = [ 
-			'fields'     => ($public === true && isset($this->publicDetailFields) ) ? $this->publicDetailFields : static::$detailFields ,
-			'table'      => static::$table,
-			'conditions' => static::$primaryid."='{$uid}'"
+			'fields'     => $fields->toArray(),
+			'table'      => static::table,
+			'conditions' => $conditions->toArray()
 		];
 
-		$this->DBGet($params['fields'],$params['conditions'],1,1);
+		$this->DBGet($fields,$conditions);
 		$this->setId($uid);
 
 		if($this->result->isSucceed()){
@@ -371,7 +359,7 @@ abstract class ASModel extends ASBase {
 
 		$this->beforeDetailReturn( $this->result,$uid );
 
-		static::$rds_auto_cache
+		static::rds_auto_cache
         && $this->result->isSucceed()
         && $this->_cache();
 
@@ -394,6 +382,15 @@ abstract class ASModel extends ASBase {
 		return $this->detail($uid,true);
 	}	
 
+	public static function uidCondition( string $uid ): DBConditions
+    {
+        return DBConditions::init(static::table)->where(static::primaryid)->equal($uid);
+    }
+
+    public static function emptyCondition(): DBConditions{
+	    return DBConditions::init(static::table);
+    }
+
 
     /**
      * 通过ID获取对应字段值
@@ -407,7 +404,7 @@ abstract class ASModel extends ASBase {
 
 		$this->beforeGet($key,$uid);
 
-		$this->DBGet($key, [static::$primaryid=>$uid]);
+		$this->DBGet(DBFields::init(static::table)->and($key), static::uidCondition($uid));
 		$this->setId($uid);
 
         if($this->result->isSucceed()){ $this->result->setContent($this->convert($this->result->getContent()[0][$key])) ; }
@@ -429,14 +426,12 @@ abstract class ASModel extends ASBase {
      */
 	public function overview( string $uid ): ASResult
     {
-
-		$this->DBGet(static::$overviewFields ?? static::$detailFields ?? '*', [static::$primaryid=>$uid] );
+		$this->DBGet(DBFields::initBySimpleList(static::overviewFields ?? static::detailFields), static::uidCondition($uid) );
 		$this->setId($uid);
 
         if($this->result->isSucceed()){
             $this->result->setContent($this->convert($this->result->getContent()[0]));
         }
-
 		return $this->feedback();
 	}
 
@@ -444,96 +439,68 @@ abstract class ASModel extends ASBase {
     /**
      * 统计特定数量
      * count
-     * @param  array  $filters
+     * @param DBConditions $DBConditions
      * @return ASResult
      */
-	public function count( array $filters ): ASResult
+	public function count( DBConditions $DBConditions ): ASResult
     {
+        $this->RedisHash = $DBConditions->toArray();
 
-        $this->RedisHash = $filters;
+        if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
+        $DBConditions->and('saasid')->equalIf(saasId());
 
-        if( static::$rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
-
-        $this->beforeCount($filters);
-
-		$conditions = ASDB::spliceCondition(Filter::purify($filters,static::$countFilters));
-		$this->DBCount($conditions);
-
+        $this->beforeCount($DBConditions);
+		$this->DBCount($DBConditions);
 		$this->beforeCountReturn($this->result);
 
-        static::$rds_auto_cache && $this->_cache() && $this->_trackCache(static::class, 'count', $this->RedisHash);
+        static::rds_auto_cache && $this->_cache() && $this->_trackCache(static::class, 'count', $this->RedisHash);
 
 		return $this->feedback();
 	}
 
+	public function countByArray( array $filter ): ASResult
+    {
+        return $this->count( static::initConditionFromArray($filter) );
+    }
+
     /**
      * 查询是否存在对应数据
      * Check data is exist by filters
-     * @param  array  $filters
+     * @param DBConditions $filters
      * @return bool
      */
-	public function has( array $filters ):bool{
+	public function has( DBConditions $filters ):bool{
 
 	    return $this->count($filters)->getContent() > 0;
     }
 
-	public function beforeCount( array &$filters ){  }
+	public function beforeCount( DBConditions &$filters ){  }
 	public function beforeCountReturn( ASResult &$result ){  }
-
-    /**
-     * 查询对应item表所对应的行数
-     * Count contents in item table
-     * @param  array   $filters
-     * @param  string  $type
-     * @return ASResult
-     */
-	public function countContent( array $filters , string $type ): ASResult
-    {
-
- 		return $this->countContentInTable($filters,"item_{$type}");
-	}
-
-    /**
-     * 查询指定表中所对应的行数
-     * Count contents in specific table
-     * @param  array   $filters
-     * @param  string  $table
-     * @return ASResult
-     */
-	public function countContentInTable( array $filters, string $table ): ASResult
-    {
-
-	    $this->setTable($table);
-
-        $conditions = ASDB::spliceCondition($filters);
-        $this->DBCount($conditions);
-
-        return $this->feedback();
-    }
-
 
 	/**
      * 获取列表
 	 * Get list
-	 * @param    array                    $filters        筛选条件
-	 * @param    int|integer              $page           翻页-页数
-	 * @param    int|integer              $size           翻页-页长
+	 * @param    DBConditions             $filters        筛选条件
+	 * @param    int                      $page           翻页-页数
+	 * @param    int                      $size           翻页-页长
 	 * @param    string|null              $sort           排序字段
 	 * @param    boolean                  $public         是否公开列表
 	 * @return   ASResult                            结果对象
 	 */
-	public function list( array $filters , int $page=1, int $size=25, string $sort = null , $public = false ): ASResult
+	public function list( DBConditions $filters , int $page=1, int $size=25, string $sort = null , $public = false ): ASResult
     {
-		
-		$this->RedisHash = [$filters,$page,$size,$sort,$public];
+		$this->RedisHash = [$filters->toArray(),$page,$size,$sort,$public];
 
-		if( static::$rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
+		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
 
 		$this->beforeList( $filters, $page,$size,$sort,$public );
 
-		$conditions = ASDB::spliceCondition(Filter::purify($filters,static::$countFilters));
+		$filters->purify( $public && !empty(static::publicListFields) ? static::publicListFields : static::listFields );
+		$filters->and('saasid')->equalIf(saasId());
+		$filters->limitWith( $size * ($page - 1), $size );
+		$filters->orderWith( $sort ?? 'createtime DESC' );
 
-		$this->DBGet(($public === true && isset(static::$publicListFields) ) ? static::$publicListFields : static::$listFields , $conditions,$page,$size,$sort ?? ' createtime DESC' );
+		$this->DBGet(DBFields::initBySimpleList($public === true && !empty(static::publicListFields) ? static::publicListFields : static::listFields ), $filters );
 
 		if($this->result->isSucceed()) {
 
@@ -545,7 +512,7 @@ abstract class ASModel extends ASBase {
             }
             $this->result->setContent($list);
 
-            static::$rds_auto_cache && $this->_cache() && $this->_trackCache(static::class, 'list', $this->RedisHash);
+            static::rds_auto_cache && $this->_cache() && $this->_trackCache(static::class, 'list', $this->RedisHash);
         }
 
 		$this->beforeListReturn($this->result);
@@ -553,17 +520,29 @@ abstract class ASModel extends ASBase {
 		return $this->feedback();
 	}
 
-	public function beforeList( array &$filters, int &$page=1, int &$size=25, string &$sort = null , &$public = false ){  }
+	public function listByArray( array $filter , int $page=1, int $size=25, string $sort = null , $public = false ): ASResult
+    {
+        return $this->list( static::initConditionFromArray($filter),$page,$size,$sort,$public );
+    }
+
+
+	public function beforeList( DBConditions &$filters, int &$page=1, int &$size=25, string &$sort = null , &$public = false ){  }
 	public function beforeListReturn( ASResult &$result ){  }
 
 	// 获取公开接口列表
-	public function publicList( array $filters , int $page=1, int $size=25, string $sort = null ): ASResult
+	public function publicList( DBConditions $filters , int $page=1, int $size=25, string $sort = null ): ASResult
     {
-
 		return $this->list($filters,$page,$size,$sort,true);
 	}
 
-	/**
+	public function getByJoin(DBJoinParams $joinParams): ASResult
+    {
+        parent::getByJoin($joinParams); // TODO: Change the autogenerated stub
+
+        return $this->feedback();
+    }
+
+    /**
      * 多表联合统计
 	 * joinCount
 	 * @param    array                    $filters        [主表条件]
@@ -571,13 +550,18 @@ abstract class ASModel extends ASBase {
      * @param  JoinParams[]|array|string[]   $subJoins
 	 * @return   ASResult
 	 */
-	public function joinCount(  array $filters = null, array $mergeJoins = null, array $subJoins = null ): ASResult
-    {
+//	public function joinCount(  array $filters = null, array $mergeJoins = null, array $subJoins = null ): ASResult
+//    {
+//	    $primaryParams = JoinPrimaryParams::common(static::class);
+//	    if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
+//		return $this->advancedJoinCount( $primaryParams ,$mergeJoins,$subJoins );
+//	}
+//
+//	public function countByQuickJoin(DBJoinParams $joinParams)
+//    {
+//
+//    }
 
-	    $primaryParams = JoinPrimaryParams::common(static::class);
-	    if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
-		return $this->advancedJoinCount( $primaryParams ,$mergeJoins,$subJoins );
-	}
 
     /**
      * 多表联合查询统计 完整模式
@@ -587,23 +571,23 @@ abstract class ASModel extends ASBase {
      * @param  JoinParams[]|array|string[]   $subJoins
      * @return ASResult
      */
-	public function advancedJoinCount( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null ): ASResult
-    {
-
-		$this->beforeJoinCount( $primaryParams,$mergeJoins,$subJoins );
-
-		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-		
-		$this->DBJoinCount( $primaryParams, $joinParams );
-
-		$this->beforeJoinCountReturn( $this->result );
-
-		return $this->feedback();
-
-	}
-
-	public function beforeJoinCount( JoinPrimaryParams &$filters = null, array &$mergeJoins = null, array &$subJoins = null ){  }
-	public function beforeJoinCountReturn( ASResult &$result ){  }
+//	public function advancedJoinCount( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null ): ASResult
+//    {
+//
+//		$this->beforeJoinCount( $primaryParams,$mergeJoins,$subJoins );
+//
+//		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
+//
+//		$this->DBJoinCount( $primaryParams, $joinParams );
+//
+//		$this->beforeJoinCountReturn( $this->result );
+//
+//		return $this->feedback();
+//
+//	}
+//
+//	public function beforeJoinCount( JoinPrimaryParams &$filters = null, array &$mergeJoins = null, array &$subJoins = null ){  }
+//	public function beforeJoinCountReturn( ASResult &$result ){  }
 
 
 	/**
@@ -613,26 +597,26 @@ abstract class ASModel extends ASBase {
 	 * @param    JoinParams[]|null   $joins          合并查询表
 	 * @return   boolean
 	 */
-	public function joinHas(  array $filters = null, array $joins = null ): bool
-    {
-
-	    $primaryParams = JoinPrimaryParams::common( static::class );
-	    $primaryParams->withResultFilter($filters);
-
-	    $joinParams = [];
-
-		foreach ($joins as $key => $jParams) {
-
-		    if( isset($jParams->conditions) ){
-		        $joinParams[] = $jParams;
-            }
-		}
-
-		$this->DBJoinCount( $primaryParams, $joinParams );
-
-		return $this->result->getContent() > 0;
-		
-	}
+//	public function joinHas(  array $filters = null, array $joins = null ): bool
+//    {
+//
+//	    $primaryParams = JoinPrimaryParams::common( static::class );
+//	    $primaryParams->withResultFilter($filters);
+//
+//	    $joinParams = [];
+//
+//		foreach ($joins as $key => $jParams) {
+//
+//		    if( isset($jParams->conditions) ){
+//		        $joinParams[] = $jParams;
+//            }
+//		}
+//
+//		$this->DBJoinCount( $primaryParams, $joinParams );
+//
+//		return $this->result->getContent() > 0;
+//
+//	}
 
 	/**
      * 多表联合查询
@@ -640,19 +624,19 @@ abstract class ASModel extends ASBase {
 	 * @param    array|null               $filters        主表条件
 	 * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
 	 * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
-	 * @param    int|integer              $page           页
-	 * @param    int|integer              $size           大小
+	 * @param    int $page           页
+	 * @param    int $size           大小
 	 * @param    string|null              $sort           排序
 	 * @return   ASResult
 	 */
-	public function joinList( array $filters = null, array $mergeJoins = null, array $subJoins = null, int $page = 1, int $size = 20, string $sort = null ): ASResult
-    {
-
-        $primaryParams = JoinPrimaryParams::common(static::class);
-        if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
-
-		return $this->advancedJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
-	}
+//	public function joinList( array $filters = null, array $mergeJoins = null, array $subJoins = null, int $page = 1, int $size = 20, string $sort = null ): ASResult
+//    {
+//
+//        $primaryParams = JoinPrimaryParams::common(static::class);
+//        if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
+//
+//		return $this->advancedJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
+//	}
 
     /**
      * Description
@@ -665,48 +649,48 @@ abstract class ASModel extends ASBase {
      * @param  string|null                  $sort
      * @return ASResult|mixed
      */
-	public function advancedJoinList( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null, int $page =1, int $size = 20, string $sort = null ): ASResult
-    {
-		
-		$this->RedisHash = [$primaryParams->toArray(),JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins),$page,$size,$sort];
-		
-		if( static::$rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
-
-		$this->beforeJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
-
-		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-		
-		$this->DBJoinGet( $primaryParams, $joinParams, $page, $size, $sort );
-
-		if($this->result->isSucceed()){
-
-            $list = $this->result->getContent();
-
-            for ($i=0; $i < count($list); $i++) {
-
-                $list[$i] = $this->convert($list[$i]);
-
-                if(isset($subJoins)){
-                    foreach ($subJoins as $key => $jParams) {
-
-                        $CLASS = $jParams->modelClass;
-                        $list[$i][$jParams->alias] = $this->convert($list[$i][$jParams->alias],$CLASS::$depthStruct);
-                    }
-                }
-            }
-            $this->result->setContent($list);
-
-			$this->_cache();
-		}
-
-		$this->beforeJoinListReturn($this->result);
-
-		return $this->feedback();
-
-	}
-
-	public function beforeJoinList( JoinPrimaryParams &$primaryParams = null, array &$mergeJoins = null, array &$subJoins = null, int &$page=1, int &$size=25, string &$sort = null ){  }
-	public function beforeJoinListReturn( ASResult &$result ){  }
+//	public function advancedJoinList( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null, int $page =1, int $size = 20, string $sort = null ): ASResult
+//    {
+//
+//		$this->RedisHash = [$primaryParams->toArray(),JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins),$page,$size,$sort];
+//
+//		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
+//
+//		$this->beforeJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
+//
+//		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
+//
+//		$this->DBJoinGet( $primaryParams, $joinParams, $page, $size, $sort );
+//
+//		if($this->result->isSucceed()){
+//
+//            $list = $this->result->getContent();
+//
+//            for ($i=0; $i < count($list); $i++) {
+//
+//                $list[$i] = $this->convert($list[$i]);
+//
+//                if(isset($subJoins)){
+//                    foreach ($subJoins as $key => $jParams) {
+//
+//                        $CLASS = $jParams->modelClass;
+//                        $list[$i][$jParams->alias] = $this->convert($list[$i][$jParams->alias],$CLASS::depthStruct);
+//                    }
+//                }
+//            }
+//            $this->result->setContent($list);
+//
+//			$this->_cache();
+//		}
+//
+//		$this->beforeJoinListReturn($this->result);
+//
+//		return $this->feedback();
+//
+//	}
+//
+//	public function beforeJoinList( JoinPrimaryParams &$primaryParams = null, array &$mergeJoins = null, array &$subJoins = null, int &$page=1, int &$size=25, string &$sort = null ){  }
+//	public function beforeJoinListReturn( ASResult &$result ){  }
 
 
     /**
@@ -717,42 +701,48 @@ abstract class ASModel extends ASBase {
      * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
      * @return   ASResult
      */
-	public function joinDetail(string $uid, array $mergeJoins = null, array $subJoins = null ): ASResult
+//	public function joinDetail(string $uid, array $mergeJoins = null, array $subJoins = null ): ASResult
+//    {
+//
+//		$this->RedisHash = [$uid,JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins)];
+//
+//		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
+//
+//		$this->beforeJoinDetail($uid,$mergeJoins,$subJoins);
+//
+//		$primaryParams = JoinPrimaryParams::common(static::class)->get(static::detailFields)->withResultFilter([static::primaryid=>$uid]);
+//
+//		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
+//
+//		$this->DBJoinGet( $primaryParams, $joinParams, 1, 1 );
+//		$this->setId($uid);
+//
+//		if($this->result->isSucceed()){
+//
+//			$detail = $this->convert($this->result->getContent()[0]);
+//
+//            if(isset($subJoins)){
+//                foreach ($subJoins as $key => $jParams) {
+//
+//                    $CLASS = $jParams->modelClass;
+//                    $detail[$jParams->alias] = $this->convert($detail[$jParams->alias],$CLASS::depthStruct);
+//                }
+//            }
+//
+//			$this->result->setContent( $detail );
+//			static::rds_auto_cache && $this->_cache();
+//		}
+//
+//		$this->beforeJoinDetailReturn($this->result);
+//
+//		return $this->feedback();
+//	}
+
+	public function detailByJoin(): ASResult
     {
-		
-		$this->RedisHash = [$uid,JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins)];
-		
-		if( static::$rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
 
-		$this->beforeJoinDetail($uid,$mergeJoins,$subJoins);
 
-		$primaryParams = JoinPrimaryParams::common(static::class)->get(static::$detailFields)->withResultFilter([static::$primaryid=>$uid]);
-
-		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-		
-		$this->DBJoinGet( $primaryParams, $joinParams, 1, 1 );
-		$this->setId($uid);
-
-		if($this->result->isSucceed()){
-
-			$detail = $this->convert($this->result->getContent()[0]);
-
-            if(isset($subJoins)){
-                foreach ($subJoins as $key => $jParams) {
-
-                    $CLASS = $jParams->modelClass;
-                    $detail[$jParams->alias] = $this->convert($detail[$jParams->alias],$CLASS::$depthStruct);
-                }
-            }
-
-			$this->result->setContent( $detail );
-			static::$rds_auto_cache && $this->_cache();
-		}
-
-		$this->beforeJoinDetailReturn($this->result);
-
-		return $this->feedback();
-	}
+    }
 
     /**
      * 查询前参数处理
@@ -827,7 +817,6 @@ abstract class ASModel extends ASBase {
      */
     public function _isCacheEnabled(): bool
     {
-
         return $this->getRedis()->isEnabled();
     }
 
@@ -839,7 +828,6 @@ abstract class ASModel extends ASBase {
      */
     public function _hasCache( $hash = null ): bool
     {
-
         return $this->_isCacheEnabled() && $this->getRedis()->has( $hash ?? $this->RedisHash );
     }
 
@@ -878,7 +866,6 @@ abstract class ASModel extends ASBase {
      */
     public function _trackCache( $set,$id,$hashID ): bool
     {
-
         if(!$this->getRedis()->isEnabled()){ return false; }
         return $this->getRedis()->track($set,$id,$hashID);
     }
@@ -898,15 +885,14 @@ abstract class ASModel extends ASBase {
 
 
 	// 搜索
-	public function search( string $keyword, array $filters = null , int $page=1, int $size=25, string $sort = null ): ASResult
-    {
-
-		$filters = $filters ? $filters : [];
-		$filters['KEYWORD'] = $keyword;
-
-		return $this->list($filters,$page,$size,$sort);
-
-	}
+//	public function search( string $keyword, array $filters = null , int $page=1, int $size=25, string $sort = null ): ASResult
+//    {
+//
+//		$filters = $filters ? $filters : [];
+//		$filters['KEYWORD'] = $keyword;
+//
+//		return $this->list($filters,$page,$size,$sort);
+//	}
 
 
     /**
@@ -918,10 +904,9 @@ abstract class ASModel extends ASBase {
      */
 	public function convert( array $data , array $struct = null ): array
     {
+		if( !$struct && !static::depthStruct ){ return $data; }
 
-		if( !$struct && !static::$depthStruct ){ return $data; }
-
-		$struct = $struct ?? static::$depthStruct;
+		$struct = $struct ?? static::depthStruct;
 
 		foreach ( $struct as $key => $value ) {
 		
@@ -935,17 +920,27 @@ abstract class ASModel extends ASBase {
 				}else{
 
 					switch ($value) {
+                        case DBField_Boolean:
+                        $data[$key] = $data[$key] ? true : false;
+                        break;
 						case 'int':
+                        case DBField_Int:
+                        case DBField_TimeStamp:
 						$data[$key] = (int)$data[$key];
 						break;
 						case 'double':
+                        case DBField_Double:
+                        case DBField_Decimal:
+                        case DBField_Float:
 						$data[$key] = (double)$data[$key];
 						break;
 						case 'json':
+                        case DBField_Json:
 						$data[$key] = json_decode($data[$key],true);
 						break;
 						case 'ASjson':
 						case 'ASJson':
+                        case DBField_ASJson:
 						$data[$key] = Encrypt::ASJsonDecode($data[$key]);
 						break;
 						default:
@@ -968,10 +963,8 @@ abstract class ASModel extends ASBase {
      */
 	public function status(string $uid, string $status ): ASResult
     {
-
 		$this->beforeStatus($uid,$status);
-
-		return $this->update(['status'=>$status],$uid);
+		return $this->update(DBValues::init('status')->string($status),$uid);
 	}
 
 	public function beforeStatus( string &$uid, string &$status ){  }
@@ -985,82 +978,254 @@ abstract class ASModel extends ASBase {
 	public function done(    string $uid ):ASResult { return $this->status($uid,'done');     }	// 完成
 	public function expire(  string $uid ):ASResult { return $this->status($uid,'expired');  }	// 过期
     public function pending( string $uid ):ASResult { return $this->status($uid,'pending');  }	// 等待中
-    public function pedding( string $uid ):ASResult { return $this->status($uid,'pedding');  }	// 等待中?
 
 	// 设为精选
-	public function setFeature( string $uid, int $featured=1 ): ASResult
+	public function setFeature( string $uid, bool $featured = true ): ASResult
     {
-
-		return $this->update(['featured'=>$featured],$uid);
-
+		return $this->update(DBValues::init('featured')->bool($featured),$uid);
 	}
 
 	// 取消精选
 	public function cancelFeature( string $uid ): ASResult
     {
-
-		return $this->update(['featured'=>0],$uid);
-
+		return $this->setFeature($uid,false);
 	}
 
 	// 调整排序
 	public function setSort( string $uid, int $sort=0 ): ASResult
     {
-
-		return $this->update(['sort'=>$sort],$uid);
-
+		return $this->update(DBValues::init('sort')->number($sort),$uid);
 	}
 
 	public function increaseSort( string $uid, int $size = 1 ): ASResult
     {
-
-		return $this->increase( 'sort', static::$primaryid."='{$uid}'" , $size );
-
+		return $this->increase( 'sort', static::uidCondition($uid) , $size );
 	}
 
 	public function decreaseSort( string $uid, int $size = 1 ): ASResult
     {
-
-		return $this->increase( 'sort', static::$primaryid."='{$uid}'" , 0 - $size );
-
+		return $this->increase( 'sort', static::uidCondition($uid) , 0 - $size );
 	}
 
     // view 被查看一次
     public function view( string $uid , int $size = 1 ): ASResult
     {
-
-		return $this->increase( 'viewtimes', static::$primaryid."='{$uid}'" , $size );
-
+		return $this->increase( 'viewtimes', static::uidCondition($uid) , $size );
     }
 
     // 字段增长
-    public function increase( string $field, $conditions = null , float $size = 1 ): ASResult
+    public function increase( string $field, DBConditions $conditions = null , float $size = 1 ): ASResult
     {
-
-        return $this->getDB()->increase($field,static::$table,$conditions,$size);
+        return $this->getDB()->increase($field,static::table,$conditions,$size);
     }
 
     // 字段减少
-    public function decrease( string $field, $conditions = null , float $size = 1 ): ASResult
+    public function decrease( string $field, DBConditions $conditions = null , float $size = 1 ): ASResult
     {
-
-        return $this->getDB()->increase($field,static::$table,$conditions,0 -$size);
+        return $this->getDB()->increase($field,static::table,$conditions,0 -$size);
     }
 
 	// 检测是否当前状态
 	public function isStatus( string $uid , string $status ): bool
     {
-
-		return $this->count([static::$primaryid=>$uid,'status'=>$status])->getContent() == 1;
-
+		return $this->count(
+		    DBConditions::init(static::table)
+                ->where(static::primaryid)->equal($uid)
+                ->and('status')->equal($status)
+            )->getContent() == 1;
 	}
 
 	// 检测当前ID是否存在数据库中
 	public function isExist( string $uid ): bool
     {
-
-		return $this->count([static::$primaryid=>$uid])->getContent() > 0;
+		return $this->count(static::uidCondition($uid))->getContent() > 0;
 	}
+
+	public static function initConditionFromArray( array $filter ): DBConditions
+    {
+        $conditions = DBConditions::init(static::table);
+
+        foreach ($filter as $key => $v) {
+
+            if ( in_array($key,static::filterFields) ) {
+
+                switch ( static::tableStruct[ $key ]['type'] ){
+
+                    case DBField_Boolean  :
+                        $conditions->and($key)->bool(!!$v);
+                        break;
+                    case DBField_Int  :
+                    case DBField_Float  :
+                    case DBField_Double  :
+                    case DBField_Decimal  :
+                    case DBField_TimeStamp  :
+
+                        $symbol = static::execSymbol($v);
+                        if( $symbol === QuerySymbol_None ){
+                            $conditions->and($key)->equalIf($v);
+                        }else{
+
+                            switch ( $symbol ){
+
+                                case QuerySymbol_In:
+                                    $conditions->and($key)->belongTo( $v );
+                                    break;
+                                case QuerySymbol_Between:
+                                    $conditions->and($key)->between( $v[0],$v[1] );
+                                    break;
+                                case QuerySymbol_Bigger:
+                                    $conditions->and($key)->bigger( $v );
+                                    break;
+                                case QuerySymbol_BiggerAnd:
+                                    $conditions->and($key)->biggerAnd( $v );
+                                    break;
+                                case QuerySymbol_Less:
+                                    $conditions->and($key)->less( $v );
+                                    break;
+                                case QuerySymbol_LessAnd:
+                                    $conditions->and($key)->lessAnd( $v );
+                                    break;
+                                case QuerySymbol_NotEqual:
+                                    $conditions->and($key)->notEqual( $v );
+                                    break;
+                            }
+
+                        }
+
+                        break;
+                    case DBField_String  :
+
+                        $symbol = static::execSymbol($v);
+                        if( $symbol === QuerySymbol_None ){
+                            $conditions->and($key)->equalIf($v);
+                        }else {
+
+                            switch ( $symbol ) {
+                                case QuerySymbol_Null:
+                                    $conditions->and($key)->isNull();
+                                    break;
+                                case QuerySymbol_NotNull:
+                                    $conditions->and($key)->isNotNull();
+                                    break;
+                                case QuerySymbol_NotEqual:
+                                    $conditions->and( $key )->notEqual( $v );
+                                    break;
+                            }
+                        }
+                }
+            }
+
+        }
+        return $conditions;
+    }
+
+    public static function execSymbol( &$value ): string{
+
+        $symbol = QuerySymbol_None;
+        if( gettype($value) !=='string' ){ return $symbol; }
+
+        foreach (QuerySymbols as $i => $sym) {
+
+            if( strstr($value, $sym) ){
+
+                $symbol = $sym;
+
+                $value = str_replace($symbol,'',$value);
+                switch ( $sym ){
+                    case QuerySymbol_In:
+                        $value = explode(',',$value);
+                        break;
+                    case QuerySymbol_Between:
+                        $value = explode(',',$value);
+                        $value[0] = floatval($value[0]);
+                        $value[1] = floatval($value[1]);
+                        break;
+                    case QuerySymbol_Bigger:
+                    case QuerySymbol_BiggerAnd:
+                    case QuerySymbol_Less:
+                    case QuerySymbol_LessAnd:
+                        $value = floatval($value);
+                        break;
+                    case QuerySymbol_NotEqual:
+                        break;
+                    case QuerySymbol_Null:
+                    case QuerySymbol_NotNull:
+                        $value = null;
+                        break;
+                }
+            }
+        }
+        return $symbol;
+    }
+
+
+	public static function initValuesFromArray( array $data ): DBValues
+    {
+        $values = new DBValues();
+
+        foreach ( $data as $key => $v ){
+
+            if ( isset(static::tableStruct[$key]) ){
+
+                if ( isset($v) ){
+
+                    $dbValue = DBValue::init( $key );
+
+                    if( static::tableStruct[$key]['nullable'] ){
+
+                        $symbol = static::execSymbol($v);
+
+                        if ($symbol === QuerySymbol_Null){
+                            $dbValue->setNull();
+
+                            $values->add($dbValue);
+                            continue;
+                        }
+                    }
+
+                    switch ( static::tableStruct[$key]['type'] ){
+
+                        case DBField_Boolean  :
+                            $dbValue->bool( !!$v );
+                            break;
+                        case DBField_Int  :
+                        case DBField_Float  :
+                        case DBField_Double  :
+                        case DBField_Decimal  :
+                        case DBField_TimeStamp  :
+                            $dbValue->equal($v);
+                            break;
+                        case DBField_String  :
+                            $dbValue->string($v);
+                            break;
+                        case DBField_RichText :
+                            $dbValue->richText($v);
+                            break;
+                        case DBField_Json     :
+                            $dbValue->json($v);
+                            break;
+                        case DBField_ASJson   :
+                            $dbValue->ASJson($v);
+                            break;
+                        case DBField_Location :
+                            if( gettype($v)=='string' ){
+                                $v = explode(',',$v);
+                            }
+
+                            $autoFill = isset(static::tableStruct['lng']);
+
+                            $dbValue->location( floatval( $v['lng'] ?? $v[0] ), floatval($v['lat'] ?? $v[1] ), $autoFill );
+                            break;
+                    }
+
+                    $values->add($dbValue);
+                }
+            }
+        }
+        return $values;
+    }
+
+
 
 }
 

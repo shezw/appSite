@@ -7,6 +7,7 @@
 namespace account;
 
 
+use APS\ASAPI;
 use APS\ASResult;
 use APS\Filter;
 use APS\Mixer;
@@ -18,10 +19,10 @@ use APS\User;
  *
  * @package account
  */
-class updateProfile extends \APS\ASAPI{
+class updateProfile extends ASAPI{
 
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {

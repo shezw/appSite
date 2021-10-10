@@ -9,14 +9,16 @@ namespace commerce;
 use APS\ASAPI;
 use APS\ASModel;
 use APS\ASResult;
+use APS\CommerceCoupon;
+use APS\DBConditions;
 
 class validCoupon extends ASAPI
 {
 
-    private $couponid = '';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    protected $scope = 'public';
-    public    $mode = 'JSON';
+    private $couponid = '';
 
     public function run(): ASResult
     {
@@ -26,10 +28,14 @@ class validCoupon extends ASAPI
             return $this->error(-10,'Coupon code is required.');
         }
 
-        $checkCouponid = \APS\CommerceCoupon::common()->list(['couponid'=>$this->params['couponid'],'status'=>'enabled']);
+        $checkCouponId = CommerceCoupon::common()->list(
+            DBConditions::init(CommerceCoupon::table)
+                ->where(CommerceCoupon::primaryid)->equal($this->params['couponid'])
+                ->and('status')->equal('enabled')
+        );
 
-        return $checkCouponid->isSucceed() ? 
-                $this->take($checkCouponid->getContent()[0])->success() :
+        return $checkCouponId->isSucceed() ?
+                $this->take($checkCouponId->getContent()[0])->success() :
                 $this->error(400,'Not valid code');
 
     }

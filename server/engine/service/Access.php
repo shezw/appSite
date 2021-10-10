@@ -17,8 +17,8 @@ class Access extends ASModel{
     public  $operationsAcquired;
     public  $permissionsAcquired;
 
-    private $securityid;
-    private $inited = false;
+    private $securityId;
+    private $initialed = false;
 
     /**
      * 实例化
@@ -26,14 +26,14 @@ class Access extends ASModel{
      *
      * 基于userid来实例化权限管理  游客默认无权限
      *
-     * @param  \APS\User|null  $user
+     * @param User|null  $user
      */
     function __construct( User $user = null ){
 
-        parent::__construct(true);
+        parent::__construct();
 
         $this->user  = $user;
-        $this->securityid = $user->getSecurityid();
+        $this->securityId = $user->getSecurityId();
 
         $this->init();
     }
@@ -41,18 +41,18 @@ class Access extends ASModel{
     # 初始化权限
     private function init(){
 
-        if($this->inited){ return ;}
+        if($this->initialed){ return ;}
 
-        if( isset($this->user) && $this->user->userid != 'GUEST' ){
+        if( isset($this->user) && $this->user->userid != GroupRole_Guest ){
 
             if( $this->checkAuthorize() ){
 
-                $this->user->confirmVerify( $this->securityid );
+                $this->user->confirmVerify( $this->securityId );
                 // $this->acquire('operations');
                 // $this->acquire('permissions');
             }
         }
-        $this->inited = true;
+        $this->initialed = true;
     }
 
 //    # 请求权限数据
@@ -62,7 +62,7 @@ class Access extends ASModel{
 //    }
 //
 //    # 请求物品权限
-//    private function acquirePermisions(){
+//    private function acquirePermissions(){
 //
 //        $this->permissionsAcquired = true;
 //    }
@@ -148,7 +148,7 @@ class Access extends ASModel{
 
     }
     # 验证安全防护
-    public static function gruad( string $origin, string $scope ){
+    public static function guard( string $origin, string $scope ){
 
     }
     # 验证查验

@@ -19,87 +19,87 @@ class UserPocket extends ASModel{
      */
     public $userid;
 
-    public static $table     = "user_pocket";
-    public static $primaryid = "userid";
-    public static $addFields = [
+    const table     = "user_pocket";
+    const comment   = '用户钱包';
+    const primaryid = "userid";
+    const addFields = [
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ];
-    public static $updateFields = [
+    const updateFields = [
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ];
-    public static $detailFields =[
+    const detailFields =[
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ];
-    public static $publicDetailFields = [
+    const publicDetailFields = [
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ];
-    public static $overviewFields = [
+    const overviewFields = [
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ]; // 概览支持字段
-    public static $listFields = [
+    const listFields = [
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ];
-    public static $publicListFields = [
+    const publicListFields = [
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ];
-    public static $countFilters = [
+    const filterFields = [
         'userid',
-        'point',
-        'balance',
-        'status',
-        'type',
+        'point','balance',
+        'status','type','createtime','lasttime'
     ];
-    public static $depthStruct = [
-        'point'=>'int',
-        'balance'=>'int',
+    const depthStruct = [
+        'point'=>DBField_Int,
+        'balance'=>DBField_Int,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+    ];
+
+    const tableStruct = [
+
+        'userid'=>     ['type'=>DBField_String,  'len'=>8,   'nullable'=>0,                      'cmt'=>'用户ID', 'idx'=>DBIndex_Unique,],
+        'balance'=>    ['type'=>DBField_Int,     'len'=>13,  'nullable'=>0,  'dft'=>0,           'cmt'=>'余额 100倍 分为单位 RMB'],
+        'point'=>      ['type'=>DBField_Int,     'len'=>13,  'nullable'=>0,  'dft'=>0,           'cmt'=>'积分 带小数点'],
+        'status'=>     ['type'=>DBField_String,  'len'=>12,  'nullable'=>0,  'dft'=>'enabled',   'cmt'=>'状态'],
+        'type'=>       ['type'=>DBField_String,  'len'=>16,  'nullable'=>1,                      'cmt'=>'类型 暂时没用'],
+
+        'createtime'=> ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',    'idx'=>DBIndex_Index, ],
+        'lasttime'=>   ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
     ];
 
 
-    function __construct( string $userid ){
-
-        parent::__construct(true);
+    function __construct( string $userid )
+    {
+        parent::__construct();
         $this->userid = $userid;
     }
 
     /**
      * 初始化用户钱包
      * init
-     * @param  array  $params
+     * @param DBValues $data
      * @return ASResult
      */
-    public function init( array $params ):ASResult {
-
-        $params = Filter::purify( $params, static::$addFields );
-        $params['userid'] = $this->userid;
-        return $this->add($params);
+    public function init( DBValues $data ):ASResult
+    {
+        $data->purify( static::addFields );
+        $data->set(static::primaryid)->string($this->userid);
+//var_dump($data);
+        return $this->add($data);
     }
 
 
@@ -112,9 +112,8 @@ class UserPocket extends ASModel{
      */
     public function addition( int $size = 1, string $field = 'point' ): ASResult
     {
-
         $this->params = ['field'=>$field,'conditions'=>"userid='{$this->userid}'",'size'=>$size];
-        $this->result = $this->getDB()->increase($field,static::$table,['userid'=>$this->userid],$size);
+        $this->result = $this->getDB()->increase($field,static::table,static::uidCondition($this->userid),$size);
 
         $this->record('POCKET_ADDITION','POCKET->addition');
         return $this->result->isSucceed() ? $this->success(i18n('POCKET_INCREASE_SUC')) : $this->error(500,i18n('SYS_ERR')) ;
@@ -133,9 +132,8 @@ class UserPocket extends ASModel{
      */
     public function reduce( int $size = 1, string $field = 'point' ): ASResult
     {
-
         $this->params = ['field'=>$field,'conditions'=>["userid"=>$this->userid],'size'=>$size];
-        $this->result = $this->getDB()->decrease($field,static::$table,["userid"=>$this->userid],$size);
+        $this->result = $this->getDB()->decrease($field,static::table,static::uidCondition($this->userid),$size);
 
         $this->record('POCKET_REDUCE','POCKET::reduce');
         return $this->result->isSucceed() ? $this->success(i18n('POCKET_DECREASE_SUC')) : $this->error(500,i18n('SYS_ERR')) ;
@@ -149,7 +147,6 @@ class UserPocket extends ASModel{
      */
     public function additionPoint( int $size = 1 ): ASResult
     {
-
         return $this->addition($size,'point');
     }
 
@@ -161,7 +158,6 @@ class UserPocket extends ASModel{
      */
     public function reducePoint( int $size = 1 ): ASResult
     {
-
         return $this->reduce($size,'point');
     }
 
@@ -173,7 +169,6 @@ class UserPocket extends ASModel{
      */
     public function additionBalance( int $size = 1 ): ASResult
     {
-
         return $this->addition($size,'balance');
     }
 
@@ -185,7 +180,6 @@ class UserPocket extends ASModel{
      */
     public function reduceBalance( int $size = 1 ): ASResult
     {
-
         return $this->reduce($size,'balance');
     }
 
@@ -197,8 +191,7 @@ class UserPocket extends ASModel{
      * @return ASResult
      */
     public function balance( string $mode = 'point' ): ASResult
-    { // balance | point
-
+    {
         return $this->get($mode,$this->userid);
     }
 
@@ -211,9 +204,12 @@ class UserPocket extends ASModel{
      */
     public function enough( $quantity, $mode='point' ): bool
     {
-
         $quantity = (double)$quantity;
-        return $this->count(['userid'=>$this->userid,$mode=>"[[>=]]$quantity"])['content']>0;
+        return $this->count(
+            DBConditions::init(static::table)
+                ->where(static::primaryid)->equal($this->userid)
+                ->and($mode)->biggerAnd($quantity)
+            )->getContent()>0;
     }
 
     /**
@@ -224,7 +220,6 @@ class UserPocket extends ASModel{
      */
     public function enoughBalance( int $size = 1 ): bool
     {
-
         return $this->enough($size,'balance');
     }
 
@@ -235,7 +230,6 @@ class UserPocket extends ASModel{
      */
     public function enoughPoint( int $size = 1 ): bool
     {
-
         return $this->enough($size,'point');
     }
 
@@ -276,9 +270,11 @@ class UserPocket extends ASModel{
      */
     public function isLocked( ): bool
     {
-
-        return $this->count(['userid'=>$this->userid,'status'=>"[[IN]]('locked','exception') "])->getContent() >0;
-
+        return $this->count(
+            DBConditions::init(static::table)
+                ->where(static::primaryid)->equal($this->userid)
+                ->and('status')->belongTo(['locked','exception'])
+        )->getContent() > 0;
     }
 
     /**
@@ -289,10 +285,9 @@ class UserPocket extends ASModel{
      */
     public function clear( string $mode='balance' ): ASResult
     {
-
         $this->record('POCKET_CLEAR','POCKET->clear',['mode'=>$mode,'userid'=>$this->userid]);
 
-        return $this->update([$mode=>0],$this->userid);
+        return $this->update(DBValues::init($mode)->number(0),$this->userid);
     }
 
 }

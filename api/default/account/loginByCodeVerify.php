@@ -17,8 +17,8 @@ use APS\User;
  */
 class loginByCodeVerify extends ASAPI
 {
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {
@@ -38,7 +38,7 @@ class loginByCodeVerify extends ASAPI
         if( !$checkUser->isSucceed() ){
             if( getConfig('AUTO_LOGINTOREGIST') ){ # 启用未注册用户自动登录  Enable auto sign up when not registed
 
-                $addUser = User::common()->add([$field=>$origin]);
+                $addUser = User::common()->addByArray([$field=>$origin]);
                 if( !$addUser->isSucceed() ){ return $addUser; }
                 $userid = $addUser->getContent();
 

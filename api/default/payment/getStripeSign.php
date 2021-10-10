@@ -16,11 +16,8 @@ class getStripeSign extends ASAPI
 
     private $orderid = '';
 
-    protected $scope = 'public';
-    public    $mode = 'JSON';
-
-    // protected static $groupCharacterRequirement = ['super','manager','editor'];
-    // protected static $groupLevelRequirement = 10000;
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {

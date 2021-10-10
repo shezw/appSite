@@ -5,7 +5,7 @@ $website->requireGroupLevel(80000,'manager/insufficient');
 $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficient');
 
 $website->params['itemClass'] = 'APS\MessageNotification';
-$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\MessageNotification::$countFilters );
+$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\MessageNotification::filterFields );
 
 $website->params['filters']['linktype'] = 'contactus';
 

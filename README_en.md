@@ -68,35 +68,54 @@ For example, in the Article class, there is the following definition: [Article.p
 
 ```php
 class Article extends \APS\ASModel{
-    public static $table     = "item_article";  // 表
-    public static $primaryid = "uid";     // 主字段
+    const table     = "item_article";
+    const primaryid = "uid";
 
-    public static $addFields = [
+    const addFields = [
         'uid','categoryid','areaid',...'description','introduce',
         'viewtimes','sort','featured','status',
         'createtime','lasttime',
     ];
     ...
-    public static $detailFields  = ["*"];
+    const detailFields  = [...];
     ...
-    public static $listFields  = [
+    const listFields  = [
         'uid','categoryid','areaid',...'createtime','lasttime'
     ];
-    public static $countFilters  = [
+    const filterFields  = [
         'uid','categoryid','areaid',...'createtime','lasttime'
     ];
-    public static $depthStruct  = [
-        'featured'=>'int',
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'sort'=>'int'
+    const depthStruct  = [
+		'gallery'=>DBField_Json,
+		'viewtimes'=>DBField_Int,
+		'featured'=>DBField_Boolean,
+		'createtime'=>DBField_TimeStamp,
+    ];
+    const tableStruct = [
+
+		'uid'           =>['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'索引ID' , 'idx'=>DBIndex_Unique ],
+		'categoryid'    =>['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'分类ID' , 'idx'=>DBIndex_Index ],
+		'type'          =>['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'类型 text,cover,video,gallery...' ],
+		...
+		'title'         =>['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'名称名' ,  'idx'=>DBIndex_FullText ],
+		'cover'         =>['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'封面' ],
+		'gallery'       =>['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'详情介绍' ],
+		...
+		'description'   =>['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'描述' ,   'idx'=>DBIndex_FullText ],
+		'introduce'     =>['type'=>DBField_RichText,  'len'=>-1,  'nullable'=>1,  'cmt'=>'详情介绍' ],
+		...
+		'viewtimes'     =>['type'=>DBField_Int,       'len'=>13,  'nullable'=>0,  'cmt'=>'播放次数',  'dft'=>0,       ],
+		'status'        =>['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'enabled',       ],
+		...
+		'createtime'    =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',           'idx'=>DBIndex_Index, ],
+		'featured'      =>['type'=>DBField_Boolean,  'len'=>1,  'nullable'=>0,  'cmt'=>'置顶',  'dft'=>0,    'idx'=>DBIndex_Index, ],
     ];
 }
 ```
 
-When Article uses the inherited method list(), it will automatically use the `$table`, `$primaryid`, and `$listFields` properties to query list data.
+When Article uses the inherited method list(), it will automatically use the `table`, `primaryid`, and `listFields` properties to query list data.
 
-##### countFilters
+##### filterFields
 Used to set the check fields allowed during the query (usually the indexed field, otherwise it will reduce the query efficiency)
 
 ##### depthStruct

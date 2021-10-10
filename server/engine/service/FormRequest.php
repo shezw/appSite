@@ -13,6 +13,84 @@ namespace APS;
 class FormRequest extends ASModel{
 
 
+    const table     = "form_request";
+    const comment   = '表单-申请';
+    const primaryid = "uid";
+    const addFields = [
+        'uid', 'saasid', 'userid', 'itemtype', 'itemid',
+        'open',
+        'form',
+        'expire',
+        'status',
+        'applycall', 'rejectcall',
+    ];
+    const updateFields = [
+        'itemtype', 'itemid',
+        'open',
+        'status',
+        'applycall', 'rejectcall',
+    ];
+    const detailFields = [
+        'uid', 'saasid', 'userid', 'itemtype', 'itemid',
+        'open',
+        'form',
+        'expire',
+        'applycall', 'rejectcall',
+        'status', 'createtime', 'lasttime',
+    ];
+    const overviewFields = [
+        'uid', 'saasid', 'userid', 'itemtype', 'itemid',
+        'open',
+        'form',
+        'status', 'createtime', 'lasttime',
+    ];
+    const listFields = [
+        'uid', 'saasid','userid','itemtype', 'itemid',
+        'open',
+        'form',
+        'expire',
+        'status', 'createtime', 'lasttime',
+    ];
+    const filterFields = [
+        'uid', 'saasid', 'userid', 'itemtype', 'itemid',
+        'open',
+        'status', 'createtime', 'lasttime',
+    ];
+    const depthStruct = [
+        'form'=>DBField_Json,
+        'open'=>DBField_Boolean,
+        'expire'=>DBField_TimeStamp,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+        'applycall'=>DBField_Json,
+        'rejectcall'=>DBField_Json
+    ];
+
+    const tableStruct = [
+
+        'uid'=>         ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'索引ID' , 'idx'=>DBIndex_Unique ],
+        'saasid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'所属saas',  'idx'=>DBIndex_Index,],
+
+        'userid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'用户ID' , 'idx'=>DBIndex_Index ],
+        'itemid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'目标ID' , 'idx'=>DBIndex_Index ],
+        'itemtype'=>    ['type'=>DBField_String,    'len'=>32,  'nullable'=>1,  'cmt'=>'目标类别' , 'idx'=>DBIndex_Index ],
+
+        'open'=>        ['type'=>DBField_Boolean,   'len'=>1,   'nullable'=>0,  'cmt'=>'是否公开' , 'dft'=>0,       ],
+        'form'=>        ['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'表单内容 JSON 不限制' ],
+        'status'=>      ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'pending',        ],
+        // enabled 开启, disabled 关闭, rejected 被拒绝, pending 等待中, applied 通过
+
+        'expire'=>      ['type'=>DBField_TimeStamp, 'len'=>13,  'nullable'=>0,  'cmt'=>'过期时间 时间戳' ,     'dft'=>0,       ],
+        'applycall'=>   ['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'通过回调 k-v json' ],
+        'rejectcall'=>  ['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'退款回调' ],
+        // 回调函数最外层必须是 queue数组 [{},{},{},{}] or [{}]
+        // eg: {{'action':'setvip','params':{'userid':'xxx','expire':158989990}},{'action':'newPromotion','params':{'userid':'xxx','amount':8.88}}
+        // 通过回调函数激活支付成功后进行的事件
+
+        'createtime'   =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',                      'idx'=>DBIndex_Index, ],
+        'lasttime'     =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
+
     /**
      * 表单通过回调
      * applyCall
@@ -48,7 +126,7 @@ class FormRequest extends ASModel{
 
         if (!$callback->isSucceed()) {
 
-            $UPDATE = $this->update(['applycall'=>$callback->getContent()],$requestid);
+            $UPDATE = $this->update(DBValues::init('applyCall')->stringIf($callback->getContent()),$requestid);
 
             return $this->take($callback)->error(305,i18n('SYS_CAL_FAL'),'$this->applyCall');
         }
@@ -87,7 +165,7 @@ class FormRequest extends ASModel{
 
             if (!$callback->isSucceed()) {
 
-                $this->update(['rejectcall'=>$callback->getContent()],$requestid);
+                $this->update(DBValues::init('rejectcall')->stringIf($callback->getContent()),$requestid);
                 return $this->take($callback)->error(305,i18n('SYS_CAL_FAL'),'$this->rejectcall');
 
             }
@@ -106,7 +184,7 @@ class FormRequest extends ASModel{
     public function exist( string $requestid ): bool
     {
 
-        $count = $this->getDB()->count(static::$table,['requestid'=>$requestid])->getContent();
+        $count = $this->getDB()->count(static::table,static::uidCondition($requestid))->getContent();
         return $count>0;
 
     }
@@ -200,81 +278,5 @@ class FormRequest extends ASModel{
 
     }
 
-
-
-    public static $table     = "form_request";  // 表
-    public static $primaryid = "uid";     // 主字段
-    public static $addFields = [
-        'uid',
-        'areaid',
-        'userid',
-        'itemtype',
-        'itemid',
-        'open',
-        'form',
-        'featured',
-        'expire',
-        'status',
-        'applycall',
-        'rejectcall',
-    ];      // 添加支持字段
-    public static $updateFields = [
-        'itemtype',
-        'itemid',
-        'open',
-        'featured',
-        'status',
-        'applycall',
-        'rejectcall',
-    ];   // 更新支持字段
-    public static $detailFields = "*";   // 详情支持字段
-    public static $overviewFields = [
-        'uid',
-        'areaid',
-        'userid',
-        'itemtype',
-        'itemid',
-        'open',
-        'form',
-        'featured',
-        'status',
-        'createtime',
-        'lasttime',
-    ]; // 概览支持字段
-    public static $listFields = [
-        'uid',
-        'areaid',
-        'userid',
-        'itemtype',
-        'itemid',
-        'open',
-        'form',
-        'featured',
-        'status',
-        'createtime',
-        'lasttime',
-    ];     // 列表支持字段
-    public static $countFilters = [
-        'uid',
-        'areaid',
-        'userid',
-        'itemtype',
-        'itemid',
-        'open',
-        'featured',
-        'status',
-        'createtime',
-        'lasttime',
-    ];
-    public static $depthStruct = [
-        'form'=>'ASJson',
-        'open'=>'int',
-        'featured'=>'int',
-        'expire'=>'int',
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'applycall'=>'ASJson',
-        'rejectcall'=>'ASJson'
-    ];
 
 }

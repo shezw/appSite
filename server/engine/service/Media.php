@@ -10,6 +10,82 @@ namespace APS;
 class Media extends ASModel{
 
 
+    const table     = "item_media";
+    const comment   = "通用媒体";
+    const primaryid = "uid";
+    const addFields = [
+        'uid', 'categoryid', 'authorid',
+        'type', 'url', 'size', 'meta',
+        'password',
+        'sort', 'featured', 'status',
+    ];
+    const updateFields = [
+        'authorid', 'categoryid',
+        'type', 'url', 'size', 'meta',
+        'password',
+        'sort', 'featured', 'status',
+    ];
+    const detailFields = [
+        'uid', 'categoryid', 'authorid',
+        'type', 'url', 'size', 'meta',
+        'password',
+        'sort', 'featured', 'status',
+        'createtime', 'lasttime',
+    ];
+    const overviewFields = [
+        'uid', 'categoryid', 'authorid',
+        'type', 'url', 'size', 'meta',
+        'password',
+        'sort', 'featured', 'status',
+        'createtime', 'lasttime',
+    ];
+    const listFields = [
+        'uid', 'categoryid', 'authorid',
+        'type', 'url', 'size', 'meta',
+        'password',
+        'sort', 'featured', 'status',
+        'createtime', 'lasttime',
+    ];
+    const filterFields = [
+        'uid', 'categoryid', 'authorid',
+        'type', 'url',
+        'sort', 'featured', 'status',
+        'createtime', 'lasttime',
+    ];
+    const depthStruct = [
+        'size'=>DBField_Int,
+        'sort'=>DBField_Int,
+        'featured'=>DBField_Boolean,
+        'meta'=>DBField_Json,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+    ];
+
+    const tableStruct = [
+
+        'uid'=>         ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'图像ID',  'idx'=>DBIndex_Unique ],
+        'saasid'=>      ['type'=>DBField_String,  'len'=>8,   'nullable'=>1,    'cmt'=>'所属saas',  'idx'=>DBIndex_Index,],
+        'categoryid'=>  ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'分类ID',  'idx'=>DBIndex_Index ],
+        'authorid'=>    ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'所有者 ',  'idx'=>DBIndex_Index ],
+
+        // 'permission'=>   ['type'=>DBFieldType_INT,   'len'=>5,   'nullable'=>0,  'cmt'=>'权限需求',  'dft'=>0,       ],
+
+        'type'=>        ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'类型 ',   'idx'=>DBIndex_Index ],
+
+        'url'=>         ['type'=>DBField_String,    'len'=>255, 'nullable'=>0,  'cmt'=>'url地址'],
+        'size'=>        ['type'=>DBField_Int,       'len'=>20,  'nullable'=>0,  'cmt'=>'文件大小',  'dft'=>0,      ],
+        'meta'=>        ['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'元信息 k-v json'],
+
+        'status'=>      ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',  'dft'=>Status_Enabled,       ],
+
+        'password'=>    ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'密码访问'],
+        // 密码访问
+
+        'createtime'=>  ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',            'idx'=>DBIndex_Index, ],
+        'lasttime'=>    ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+        'featured'=>    ['type'=>DBField_Boolean,  'len'=>1,  'nullable'=>0,  'cmt'=>'置顶',  'dft'=>0,     'idx'=>DBIndex_Index, ],
+        'sort'=>        ['type'=>DBField_Int,      'len'=>5,  'nullable'=>0,  'cmt'=>'优先排序','dft'=>0,    'idx'=>DBIndex_Index, ],
+    ];
     /**
      * 彻底删除媒体文件
      * Remove media form server && OSS
@@ -48,49 +124,5 @@ class Media extends ASModel{
         return $this->take($getDetail->getContent()['url'])->success();
     }
 
-
-    public static $table     = "item_media";  // 表
-    public static $primaryid = "uid";     // 主字段
-    public static $addFields = [
-        'uid', 'categoryid', 'authorid',
-        'type', 'url', 'size', 'meta',
-        'password',
-        'sort', 'featured', 'status',
-    ];      // 添加支持字段
-    public static $updateFields = [
-        'authorid', 'categoryid',
-        'type', 'url', 'size', 'meta',
-        'password',
-        'sort', 'featured', 'status',
-    ];   // 更新支持字段
-    public static $detailFields = "*";   // 详情支持字段
-    public static $overviewFields = [
-        'uid', 'categoryid', 'authorid',
-        'type', 'url', 'size', 'meta',
-        'password',
-        'sort', 'featured', 'status',
-        'createtime', 'lasttime',
-    ]; // 概览支持字段
-    public static $listFields = [
-        'uid', 'categoryid', 'authorid',
-        'type', 'url', 'size', 'meta',
-        'password',
-        'sort', 'featured', 'status',
-        'createtime', 'lasttime',
-    ];     // 列表支持字段
-    public static $countFilters = [
-        'uid', 'categoryid', 'authorid',
-        'type', 'url',
-        'sort', 'featured', 'status',
-        'createtime', 'lasttime',
-    ];
-    public static $depthStruct = [
-        'size'=>'int',
-        'sort'=>'int',
-        'featured'=>'int',
-        'meta'=>'ASJson',
-        'createtime'=>'int',
-        'lasttime'=>'int',
-    ];
 
 }

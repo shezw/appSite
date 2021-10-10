@@ -48,9 +48,9 @@
 
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonType" style="">
                         <a class="dropdown-item a-color-6" href="" onclick="Aps.query.removeFilter('type');" >{i18n{ status.default }i18n}</a>
-                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('type','product');" >{i18n{ manager.product }i18n}</a>
-                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('type','article');" >{i18n{ manager.article }i18n}</a>
-                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('type','media');" >{i18n{ manager.media }i18n}</i></a>
+                        ||loop??ValidTypes??
+                        <a class="dropdown-item a-color-6" href="" onclick="Aps.query.addFilter('type','{{id}}');" >{{description}}</a>
+                        loop||
                     </div>
                 </div>
             </div>
@@ -134,16 +134,14 @@
                             ||loop??categoryList??
                             <tr class="col-6 col-md-4 col-lg-12">
                                 <td class="p-2">{{uid}}</td>
-                                <td class="p-2">{{type}}</td>
+                                <td class="p-2">{{type}} {{type_}}</td>
                                 <td class="p-2">
-                                    <div class="avatar avatar-lg avatar-4by3">
-                                        <img src="{{cover}}" alt="..." class="avatar-img rounded">
-                                    </div>
+                                    [if[::cover::<img src="{{cover}}" alt="..." class="rounded">]if]
                                 </td>
                                 <td class="p-2">{{title}}</td>
                                 <td class="p-2 goal-rows">{{description}}</td>
                                 <td class="p-2">{{createtime_}}</td>
-                                <td class="p-2 [if[::featured=0::text-muted]if] [if[::featured=1::text-primary]if]">{i18n{ isFeatured.{{featured}} }i18n}</td>
+                                <td class="p-2 [not[::featured::text-muted]not] [if[::featured::text-primary]if]">{i18n{ isFeatured.{{featured}} }i18n}</td>
                                 <td class="p-2 ">{{sort}}</td>
                                 <td class="p-2 [if[::status=trash::text-muted]if]">{{status_}}</td>
                                 <td class="p-2">

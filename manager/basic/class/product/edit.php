@@ -6,7 +6,7 @@ $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficie
 
 $detail = \APS\CommerceProduct::common()->detail($website->route['id'])->getContent();
 
-$getCategory = \APS\Category::common()->list(['type'=>'product']);
+$getCategory = \APS\Category::common()->listByArray(['type'=>'product']);
 if( $getCategory->isSucceed() ){
 
     $website->setSubData('categoryList',$getCategory->getContent());

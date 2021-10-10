@@ -3,15 +3,19 @@
  * 登录
  * login.php
  */
-/** @var \APS\Website $website */
+/** @var Website $website */
 
+use APS\Website;
+
+//var_dump($website->user);
+//var_dump($_SESSION);
 $website->appendTemplateByFile(THEME_DIR.'common/header.html');
 
 if( isset($_SESSION['banLogin']) && $_SESSION['banLogin'] > time() ){
 
     $openLoginTime = new \APS\Time( time() + 24*3600 );
 
-    $website->setSubData('openLoginTime',$openLoginTime->formatOutput(\APS\TimeFormatEnum::FULL_TIME));
+    $website->setSubData('openLoginTime',$openLoginTime->formatOutput(TimeFormat_FullTime));
     $website->appendTemplateByFile(THEME_DIR.'page/ban.html');
 
 }else{
@@ -22,9 +26,9 @@ if( isset($_SESSION['banLogin']) && $_SESSION['banLogin'] > time() ){
     $maxLoginErrorTimes = getConfig('maxLoginErrorTimes') ?? 10;
 
     $website->setData([
-        'title'=> getConfig('title','MANAGER'),
-        'description'=>getConfig('description','MANAGER'),
-        'logo'=>getConfig('logoUrl','MANAGER') ?? '/website/static/appsite/images/logo480.png'
+        'title'=> getConfig('title',RouteScopeManagement),
+        'description'=>getConfig('description',RouteScopeManagement),
+        'logo'=>getConfig('logoUrl',RouteScopeManagement) ?? '/website/static/appsite/images/logo480.png'
     ]);
 
     $_SESSION['currentLoginErrorTimes'] = $_SESSION['currentLoginErrorTimes'] ?? 0;

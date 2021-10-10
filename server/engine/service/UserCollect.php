@@ -13,6 +13,66 @@ namespace APS;
  */
 class UserCollect extends ASModel{
 
+    const table     = "user_collect";
+    const comment   = '用户-收藏';
+    const addFields = [
+        'uid', 'userid', 'type', 'itemid', 'itemtype',
+        'title', 'cover', 'description',
+        'contents',
+        'rate', 'status','featured','sort'
+    ];
+    const updateFields = [
+        'rate',
+        'status',
+    ];
+    const detailFields = [
+        'uid', 'userid', 'type', 'itemid', 'itemtype',
+        'title', 'cover', 'description',
+        'contents',
+        'rate', 'status', 'createtime', 'lasttime','featured','sort'
+    ];
+    const overviewFields = [
+        'uid', 'userid', 'type', 'itemid', 'itemtype',
+        'title', 'cover', 'description',
+        'contents',
+        'rate', 'status', 'createtime', 'lasttime','featured','sort'
+    ];
+    const listFields = [
+        'uid', 'userid', 'type', 'itemid', 'itemtype',
+        'title', 'cover', 'description',
+        'rate', 'status', 'createtime', 'lasttime','featured','sort'
+    ];
+    const filterFields = [
+        'uid', 'userid', 'type', 'itemid', 'itemtype',
+        'rate', 'status', 'createtime', 'lasttime','featured','sort'
+    ];
+    const depthStruct = [
+        'rate'=>DBField_Int,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+        'contents'=>DBField_Json
+    ];
+
+    const tableStruct = [
+
+        'uid'=>         ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'主ID',   'idx'=>DBIndex_Unique ],
+        'userid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'用户ID',  'idx'=>DBIndex_Index ],
+        'type'=>        ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'类型 ',   'idx'=>DBIndex_Index ],
+        'itemid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'回复ID ', 'idx'=>DBIndex_Index ],
+        'itemtype'=>    ['type'=>DBField_String,    'len'=>32,  'nullable'=>1,  'cmt'=>'回复类型',  'idx'=>DBIndex_Index ],
+        'rate'=>        ['type'=>DBField_Int,       'len'=>3,   'nullable'=>0,  'cmt'=>'强度',    'dft'=>1,       ],
+        // like type eg: superlike 5  like 1  normal 0 dislike -1  hate -5
+        'title'=>       ['type'=>DBField_String,    'len'=>63,  'nullable'=>1,  'cmt'=>'标题',    'idx'=>DBIndex_FullText ],
+        'cover'=>       ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'封面'],
+        'description'=> ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'描述',    'idx'=>DBIndex_FullText ],
+        'contents'=>    ['type'=>DBField_Json,  'len'=>-1,  'nullable'=>1,  'cmt'=>'内容'],
+        'status'=>      ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>Status_Enabled, ],
+
+        'createtime'=>  ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',           'idx'=>DBIndex_Index, ],
+        'lasttime'=>    ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+        'featured'=>    ['type'=>DBField_Boolean,  'len'=>1,  'nullable'=>0,  'cmt'=>'置顶',  'dft'=>0,    'idx'=>DBIndex_Index, ],
+        'sort'=>        ['type'=>DBField_Int,      'len'=>5,  'nullable'=>0,  'cmt'=>'优先排序','dft'=>0,   'idx'=>DBIndex_Index, ],
+    ];
     /**
      * 收集
      * collect
@@ -32,7 +92,7 @@ class UserCollect extends ASModel{
     {
 
         $checkCollect = $this->getCollectId( $userid,$itemid,$itemType,$type );
-        $extraInformation = isset($extraInformation) ? Filter::purify( $extraInformation, static::$addFields ) : [];
+        $extraInformation = isset($extraInformation) ? Filter::purify( $extraInformation, static::addFields ) : [];
 
         $data = [
             'type'=>$type,
@@ -44,9 +104,9 @@ class UserCollect extends ASModel{
         $data = array_merge($data,$extraInformation);
 
         if( $checkCollect->isSucceed() ){
-            return $this->update( $data, $checkCollect->getContent() );
+            return $this->updateByArray($data, $checkCollect->getContent() );
         }else{
-            return $this->add($data);
+            return $this->addByArray($data);
         }
     }
 
@@ -62,14 +122,14 @@ class UserCollect extends ASModel{
      */
     public function hasCollected( string $userid, string $itemid, string $itemType = null, string $type='like', int $rate = null): bool
     {
+        $conditions = DBConditions::init(static::table)
+            ->where('type')->equal($type)
+            ->and('userid')->equal($userid)
+            ->and('itemid')->equal($itemid)
+            ->and('itemtype')->equalIf($itemType)
+            ->and('rate')->equalIf($rate);
 
-        return $this->getDB()->count(static::$table,[
-            'type'=>$type,
-            'userid'=>$userid,
-            'itemid'=>$itemid,
-            'itemtype'=>$itemType,
-            'rate'=>$rate
-        ])->getContent() > 0;
+        return $this->getDB()->count(static::table,$conditions)->getContent() > 0;
     }
 
     /**
@@ -104,12 +164,13 @@ class UserCollect extends ASModel{
      */
     public function getCollectId( string $userid, string $itemid, string $itemType = null, string $type='like' ): ASResult
     {
+        $conditions = DBConditions::init(static::table)
+            ->where('type')->equal($type)
+            ->and('userid')->equal($userid)
+            ->and('itemid')->equal($itemid)
+            ->and('itemtype')->equalIf($itemType);
 
-        $getCollectList = $this->list([
-            'type'=>$type,
-            'userid'=>$userid,
-            'itemid'=>$itemid,
-            'itemtype'=>$itemType],1,1,'createtime DESC');
+        $getCollectList = $this->list($conditions,1,1,'createtime DESC');
 
         if( !$getCollectList->isSucceed() ){
             return $this->error(400,i18n('SYS_GET_FAL'));
@@ -126,25 +187,24 @@ class UserCollect extends ASModel{
      * @param  string       $itemid
      * @param  string|null  $itemType
      * @param  array|null   $params            更多
-     *                                         标题 title
-     *                                         描述 description
-     *                                         封面 cover
-     *                                         更多 contents
+     *                      标题 title
+     *                      描述 description
+     *                      封面 cover
+     *                      更多 contents
      * @return ASResult
      */
     public function favorite( string $userid, string $itemid, string $itemType = null, array $params = null ): ASResult
     {
-
         return $this->collect( $userid,$itemid,$itemType,'favorite', null, $params );
     }
 
-    // 取消收藏
+    # 取消收藏
     public function unFavorite( string $userid, string $itemid, string $itemType = null ): ASResult
     {
-
         return $this->cancelWith($userid,$itemid,$itemType,'favorite');
     }
 
+    # 是否收藏
     public function hasFavorited( string $userid, string $itemid, string $itemType ): bool
     {
         return $this->hasCollected($userid,$itemid,$itemType,'favorite');
@@ -165,19 +225,18 @@ class UserCollect extends ASModel{
      */
     public function like( string $userid, string $itemid, string $itemType = null, int $rate = 1 ): ASResult
     {
-
         $checkCollect = $this->getCollectId( $userid,$itemid,$itemType,'like' );
 
-        $data = [
+        $data = static::initValuesFromArray([
             'type'=>'like',
             'userid'=>$userid,
             'itemid'=>$itemid,
             'itemtype'=>$itemType,
             'rate'=>$rate
-        ];
+        ]);
 
         if( $checkCollect->isSucceed() ){
-            return $this->getDB()->increase( 'rate',$rate, static::$table , $checkCollect->getContent() );
+            return $this->getDB()->increase( 'rate',static::table , static::uidCondition($checkCollect->getContent()), $rate );
         }else{
             return $this->add($data);
         }
@@ -207,7 +266,6 @@ class UserCollect extends ASModel{
      */
     public function cancelLike( string $userid, string $itemid, string $itemType = null ): ASResult
     {
-
         return $this->cancelWith($userid,$itemid,$itemType,'like');
     }
 
@@ -224,7 +282,7 @@ class UserCollect extends ASModel{
      */
     public function hasLiked( string $userid, string $itemid, string $itemType, int $rate = null ): bool
     {
-        return $this::hasCollected($userid,$itemid,$itemType,'like',$rate);
+        return $this->hasCollected($userid,$itemid,$itemType,'like',$rate);
     }
 
 
@@ -244,7 +302,6 @@ class UserCollect extends ASModel{
      */
     public function follow( string $userid, string $followedUserid, array $params = null ): ASResult
     {
-
         return $this->collect( $userid,$followedUserid,'user','follow', null, $params );
     }
 
@@ -301,10 +358,10 @@ class UserCollect extends ASModel{
         ];
 
         if( $checkCollect->isSucceed() ){
-            $updateRate = $this->getDB()->increase( 'rate', 1 , static::$table , $checkCollect->getContent() );
-            return isset($contents) ? $this->update(['contents'=>$contents],$checkCollect->getContent()) : $updateRate;
+            $updateRate = $this->getDB()->increase('rate',static::table,static::uidCondition($checkCollect->getContent()) ,1 );
+            return isset($contents) ? $this->updateByArray(['contents'=>$contents],$checkCollect->getContent()) : $updateRate;
         }else{
-            return $this->add($data);
+            return $this->addByArray($data);
         }
     }
 
@@ -322,73 +379,5 @@ class UserCollect extends ASModel{
         return $this->hasCollected($userid,$itemid,$itemType,'share',$rate);
     }
 
-
-    public static $table     = "user_collect";  // 表
-    public static $primaryid = "uid";     // 主字段
-    public static $addFields = [
-        'userid',
-        'type',
-        'itemid',
-        'itemtype',
-        'title',
-        'cover',
-        'description',
-        'contents',
-        'rate',
-        'status',
-    ];      // 添加支持字段
-    public static $updateFields = [
-        'rate',
-        'status',
-    ];   // 更新支持字段
-    public static $detailFields = "*";   // 详情支持字段
-    public static $overviewFields = [
-        'uid',
-        'userid',
-        'type',
-        'itemid',
-        'itemtype',
-        'title',
-        'cover',
-        'description',
-        'contents',
-        'rate',
-        'status',
-        'createtime',
-        'lasttime',
-    ]; // 概览支持字段
-    public static $listFields = [
-        'uid',
-        'userid',
-        'type',
-        'itemid',
-        'itemtype',
-        'title',
-        'cover',
-        'description',
-        'contents',
-        'rate',
-        'status',
-        'createtime',
-        'lasttime',
-    ];     // 列表支持字段
-    public static $countFilters = [
-        'uid',
-        'userid',
-        'type',
-        'itemid',
-        'itemtype',
-        'title',
-        'rate',
-        'status',
-        'createtime',
-        'lasttime',
-    ];
-    public static $depthStruct = [
-        'rate'=>'int',
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'contents'=>'ASJson'
-    ];
 
 }

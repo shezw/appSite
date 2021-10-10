@@ -7,7 +7,118 @@ namespace  APS;
  * User
  * @package APS\service\User
  */
-class User extends ASModel{
+class User extends ASModel {
+
+    const addFields = [
+        # Account
+        'uid','saasid','username','password','email','mobile',
+        'nickname','avatar','cover','description','introduce',
+        'birthday','gender','groupid','areaid','status',
+        # Info
+        'userid','vip','vipexpire',
+        'gallery',
+        'realname','idnumber',
+        'country','province','city','company',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
+        'realstatus',
+        # Pocket
+        'point','balance','type',
+    ];
+    const updateFields = [
+        # Account
+        'password','email','mobile',
+        'nickname','avatar','cover','description','introduce',
+        'birthday','gender','groupid','areaid',
+        # Info
+        'vip','vipexpire',
+        'gallery',
+        'realname','idnumber',
+        'country','province','city','company',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
+        'status','realstatus',
+        # Pocket
+        'point','balance','type',
+    ];
+
+    const filterFields = [
+        # Account
+        'uid','username','email','mobile','saasid',
+        'nickname','gender','groupid','areaid','status','createtime','lasttime',
+        # Info
+        'userid','vip','vipexpire',
+        'realname','idnumber',
+        'country','province','city','company',
+        'wechatid','weiboid','qqid','appleUUID','deviceID',
+        'realstatus',
+        # Pocket
+        'point','balance','type',
+    ];
+
+    const depthStruct = [
+        'point'=>DBField_Int,
+        'balance'=>DBField_Int,
+        'birthday'=>DBField_TimeStamp,
+        'vip'=>DBField_Int,
+        'vipexpire'=>DBField_TimeStamp,
+        'gallery'=>DBField_Json,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+    ];
+
+    const tableStruct = [
+
+        # UserAccount
+        'uid'          =>['type'=>DBField_String,  'len'=>8,   'nullable'=>0,                     'cmt'=>'用户ID 唯一索引',     'idx'=>DBIndex_Unique, ],
+        'groupid'      =>['type'=>DBField_String,  'len'=>8,   'nullable'=>0,  'dft'=>'100',      'cmt'=>'用户分组 参考user_group'],
+        'areaid'       =>['type'=>DBField_String,  'len'=>8,   'nullable'=>0,  'dft'=>'1',        'cmt'=>'地区id',    'idx'=>DBIndex_Index,],
+        'saasid'       =>['type'=>DBField_String,  'len'=>8,   'nullable'=>1,                     'cmt'=>'所属saas',  'idx'=>DBIndex_Index,],
+
+        'username'     =>['type'=>DBField_String,  'len'=>63,  'nullable'=>1,                     'cmt'=>'用户名 账号密码登陆用', 'idx'=>DBIndex_Unique, ],
+        'password'     =>['type'=>DBField_String,  'len'=>255, 'nullable'=>1,                     'cmt'=>'密码 hash salt加密'],
+        'email'        =>['type'=>DBField_String,  'len'=>63,  'nullable'=>1,                     'cmt'=>'邮箱 唯一',           'idx'=>DBIndex_Unique, ],
+        'mobile'       =>['type'=>DBField_String,  'len'=>24,  'nullable'=>1,                     'cmt'=>'手机 唯一',           'idx'=>DBIndex_Unique, ],
+        'nickname'     =>['type'=>DBField_String,  'len'=>63,  'nullable'=>1,                     'cmt'=>'昵称 30字以内'],
+        'avatar'       =>['type'=>DBField_String,  'len'=>255, 'nullable'=>1,                     'cmt'=>'头像 url'],
+        'cover'        =>['type'=>DBField_String,  'len'=>255, 'nullable'=>1,                     'cmt'=>'封面 url'],
+        'description'  =>['type'=>DBField_String,  'len'=>255, 'nullable'=>1,                     'cmt'=>'介绍 250字以内'],
+        'introduce'    =>['type'=>DBField_RichText,'len'=>-1,  'nullable'=>1,                     'cmt'=>'简介 120字以内'],
+        'birthday'     =>['type'=>DBField_Int,     'len'=>11,  'nullable'=>1,                     'cmt'=>'生日 时间戳'],
+        'gender'       =>['type'=>DBField_String,  'len'=>16,  'nullable'=>0,  'dft'=>'private',  'cmt'=>'性别 female male private'],
+
+        'status'       =>['type'=>DBField_String,  'len'=>12,  'nullable'=>0,  'dft'=>'enabled',  'cmt'=>'状态 enabled 可以 '],
+
+        'createtime'   =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,                     'cmt'=>'创建时间',   'idx'=>DBIndex_Index, ],
+        'lasttime'     =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,                     'cmt'=>'上一次更新时间', ],
+
+        # UserInfo
+        'userid'    =>['type'=>DBField_String,  'len'=>8,    'nullable'=>0,                    'cmt'=>'用户ID 唯一索引','idx'=>DBIndex_Unique, ],
+        'gallery'   =>['type'=>DBField_Json,    'len'=>-1,   'nullable'=>1,                    'cmt'=>'相册 JSON ARRAY'],
+
+        'vip'       =>['type'=>DBField_Int,     'len'=>2,    'nullable'=>0,  'dft'=>0,         'cmt'=>'是否vip',      'idx'=>DBIndex_Index,],
+        'vipexpire' =>['type'=>DBField_Int,     'len'=>11,   'nullable'=>0,  'dft'=>0,         'cmt'=>'vip过期时间',   'idx'=>DBIndex_Index,],
+
+        'realname'  =>['type'=>DBField_String,  'len'=>63,   'nullable'=>1,                    'cmt'=>'真实姓名 30字以内'],
+        'idnumber'  =>['type'=>DBField_String,  'len'=>63,   'nullable'=>1,                    'cmt'=>'身份证号 30字以内'],
+        'country'   =>['type'=>DBField_String,  'len'=>24,   'nullable'=>1,                    'cmt'=>'国家 12字以内'],
+        'province'  =>['type'=>DBField_String,  'len'=>24,   'nullable'=>1,                    'cmt'=>'省份 12字以内'],
+        'city'      =>['type'=>DBField_String,  'len'=>24,   'nullable'=>1,                    'cmt'=>'城市 12字以内'],
+        'company'   =>['type'=>DBField_String,  'len'=>63,   'nullable'=>1,                    'cmt'=>'公司 30字以内'],
+
+        'wechatid'  =>['type'=>DBField_String,  'len'=>32,   'nullable'=>1,                    'cmt'=>'微信公众平台openid 默认获取 unionid', 'idx'=>DBIndex_Unique, ],
+        'weiboid'   =>['type'=>DBField_String,  'len'=>63,   'nullable'=>1,                    'cmt'=>'微博ID'],
+        'appleUUID' =>['type'=>DBField_String,  'len'=>64,   'nullable'=>1,                    'cmt'=>'苹果UUID'],
+        'qqid'      =>['type'=>DBField_String,  'len'=>63,   'nullable'=>1,                    'cmt'=>'qqID'],
+        'deviceid'  =>['type'=>DBField_String,  'len'=>64,   'nullable'=>1,                    'cmt'=>'Device ID'],
+        'realstatus'=>['type'=>DBField_String,  'len'=>24,   'nullable'=>0, 'dft'=>Status_Default,  'cmt'=>'实名状态 '],
+
+        'balance'=>['type'=>DBField_Int,     'len'=>13,   'nullable'=>0,  'dft'=>0,           'cmt'=>'余额 100倍 分为单位 RMB'],
+        'point'  =>['type'=>DBField_Int,     'len'=>13,   'nullable'=>0,  'dft'=>0,           'cmt'=>'积分 带小数点'],
+        'type'   =>['type'=>DBField_String,  'len'=>16,   'nullable'=>1,                      'cmt'=>'类型 暂时没用'],
+
+    ];
+
+
+
 
     public $userid;
     public $token;
@@ -19,12 +130,11 @@ class User extends ASModel{
     private $acquired = false;
     private $verified = false;
 
-    private $securityid;
+    private $securityId;
 
-    protected static $rds_auto_cache = false;
     /**
      * 用户权限
-     * @var \APS\Access
+     * @var Access
      */
     public  $access;
 
@@ -32,9 +142,9 @@ class User extends ASModel{
 
         parent::__construct();
 
-        $this->userid = $userid ?? 'GUEST';
-        $this->token  = $token ?? 'GUESTTOKEN';
-        $this->scope  = $scope ?? 'common';
+        $this->userid = $userid ?? GroupRole_Guest;
+        $this->token  = $token ?? GroupRole_Guest;
+        $this->scope  = $scope ?? AccessScope_Common;
 
         $this->init();
     }
@@ -63,7 +173,7 @@ class User extends ASModel{
      */
     public static function fromHeader( bool $setToGlobal = true ): User{
 
-        $user = new User( Network::getHeaderParam('userid'),Network::getHeaderParam('token'),Network::getHeaderParam('scope') );
+        $user = new User( Network::getHeaderParam('uid') ?? Network::getHeaderParam('userid')  ,Network::getHeaderParam('token'),Network::getHeaderParam('scope') );
         if( $setToGlobal ){ $GLOBALS['User'] = $user; }
         return $user;
     }
@@ -75,8 +185,8 @@ class User extends ASModel{
      * @param  bool    $setToGlobal  设为全局用户
      * @return User
      */
-    public static function fromSession( string $prefix = 'website', bool $setToGlobal = true ): User{
-        session_start();
+    public static function fromSession( string $prefix = WebsiteDefaultID, bool $setToGlobal = true ): User{
+        if (!isset($_SESSION)) { session_start(); }
         $user = new User( $_SESSION["{$prefix}_userid"],$_SESSION["{$prefix}_token"],$_SESSION["{$prefix}_scope"] );
         if( $setToGlobal ){ $GLOBALS['User'] = $user; }
         return $user;
@@ -87,8 +197,8 @@ class User extends ASModel{
      * Temp Current User to Session
      * @param  string  $prefix
      */
-    public function toSession( string $prefix = 'website' ){
-        session_start();
+    public function toSession( string $prefix = WebsiteDefaultID ){
+        if (!isset($_SESSION)) { session_start(); }
         $_SESSION["{$prefix}_userid"] = $this->userid;
         $_SESSION["{$prefix}_token"] = $this->token;
         $_SESSION["{$prefix}_scope"] = $this->scope;
@@ -100,7 +210,7 @@ class User extends ASModel{
      * @param  string  $prefix
      */
     public function removeFromSession( string $prefix = 'website' ){
-        session_start();
+        if (!isset($_SESSION)) { session_start(); }
         $_SESSION["{$prefix}_userid"] = null;
         $_SESSION["{$prefix}_token"] = null;
         $_SESSION["{$prefix}_scope"] = null;
@@ -111,17 +221,17 @@ class User extends ASModel{
         if($this->inited){ return ;}
 
         $this->inited = true;
-        $this->securityid = Encrypt::shortId(16);
+        $this->securityId = Encrypt::shortId(16);
         $this->access = new Access( $this );
     }
 
-    public function getSecurityid(){
-        return $this->securityid;
+    public function getSecurityId(){
+        return $this->securityId;
     }
 
-    public function confirmVerify( string $securityid ){
+    public function confirmVerify( string $securityId ){
 
-        if( $securityid == $this->securityid ){
+        if( $securityId == $this->securityId ){
             $this->verified = true;
             $this->acquire();
         }
@@ -160,7 +270,7 @@ class User extends ASModel{
 
     public function isGuest(): bool
     {
-        return $this->userid === 'GUEST' || !isset($this->userid);
+        return $this->userid === GroupRole_Guest || !isset($this->userid);
     }
 
     public function identify(){
@@ -175,16 +285,12 @@ class User extends ASModel{
 
     public function refreshToken(): Access
     {
-
         $this->identify();
-
         return $this->access;
-
     }
 
-    public function systemAuthorize( string $userid, string $scope = 'common'): ASResult
+    public function systemAuthorize( string $userid, string $scope = AccessScope_Common): ASResult
     {
-
         $this->userid = $userid;
         $this->scope  = $scope;
         $Access = new Access($this);
@@ -193,121 +299,118 @@ class User extends ASModel{
     }
 
 
-
     /**
      * 新建用户账户
      * add
-     * @param  array  $params
+     * @param DBValues $data
      * @return ASResult
      */
-    public function add( array $params ): ASResult
+    public function add( DBValues $data ): ASResult
     {
-
-        $params[static::$primaryid] = isset($params[static::$primaryid]) ? $params[static::$primaryid] : Encrypt::shortId(8);
-
-        $accountParams = Filter::purify($params,static::$addFields); // 使用字段数据进行过滤
-
-        $accountParams['status'] = $accountParams['status'] ?? 'enabled';
-
-        if(isset($accountParams['password'])){
-            $ENCR = new Encrypt(4);
-            $accountParams['password'] = $ENCR->hashPassword($accountParams['password']);
+        if ( !$data->has(UserAccount::primaryid) ){
+            $uid = Encrypt::shortId(8);
+            $data->set(UserAccount::primaryid)->string($uid);
+        }else{
+            $uid = $data->getValue(UserAccount::primaryid);
         }
+
+        if ( $data->has('password') ){
+            $ENCR = new Encrypt(4);
+            $data->set('password')->string( $ENCR->hashPassword($data->getValue('password')) );
+        }
+
+        $accountData = $data->purifyCopy(UserAccount::addFields)->set(UserAccount::primaryid)->string($uid);
+        $infoData    = $data->purifyCopy(UserInfo::addFields)->set(UserInfo::primaryid)->string($uid);
+        $pocketData  = $data->purifyCopy(UserPocket::addFields)->set(UserPocket::primaryid)->string($uid);
 
         //检测不能同时为空的选项
         if(
-            !isset($accountParams['email'])&&
-            !isset($accountParams['mobile'])&&
-            !isset($accountParams['username'])&&
-            !isset($params['appleUUID'])&&
-            !isset($params['wechatid'])
+            !$data->has('email') &&
+            !$data->has('mobile') &&
+            !$data->has('username') &&
+            !$data->has('appleUUID') &&
+            !$data->has('wechatid')
         ){
-            return $this->take($params)->error(504,i18n('USR_UI_REQ'),'User->add');
+            return $this->take($data->toArray())->error(504,i18n('USR_UI_REQ'),'User->add');
         }
 
-        if( isset($accountParams['username'])  && ( static::exist('username',$accountParams['username']))){
-            return $this->take($accountParams['username'])->error(600,i18n('USR_UN_EXT'),'User->add');
+        if( $data->has('username') && static::exist('username',$data->getValue('username')) ){
+            return $this->take($data->getValue('username'))->error(600,i18n('USR_UN_EXT'),'User->add');
         }
-        if( isset($accountParams['email'])     && ( static::exist('email',$accountParams['email']))){
-            return $this->take($accountParams['email'])->error(600,i18n('USR_EM_EXT'),'User->add');
+        if( $data->has('email') && static::exist('email',$data->getValue('email')) ){
+            return $this->take($data->getValue('email'))->error(600,i18n('USR_EM_EXT'),'User->add');
         }
-        if( isset($accountParams['mobile'])    && ( static::exist('mobile',$accountParams['mobile']))){
-            return $this->take($accountParams['mobile'])->error(600,i18n('USR_MB_EXT'),'User->add');
+        if( $data->has('mobile') && static::exist('mobile',$data->getValue('mobile')) ){
+            return $this->take($data->getValue('mobile'))->error(600,i18n('USR_MB_EXT'),'User->add');
         }
-        if( isset($params['wechatid'])  && ( static::exist('wechatid',$params['wechatid']))){
-            return $this->take($params['wechatid'])->error(600,i18n('USR_WE_EXT'),'User->add');
+        if( $data->has('wechatid') && static::exist('mobile',$data->getValue('wechatid')) ){
+            return $this->take($data->getValue('wechatid') )->error(600,i18n('USR_WE_EXT'),'User->add');
         }
-        if( isset($params['appleUUID'])  && ( static::exist('appleUUID',$params['appleUUID']))){
-            return $this->take($params['appleUUID'])->error(600,i18n('USR_AP_EXT'),'User->add');
+        if( $data->has('appleUUID')  && static::exist('appleUUID',$data->getValue('appleUUID')) ){
+            return $this->take($data->getValue('appleUUID') )->error(600,i18n('USR_AP_EXT'),'User->add');
         }
 
-        $this->DbAdd($accountParams);
-        $this->setId($accountParams[static::$primaryid]);
-        $this->record('USER_ADD','User->add');
+        $userAccount= new UserAccount();
+        $addUser = $userAccount->add( $accountData );
 
-        if(!$this->result->isSucceed()){ return $this->feedback(); }
+        if(!$addUser->isSucceed()){ return $addUser; }
 
         // 初始化用户信息/钱包
 
-        $userInfo   = new UserInfo( $accountParams['userid'] );
-        $userPocket = new UserPocket( $accountParams['userid'] );
+        $userInfo   = new UserInfo( $uid );
+        $userInfo->init( $infoData );
 
-        $userInfo->init( $params );
-        $userPocket->init( $params );
+        $userPocket = new UserPocket( $uid );
+        $userPocket->init( $pocketData );
 
-        return $this->take($accountParams['userid'])->success(i18n('USR_ADD_SUC'),'User->add');
-
+        return $this->take($uid)->success(i18n('USR_ADD_SUC'),'User->add');
     }
 
     /**
-     * @param array $params
+     * @param DBValues $data
      * @param string $uid
      * @return ASResult
      */
-    public function update(array $params, string $uid ): ASResult
+    public function update( DBValues $data, string $uid ): ASResult
     {
-
-        $accountParams = Filter::purify($params,static::$updateFields);
-        $infoParams = Filter::purify($params,UserInfo::$updateFields);
-
-        $pass = $params['password'] ?? null;
+        $pass = $data->has('password') ? $data->getValue('password') : NULL;
 
         if($pass){
             $ENC = new Encrypt(4);
-            $accountParams['password'] = $ENC->hashPassword($pass);
+            $data->set('password')->string($ENC->hashPassword($pass));
         }
 
-        if( isset($accountParams['username'])  && ( $this->isConflict('username',$accountParams['username'],$uid))){
-            return $this->take($accountParams['username'])->error(600,i18n('USR_UN_EXT'),'User->add');
+        if( $data->has('username') && $this->isConflict('username',$data->getValue('username'),$uid) ){
+            return $this->take($data->getValue('username'))->error(600,i18n('USR_UN_EXT'),'User->add');
         }
-        if( isset($accountParams['email'])     && ( $this->isConflict('email',$accountParams['email'],$uid))){
-            return $this->take($accountParams['email'])->error(600,i18n('USR_EM_EXT'),'User->add');
+        if( $data->has('email') && $this->isConflict('email',$data->getValue('email'),$uid) ){
+            return $this->take($data->getValue('email'))->error(600,i18n('USR_EM_EXT'),'User->add');
         }
-        if( isset($accountParams['mobile'])    && ( $this->isConflict('mobile',$accountParams['mobile'],$uid))){
-            return $this->take($accountParams['mobile'])->error(600,i18n('USR_MB_EXT'),'User->add');
+        if( $data->has('mobile') && $this->isConflict('mobile',$data->getValue('mobile'),$uid) ){
+            return $this->take($data->getValue('mobile'))->error(600,i18n('USR_MB_EXT'),'User->add');
         }
-        if( isset($params['wechatid']) && ( $this->isConflict('wechatid',$params['wechatid'],$uid))){
-            return $this->take($params['wechatid'])->error(600,i18n('USR_WE_EXT'),'User->add');
+        if( $data->has('wechatid') && $this->isConflict('mobile',$data->getValue('wechatid'),$uid) ){
+            return $this->take($data->getValue('wechatid') )->error(600,i18n('USR_WE_EXT'),'User->add');
         }
-        if( isset($params['appleUUID']) && ( $this->isConflict('appleUUID',$params['appleUUID'],$uid))){
-            return $this->take($params['appleUUID'])->error(600,i18n('USR_AP_EXT'),'User->add');
+        if( $data->has('appleUUID')  && $this->isConflict('appleUUID',$data->getValue('appleUUID'),$uid) ){
+            return $this->take($data->getValue('appleUUID') )->error(600,i18n('USR_AP_EXT'),'User->add');
         }
 
-        if (count($accountParams)<1 && count($infoParams)<1) { return $this->take($params)->error(603,i18n('SYS_PARA_REQ'),'ITEM::update'); }
+        if ( $data->hasKeyIn( UserAccount::updateFields ) ){
+            $accountUpdate = true;
+            $updateAccount = UserAccount::common()->update( $data, $uid );
+        }
+        if ( $data->hasKeyIn(UserInfo::updateFields ) ){
+            $infoUpdate = true;
+            $updateInfo    = UserInfo::common()->update($data, $uid);
+        }
 
-        $conditions = static::$primaryid."='$uid'";
-
-        $this->DbUpdate($accountParams,$conditions);
-        $this->setId($uid);
-        $this->record('ITEM_UPDATE','ITEM::update');
-
-        if (!empty($infoParams)) {
-            $userInfo = new UserInfo( $uid );
-            $userInfo->update( $infoParams, $uid );
+        if( !$accountUpdate && !$infoUpdate ){
+            return $this->error(-10,'No legal parameters');
         }
 
         # 删除历史缓存
-        if( $this->result->isSucceed() ){
+        if( ($accountUpdate && $updateAccount->isSucceed()) || ($infoUpdate && $updateInfo->isSucceed()) ){
 
             $this->getRedis()->isEnabled()
             && $this->getRedis()->clear('USER',$this->userid);
@@ -322,42 +425,6 @@ class User extends ASModel{
 
 
     /**
-     * 统计vip用户数
-     * countVip
-     * @param  array  $filters  筛选条件
-     * @return ASResult
-     */
-    public function countVip( array $filters = [] ): ASResult
-    {
-
-        $filters['vip'] = $filters['vip'] ?? 1;
-
-        return $this->count($filters);
-
-    }
-
-    /**
-     * 获取vip列表
-     * listVip
-     * @param  array   $filters   筛选条件
-     * @param  int     $page
-     * @param  int     $size
-     * @param  string  $sort
-     * @return ASResult
-     */
-    public function listVip( array $filters = [], int $page=1, int $size=20, string $sort = 'vip DESC, vipexpire DESC, createtime DESC' ): ASResult
-    {
-
-        $filters['vip'] = $filters['vip'] ?? 1;
-
-        if ($this->countVip($filters)->getContent()==0){
-            return $this->error(400,i18n('USR_NON'),'User->list');
-        }
-
-        return $this->list($filters,$page,$size,$sort);
-    }
-
-    /**
      * 验证密码
      * checkPassword
      * @param  string  $password
@@ -369,7 +436,7 @@ class User extends ASModel{
 
         $this->sign('User->checkPassword');
 
-        $detail = static::common()->detail($userid);
+        $detail = UserAccount::common()->detail($userid);
 
         if( !$detail->isSucceed() ){ return $this->error( 401, i18n('USR_NOT_EXISTS') ); }
 
@@ -386,42 +453,42 @@ class User extends ASModel{
 
 
     // 检测用户授权是否正确
-    public function checkAuth( string $status=null, int $level = 0 ): ASResult
-    {
-
-//        if( !$this->access-> )
-//        $CHECK = ACCESS::checkToken($userid,$token);
-//        if ( !isset($userid) || $userid=='false' || !RESULT::isSucceed($CHECK) ) {
-//            return RESULT::feedback($CHECK['status']==308 ? 9998 : 9999,['AUTH_VER_FAL'],$userid,'checkAuth');
+//    public function checkAuth( string $status=null, int $level = 0 ): ASResult
+//    {
+//
+////        if( !$this->access-> )
+////        $CHECK = ACCESS::checkToken($userid,$token);
+////        if ( !isset($userid) || $userid=='false' || !RESULT::isSucceed($CHECK) ) {
+////            return RESULT::feedback($CHECK['status']==308 ? 9998 : 9999,['AUTH_VER_FAL'],$userid,'checkAuth');
+////        }
+//
+//        // status check
+//        if(!isset($status) && $level==0 ){ return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkAuth'); }
+//        if ($this->detail['status']!=='enabled') {
+//            return $this->error(9001,i18n('AUTH_BLOCK'),'User->checkAuth');
 //        }
-
-        // status check
-        if(!isset($status) && $level==0 ){ return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkAuth'); }
-        if ($this->detail['status']!=='enabled') {
-            return $this->error(9001,i18n('AUTH_BLOCK'),'User->checkAuth');
-        }
-
-        if ( $this->getUserInfo('level') < $level ) {
-            return $this->error(9900,i18n('AUTH_LEVEL_LOW'),'User->checkAuth');
-        }
-
-        return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkAuth');
-    }
+//
+//        if ( $this->getUserInfo('level') < $level ) {
+//            return $this->error(9900,i18n('AUTH_LEVEL_LOW'),'User->checkAuth');
+//        }
+//
+//        return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkAuth');
+//    }
 
     /**
      * 检测用户权限级别
      * @param int $level
      * @return ASResult
      */
-    public function checkLevel(int $level = 0 ): ASResult
-    {
-
-        if ( $this->getUserInfo('level') < $level ) {
-            return $this->error(9900,i18n('AUTH_LEVEL_LOW'),'User->checkLevel');
-        }
-
-        return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkLevel');
-    }
+//    public function checkLevel(int $level = 0 ): ASResult
+//    {
+//
+//        if ( $this->getUserInfo('level') < $level ) {
+//            return $this->error(9900,i18n('AUTH_LEVEL_LOW'),'User->checkLevel');
+//        }
+//
+//        return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkLevel');
+//    }
 
 
     /**
@@ -432,12 +499,15 @@ class User extends ASModel{
      */
     public function searchUserByInfo( string $info ):ASResult{
 
-        $searchUser = $this->getDB()->maybeSearch(['username'=>$info,'mobile'=>$info,'email'=>$info], static::$table,
-            static::$detailFields);
+        $searchUser = $this->getDB()->get(
+            DBFields::init(UserAccount::table)->and('uid'),
+            UserAccount::table,
+            DBConditions::init()->where('username')->equal($info)->or('mobile')->equal($info)->or('email')->equal($info)
+        );
 
         if ( !$searchUser->isSucceed() ) { return $this->error(400,i18n('USR_NON'),'User->searchUserByInfo'); }
 
-        return $this->take($searchUser->getContent()[0]['userid'])->success();
+        return $this->take($searchUser->getContent()[0]['uid'])->success();
     }
 
     /**
@@ -488,27 +558,48 @@ class User extends ASModel{
      */
     public function fullDetail(): ASResult
     {
-
         $hashParams = ['USER',$this->userid];
 
-        if( static::$rds_auto_cache && $this->getRedis()->isEnabled() && $this->getRedis()->has($hashParams) ){
-            $DETAIL = $this->getRedis()->read($hashParams);
+        if( UserAccount::rds_auto_cache && $this->getRedis()->isEnabled() && $this->getRedis()->has($hashParams) ){
+            return $this->getRedis()->read($hashParams);
         }else{
 
-            $joinParamsArray = [
-                JoinParams::init('APS\UserInfo')->get(UserInfo::$detailFields)->asSubData('info'),
-                JoinParams::init('APS\UserPocket')->get(UserPocket::$detailFields)->asSubData('pocket'),
-                JoinParams::init('APS\UserGroup')->get(UserGroup::$detailFields)->equalTo('user_account.groupid')->asSubData('group'),
-            ];
-            $DETAIL = $this->joinDetail($this->userid,null,$joinParamsArray);
-            if( $DETAIL->isSucceed() ){
+            if( $this->userid === GroupRole_Guest ){
+
+                $Guest_Detail = [
+                    'uid'=>GroupRole_Guest,
+                    "info"=>[],
+                    "group"=>[
+                        "uid"=>Group_Guest,
+                        "level"=>GroupLevel_Guest,
+                        "type"=>GroupRole_Guest,
+                        "groupname"=>'Guest'
+                    ]
+                ];
+
+                return $this->take( $Guest_Detail )->success();
+            }
+
+            $primaryJoin = DBJoinParam::convincePrimaryForDetail(UserAccount::class, $this->userid );
+
+            $infoParam   = DBJoinParam::convinceForDetail(UserInfo::class,UserAccount::table.".".UserAccount::primaryid )->asSub('info');
+            $groupParam  = DBJoinParam::convinceForDetail(UserGroup::class,UserAccount::table.".groupid" )->asSub('group');
+            $pocketParam = DBJoinParam::convinceForDetail(UserPocket::class,UserAccount::table.".".UserAccount::primaryid )->asSub('pocket');
+
+            $joinParams  = DBJoinParams::init( $primaryJoin )->leftJoin($infoParam)->leftJoin($groupParam)->leftJoin($pocketParam);
+
+            $fullDetail  = $this->getByJoin( $joinParams );
+
+            if( $fullDetail->isSucceed() ){
+
+                $fullDetail->setContent( $fullDetail->getContent()[0] );
 
                 $this->getRedis()->isEnabled()
-                && $this->getRedis()->cache($hashParams,$DETAIL,12*3600)
+                && $this->getRedis()->cache($hashParams,$fullDetail,12*3600)
                 && $this->getRedis()->track('USER',$this->userid,$hashParams);
             }
         }
-        return $DETAIL;
+        return $fullDetail;
     }
 
     /** 获取数据END **/
@@ -525,7 +616,10 @@ class User extends ASModel{
      */
     public static function exist( string $key, $value ):bool{
 
-        $countUser = _ASDB()->count(in_array($key,UserInfo::$countFilters) ? UserInfo::$table : User::$table,[$key=>$value]);
+        $inUserInfo = in_array($key,UserInfo::filterFields);
+        $table = $inUserInfo ? UserInfo::table : UserAccount::table;
+
+        $countUser = _ASDB()->count( $table,DBConditions::init( $table )->where($key)->equal($value) );
         return $countUser->getContent() > 0;
     }
 
@@ -559,16 +653,16 @@ class User extends ASModel{
      */
     public function getUserid( string $key, $value ):ASResult{
 
-        if( in_array($key, USERINFO::$addFields) ){
+        if( in_array($key, UserInfo::addFields) ){
             $infoModel = new UserInfo();
-            $LIST = $infoModel->list([$key=>$value],1,1);
+            $LIST = $infoModel->list(DBConditions::init()->where($key)->equal($value),1,1);
         }else{
-            $LIST = $this->list([$key=>$value],1,1);
+            $LIST = $this->list(DBConditions::init()->where($key)->equal($value),1,1);
         }
 
         if ( !$LIST->isSucceed()){ return $this->error(400,i18n('USR_NON'),'User->getUserid'); }
 
-        return $this->take($LIST->getContent()[0]['userid'])->success(i18n('USR_GET_SUC'),'User->getUserid');
+        return $this->take($LIST->getContent()[0]['uid'])->success(i18n('USR_GET_SUC'),'User->getUserid');
     }
 
     /**
@@ -584,43 +678,44 @@ class User extends ASModel{
         return $this->detail['group']['uid'] == $groupid;
     }
 
+    public function belongGroups( array $groups ):bool{
+
+        $this->acquire();
+
+        return in_array($this->detail['group']['uid'],$groups);
+    }
+
 
     /**
      * 查询是否超级管理员
      * isSuper
-     * @param  string  $userid
      * @return bool
      */
-    public function isSuper( string $userid ): bool
+    public function isSuper(): bool
     {
-
-        return $this->isInGroup('900');
+        return $this->isInGroup(Group_SuperAdmin);
     }
 
     /**
      * 查询是否管理员
      * isAdmin
-     * @param  string  $userid
      * @return bool
      */
-    public function isAdmin( string $userid ): bool
+    public function isAdmin(): bool
     {
-
-        return $this->isInGroup('800');
+        return $this->isInGroup(Group_Admin);
     }
 
     // 查询是否网站编辑
-    public function isEditor( string $userid ): bool
+    public function isEditor(): bool
     {
-
-        return $this->isInGroup('400');
+        return $this->isInGroup(Group_Editor);
     }
 
     // 查询是否专家/讲师
-    public function isAuthor( string $userid ): bool
+    public function isAuthor(): bool
     {
-
-        return $this->isInGroup('300') || $this->isInGroup('301') || $this->isInGroup('302') || $this->isInGroup('303');
+        return $this->belongGroups([Group_Author,Group_AuthorStandard,Group_AuthorPro,Group_AuthorExclusive]);
     }
 
     /**
@@ -641,15 +736,14 @@ class User extends ASModel{
      * 重复设置默认追加有效期
      *
      * @param  int     $duration
-     * @param  int     $viplevel
+     * @param  int     $vipLevel
      * @return ASResult
      */
-    public function setVip( int $duration, int $viplevel=1 ): ASResult
+    public function setVip( int $duration, int $vipLevel=1 ): ASResult
     {
-
-        $vipexpire = $this->getUserInfo('vipexpire');
-        $vipexpire = $vipexpire>0 ? $vipexpire : time();
-        return $this->update(['vip'=>$viplevel,'vipexpire'=>$vipexpire+$duration],$this->userid);
+        $vipExpire = $this->getUserInfo('vipexpire');
+        $vipExpire = $vipExpire>0 ? $vipExpire : time();
+        return $this->update(DBValues::init('vip')->number($vipLevel)->set('vipexpire')->number($vipExpire+$duration),$this->userid);
     }
 
     /**
@@ -664,13 +758,11 @@ class User extends ASModel{
     /**
      * 取消vip身份
      * undoVip
-     * @param  int  $time
      * @return ASResult
      */
-    public function undoVip( int $time = 0 ): ASResult
+    public function undoVip(): ASResult
     {
-
-        return $this->updateUserInfo(['vipexpire'=>$time]);
+        return $this->updateUserInfo(DBValues::init(UserAccount::table)->set('vipexpire')->number(0));
     }
 
     /**
@@ -688,66 +780,15 @@ class User extends ASModel{
     /**
      * 更新用户信息表
      * updateUserInfo
-     * @param  array  $data
+     * @param DBValues $data
      * @return ASResult
      */
-    public function updateUserInfo( array $data ): ASResult
+    public function updateUserInfo( DBValues $data ): ASResult
     {
 
         $infoModel = new UserInfo();
         return $infoModel->update( $data, $this->userid );
     }
-
-
-
-
-    public static $table     = "user_account";
-    public static $primaryid = "userid";
-    public static $addFields = [
-        'userid','username','password','email','mobile',
-        'nickname','avatar','cover','description','introduce',
-        'birthday','gender','groupid','areaid','status',
-    ];
-    public static $updateFields = [
-        'password','email','mobile',
-        'nickname','avatar','cover','description','introduce',
-        'birthday','gender','groupid','areaid','status',
-    ];
-    public static $detailFields = [
-        'userid','username','email','mobile','password',
-        'nickname','avatar','cover','description','introduce',
-        'birthday','gender','groupid','areaid','status','createtime','lasttime'
-    ];
-    public static $publicDetailFields = [
-        'userid','username','email','mobile',
-        'nickname','avatar','cover','description','introduce',
-        'birthday','gender','groupid','areaid','status','createtime','lasttime'
-    ];
-    public static $overviewFields = [
-        'userid','username',
-        'nickname','avatar','description','introduce',
-        'groupid','areaid','createtime','lasttime'
-    ];
-    public static $listFields = [
-        'userid','username','email','mobile',
-        'nickname','avatar','cover','description',
-        'groupid','gender','areaid','status','createtime','lasttime'
-    ];
-    public static $publicListFields = [
-        'userid','username',
-        'nickname','avatar','description',
-        'groupid','gender','areaid','status','createtime','lasttime'
-    ];
-    public static $countFilters = [
-        'userid','username','email','mobile',
-        'nickname','gender','groupid','areaid','status','createtime','lasttime'
-    ];
-    public static $depthStruct = [
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'birthday'=>'int',
-    ];
-
 
 
 }

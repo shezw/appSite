@@ -12,8 +12,8 @@ use APS\User;
 
 class passwordLogin extends ASAPI{
 
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {

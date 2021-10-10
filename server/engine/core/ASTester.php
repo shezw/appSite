@@ -19,9 +19,9 @@ abstract class ASTester extends ASAPI {
 
     private function checkSecurity(){
         if (
-            !isset( static::$operationAccessRequirement ) &&
-            !isset( static::$groupLevelRequirement ) &&
-            !isset( static::$groupCharacterRequirement )
+            !static::operationAccessRequirement &&
+            !static::groupLevelRequirement &&
+            !static::groupCharacterRequirement
         ) {
             _ASRoute()->exit( $this->error(-300,i18n('TESTER_NOT_SECURITY'),'ASTester->run') );
         }
@@ -29,7 +29,7 @@ abstract class ASTester extends ASAPI {
 
     public function runTest():ASResult{
 
-        if( $this->scope != 'system' ){
+        if( static::scope != 'system' ){
             return $this->run();
         }else{
             return $this->error(-1,i18n("SYS_API_NAL"),"ASTester->runAPI");

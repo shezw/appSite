@@ -13,12 +13,18 @@
  * Register dictionary
  */
 
+/**
+ * 常量注册
+ */
+require_once "constants.php";
+
 use APS\ASDB;
 use APS\ASError;
 use APS\ASRecord;
 use APS\ASRedis;
 use APS\ASRoute;
 use APS\ASSetting;
+use APS\DBFilter;
 use APS\I18n;
 use APS\User;
 
@@ -60,12 +66,16 @@ define( 'EngineRegisterDict' , [
         'AccessOperation', # 系统功能鉴权
 
         'User',            # 用户
+        'UserAccount',     # 用户\基础账户
         'UserInfo',        # 用户\信息扩展
         'UserPocket',      # 用户\钱包扩展
-        'UserCollect',     # 收藏
-        'UserComment',     # 评论
-        'UserGroup',       # 用户组
-        'UserAddress',     # 用户地址
+        'UserCollect',     # 用户\收藏扩展
+        'UserComment',     # 用户\评论扩展
+        'UserGroup',       # 用户\用户组扩展
+        'UserAddress',     # 用户\地址扩展
+        'UserPreference',  # 用户\偏好扩展
+
+        'Point',           # 积分管理
 
         'CommerceOrder',   # 订单
         'CommercePayment', # 支付
@@ -82,18 +92,29 @@ define( 'EngineRegisterDict' , [
 
         'Article',         # 文章
         'Category',        # 通用分类
+        'Tag',             # 通用标签
         'Page',            # 页面
         'Media',           # 媒体
+        'Banner',          # 轮播图
+        'MediaTemplate',   # 媒体模板(短信、邮件、页面等)
 
         'Management',      # 后台管理支持
         'Website',         # 网站前台支持
 
         'MessageNotification', # 消息
+        'MessageAnnouncement', # 消息-公告
+        'MessageChat',     # 消息-聊天
 
         'FormRequest',     # 表单-请求
         'FormContract',    # 表单-合约
+        'FormVerify',      # 表单-认证
 
-        'Area',            # 地区
+        'Relation',        # 关联查询
+
+
+        'UserRecord',      # 用户日志
+        'AdminRecord',     # 后台日志
+        'ThirdPartyRecord',# 第三方日志
 
     ],
 
@@ -111,15 +132,43 @@ define( 'EngineRegisterDict' , [
         'SMTP',            # SMTP邮件
 
         'ShieldWorld',     # 屏蔽词
+
+        'Saas',            # 平台化
+        'Area',            # 地区
+        'Company',         # 企业
+        'District',        # 商圈
+        'Subway',          # 地铁
         'Industry',        # 行业
+
     ],
 
-    'supporting'=>[
+    'supporting'=>[         /* 支持类 */
 
+        'WebsiteConstants',
+
+        'DBFilter',        #
+        'DBConditions',
+        'DBConditionSymbol',
+        'DBConditionKeyword',
+
+        'DBValue',
+        'DBValues',
+
+        'DBField',
+        'DBFields',
+
+        'DBJoinParam',
+        'DBJoinParams',
+
+        'DBFieldStruct',
+        'DBTableStruct',
+
+        /**
+         * 将被弃用
+         * Will be Deprecated
+         */
         'JoinParams',
         'JoinPrimaryParams',
-        'TimeFormatEnum'
-
     ]
 ]);
 
@@ -167,6 +216,16 @@ function _ASError(): ASError{
 function _ASSetting(): ASSetting{
     return ASSetting::shared();
 }
+
+/**
+ * 获取SaasID(存在时)
+ * @return string|null
+ */
+function saasId()
+{
+    return defined('SaasID') ? SaasID : null;
+}
+
 
 /**
  * 快捷获取配置
@@ -217,8 +276,20 @@ function i18n( string $code, string $scope = null ):String{
  * @param  string|null  $mode
  * @return ASRoute
  */
-function _ASRoute( string $format = null, string $mode = null ){
+function _ASRoute( string $format = null, string $mode = null ): ASRoute
+{
     return ASRoute::shared( $format, $mode );
+}
+
+/**
+ * 快捷方式 DBField
+ * @param string $field
+ * @param string $mode
+ * @return DBFilter
+ */
+function _DBFilter( string $field, string $mode = DBFilter::AND_MODE ): DBFilter{
+
+    return DBFilter::init( $field, $mode );
 }
 
 
@@ -243,11 +314,11 @@ function checkRegisterFolder( string $name ){
  * Basic class autoload ( core, tool, service, supporting, extension )
  */
 spl_autoload_register(function ($classname) {
-    $pathname   = __DIR__ . DIRECTORY_SEPARATOR;
-    $filename   = str_replace('APS\\', DIRECTORY_SEPARATOR, $classname);
-    $foldername = checkRegisterFolder($filename);
-    if (file_exists("{$pathname}{$foldername}{$filename}.php")) {
-        include "{$pathname}{$foldername}{$filename}.php";
+    $path   = __DIR__ . DIRECTORY_SEPARATOR;
+    $file   = str_replace('APS\\', DIRECTORY_SEPARATOR, $classname);
+    $folder = checkRegisterFolder($file);
+    if (file_exists("{$path}{$folder}{$file}.php")) {
+        include "{$path}{$folder}{$file}.php";
         return true;
     }
     return false;

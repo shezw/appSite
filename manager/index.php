@@ -13,14 +13,16 @@
  * @version 2.0
  */
 
+use APS\Management;
+
 include_once dirname(__DIR__).'/server/autoload.php';
 
 define('SITE_DIR' , __DIR__.'/');
 define('MANAGER_BASIC_DIR',SITE_DIR.'basic/');
 define('MANAGER_CUSTOM_DIR',SITE_DIR.'custom/');
-define('THEME_DIR', SITE_DIR .'themes/'. (getConfig("theme",'MANAGER') ?? 'stisla').'/' );
+define('THEME_DIR', SITE_DIR .'themes/'. (getConfig("theme",RouteScopeManagement) ?? ManagementDefaultTheme).'/' );
 
-$website = new \APS\Management(getConfig('MANAGER_ROUTE_FORMAT') ?? 'manager/class/action/id' );
+$website = new Management(getConfig('MANAGER_ROUTE_FORMAT') ?? ManagementDefaultRouteFormat );
 
 /** 设定网站本地化语言
  *  Set i18n Code for website

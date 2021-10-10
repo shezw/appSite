@@ -5,7 +5,7 @@ namespace APS;
 use OSS\Core\OssException;
 use OSS\OssClient;
 
-include SERVER_DIR."library/aliyun-oss-php-sdk/autoload.php";
+include LIB_DIR."aliyun-oss-php-sdk/autoload.php";
 
 
 /**
@@ -28,13 +28,11 @@ class AliyunOSS extends ASModel{
 
     function __construct(string $accessKeyId = null, string $accessKeySecret = null, string $endpoint = null)
     {
-
         parent::__construct();
 
         $this->accessKeyId = $accessKeyId ?? getConfig('OSS_KEYID','ALIYUN');
         $this->accessKeySecret = $accessKeySecret ?? getConfig('OSS_KEYSECRET','ALIYUN');
         $this->endpoint = $endpoint ?? getConfig('OSS_ENDPOINT','ALIYUN');
-
     }
 
     /**
@@ -44,7 +42,7 @@ class AliyunOSS extends ASModel{
     public function initOssClient(): ASResult
     {
         try {
-            $this->ossClient = new \OSS\OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint, false);
+            $this->ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint, false);
         } catch (OssException $e) {
 
             return $this->error(2201, "creating OssClient instance: FAILED");
@@ -82,7 +80,7 @@ class AliyunOSS extends ASModel{
         $expiration = Time::ISO8601($expire);
 
         $time = new Time();
-        $month = $time->formatOutput(TimeFormatEnum::NUMBER_MONTH);
+        $month = $time->formatOutput(TimeFormat_NumberMonth);
 
         $dir = getConfig('APP_NAME')??'AppSite';
         $dir .= $dir ? '/' : '';
@@ -190,7 +188,6 @@ class AliyunOSS extends ASModel{
         } else {
 
             $authStr = urldecode(substr($path, 0, $pos)) . substr($path, $pos, strlen($path) - $pos) . "\n" . $body;
-
         }
 
         // 6.验证签名
@@ -232,7 +229,7 @@ class AliyunOSS extends ASModel{
             }
 
             # 在媒体库进行添加
-            $newMedia = Media::common()->add($mediadata);
+            $newMedia = Media::common()->addByArray($mediadata );
             if ($newMedia->isSucceed()) {
                 $mediaId = $newMedia->getContent();
             }
@@ -291,14 +288,12 @@ class AliyunOSS extends ASModel{
      */
     public function uploadUrlFile(string $url, string $path = 'res'): ASResult
     {
-
         $file = static::curlFile($url, 1, 5);
 
         if (!$file->isSucceed()) {
 
             // 如果失败再一次尝试
             $file = static::curlFile($url, 1, 5);
-
         }
 
         // 再次失败则加入系统错误日志
@@ -322,7 +317,7 @@ class AliyunOSS extends ASModel{
         $filename = Encrypt::shortId(10);
 
         $time = new Time();
-        $month = $time->formatOutput(TimeFormatEnum::NUMBER_MONTH);
+        $month = $time->formatOutput(TimeFormat_NumberMonth);
 
         $object = "$path/$filetype/$month/$filename.$type";
 
@@ -390,7 +385,7 @@ class AliyunOSS extends ASModel{
      * @param  string|null  $bucket   手动bucket
      * @return   string                                   路径 pathurl
      */
-    public static function getFileName(string $fullUrl, string $bucket = null)
+    public static function getFileName(string $fullUrl, string $bucket = null): string
     {
         if( getConfig('CUSTOM_OSS_DOMAIN','ALIYUN') ){
             $fullUrl = str_replace(getConfig('CUSTOM_OSS_DOMAIN','ALIYUN'),'',$fullUrl );

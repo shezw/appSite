@@ -5,7 +5,7 @@ $website->requireGroupLevel(80000,'manager/insufficient');
 $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficient');
 
 $website->params['itemClass'] = 'APS\Media';
-$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\Media::$countFilters );
+$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\Media::filterFields );
 
 $callResult = \APS\ASAPI::systemInit( 'manager\itemList', $website->params, $website->user )->run() ;
 

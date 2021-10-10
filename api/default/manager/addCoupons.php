@@ -9,24 +9,21 @@ namespace manager;
 use APS\ASAPI;
 use APS\ASModel;
 use APS\ASResult;
+use APS\CommerceCoupon;
 
 class addCoupons extends ASAPI
 {
 
-    private $itemClass = '\APS\CommerceCoupon';
-    private $itemId = '';
-    private $data   = [];
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    protected $scope = 'public';
-    public    $mode = 'JSON';
-
-    protected static $groupCharacterRequirement = ['super','manager','editor'];
-    protected static $groupLevelRequirement = 80000;
+    const groupCharacterRequirement = [GroupRole_Super,GroupRole_Manager,GroupRole_Editor];
+    const groupLevelRequirement = 80000;
 
     public function run(): ASResult
     {
         // $this->itemClass = $this->params['itemClass'] ?? ASModel::class;
-        $this->data      = [
+        $data = [
             'amount'=>$this->params['amount'],
             'min'=>$this->params['min'],
             'max'=>$this->params['max'],
@@ -35,8 +32,8 @@ class addCoupons extends ASAPI
 
         $bulk =  $this->params['bulk'];
 
-        for ($i=0; $i < $bulk; $i++) { 
-            $this->itemClass::common()->add( $this->data );
+        for ($i=0; $i < $bulk; $i++) {
+            CommerceCoupon::common()->addByArray($data);
         }
 
         return $this->success();

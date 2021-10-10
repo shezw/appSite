@@ -4,7 +4,7 @@ $website->requireUser('manager/login');
 $website->requireGroupLevel(40000,'manager/insufficient');
 $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficient');
 
-$getCategory = \APS\Category::common()->list(['status'=>'enabled']);
+$getCategory = \APS\Category::common()->listByArray(['status'=>'enabled']);
 if( $getCategory->isSucceed() ){
     $website->setSubData('categoryList',$getCategory->getContent());
 }
@@ -111,6 +111,6 @@ $website->blendMenuAccessByFile(SITE_DIR.'basic/menu/sidebar.php');
 
 $website->appendTemplateByFile(THEME_DIR.'class/appsiteJS/former.html');
 
-$website->appendTemplateByFile(THEME_DIR.'common/footer/editor.html');
+$website->appendTemplateByFile(THEME_DIR.'common/footer-editor.html');
 
 $website->rend();

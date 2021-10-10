@@ -18,7 +18,38 @@ namespace APS;
 
  * @package APS\core
  */
-class ASRecord extends ASObject{
+class ASRecord extends ASModel {
+
+    const table = 'record_system';
+    const comment = "系统日志";
+
+    const Mode_System     = 'system';
+    const Mode_User       = 'user';
+    const Mode_Admin      = 'admin';
+    const Mode_ThirdParty = 'thirdparty';
+
+    const tableStruct = [
+
+        'saasid'=>   ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'所属saas','idx'=>DBIndex_Index,],
+        'userid'=>   ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'用户ID' , 'idx'=>DBIndex_Index ],
+        'itemid'=>   ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'用户ID' , 'idx'=>DBIndex_Index ],
+        'type'=>     ['type'=>DBField_String,    'len'=>16,  'nullable'=>0,  'cmt'=>'类型',    'dft'=>'success', 'idx'=>DBIndex_Index ],
+        'status'=>   ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'success',  ],
+        'event'=>    ['type'=>DBField_String,    'len'=>64,  'nullable'=>0,  'cmt'=>'事件' ],
+        'content'=>  ['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'内容 k-v json' ],
+        'sign'=>     ['type'=>DBField_String,    'len'=>63,  'nullable'=>1,  'cmt'=>'签名' ],
+        'ip'=>       ['type'=>DBField_String,    'len'=>32,  'nullable'=>1,  'cmt'=>'签名' ],
+        'host'=>     ['type'=>DBField_String,    'len'=>32,  'nullable'=>1,  'cmt'=>'签名' ],
+
+        'createtime'=>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',      'idx'=>DBIndex_Index, ],
+        'lasttime'=>  ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
+
+    const depthStruct = [
+        'content'=>DBField_Json,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp
+    ];
 
     /**
      * 用户id
@@ -51,12 +82,6 @@ class ASRecord extends ASObject{
     private $content;
 
     /**
-     * 事件类型
-     * @var string Function,System
-     */
-    private $type;
-
-    /**
      * 签名头信息
      * @var string
      */
@@ -66,7 +91,7 @@ class ASRecord extends ASObject{
      * 记录分类
      * @var string  System, User, Error, Thirdparty
      */
-    private $category;
+    private $mode;
 
     /**
      * 数据库联接
@@ -74,7 +99,7 @@ class ASRecord extends ASObject{
      */
     public $DB;
 
-    function __construct( array $_= null , ASDB $db = null )
+    function __construct( array $_= null )
     {
         parent::__construct();
 
@@ -83,20 +108,19 @@ class ASRecord extends ASObject{
         $this->event       = $_["event"]     ?? "NAN" ;
         $this->content     = $_["content"]   ?? "NAN" ;
         $this->sign        = $_["sign"]      ?? "AppSite" ;
-        $this->category    = $_["category"]  ?? "system" ;
+        $this->mode        = $_["mode"]      ?? static::Mode_System ;
     }
 
     /**
      * 全局单例
      * shared
-     * @param  array|null      $_  日志记录参数
-     * @param  ASDB|null       $db 指定数据库链接
+     * @param array|null $_ 日志记录参数
      * @return ASRecord
      */
-    public static function shared( array $_= null , ASDB $db = null ):ASRecord{
+    public static function shared( array $_= null ):ASRecord{
 
         if ( !isset($GLOBALS['ASRecord']) ){
-            $GLOBALS['ASRecord'] = new ASRecord( $_,$db );
+            $GLOBALS['ASRecord'] = new ASRecord( $_ );
         }
         return $GLOBALS['ASRecord'];
     }
@@ -154,74 +178,45 @@ class ASRecord extends ASObject{
      */
     public function setItemid( string $itemid ): ASRecord
     {
-
         $this->itemid  =  $itemid;
         return $this;
     }
 
     /**
-     * 设置记录类型
-     * setType
-     * @param  string  $type
-     * @return $this
-     */
-    public function setType( string $type ): ASRecord
-    {
-
-        $this->type  =  $type;
-        return $this;
-    }
-
-
-    /**
      * 添加记录
      * add record to database
      * @param  array   $_           数组参数形式
-     * @param  int     $status      状态码
-     * @param  string  $itemid      操作对象id
-     * @param  string  $type        记录类型
-     * @param  array   $content     记录内容 array -> JSON
-     * @param  string  $userid      用户id
-     * @param  string  $sign        操作签名
-     * @param  string  $recordType  记录分类
+     *                 - int     $status      状态码
+     *                 - string  $itemid      操作对象id
+     *                 - string  $type        记录类型
+     *                 - array   $content     记录内容 array -> JSON
+     *                 - string  $userid      用户id
+     *                 - string  $sign        操作签名
+     *                 - string  $recordType  记录分类
      * @param  bool    $saveToFile  以文件形式记录
      * @return ASResult
      */
-    public function add( $_ = null, $status = null, $itemid = null, $type = null, $content = null, $recordType=null, $userid = null, $sign = null, $saveToFile = false ): ASResult
+    public function add( $_ = null, $saveToFile = false ): ASResult
     {
-
         if(!getConfig("RECORD_ENABLE")){ return $this->success("RECORDER CONF IS NOT ENABLED","RECORD->add"); }
 
-        if (gettype($_)=="array") {
-
-            $status   = $_["status"]   ?? 0;
-            $type     = $_["type"]     ?? "FUNCTION";
-            $event    = $_["event"]    ?? "LOG";
-            $content  = $_["content"]  ?? null;
-            $itemid   = $_["itemid"]   ?? $this->itemid;
-            $sign     = $_["sign"]     ?? $this->sign;
-            $userid   = $_["userid"]   ?? $this->userid;
-            $recordType = $_["category"] ?? $this->category;
-
-        }else{
-
-            $status   = $status   ?? 0;
-            $type     = $type     ?? "FUNCTION";
-            $event    = $_        ?? "LOG";
-            $content  = $content  ?? null;
-            $itemid   = $itemid   ?? $this->itemid;
-            $sign     = $sign     ?? $this->sign;
-            $userid   = $userid   ?? $this->userid;
-            $recordType = $recordType ?? $this->category;
-
-        }
+        $status   = $_["status"]   ?? 0;
+        $type     = $_["type"]     ?? "System";
+        $event    = $_["event"]    ?? "Log";
+        $content  = $_["content"]  ?? null;
+        $itemid   = $_["itemid"]   ?? $this->itemid;
+        $sign     = $_["sign"]     ?? $this->sign;
+        $userid   = $_["userid"]   ?? $this->userid;
+        $recordType = $_["mode"] ?? $this->mode;
 
         if ( $userid!=="1000" && $userid!=="system" ) {
             $recordType = $recordType ? ( $recordType=="thirdparty"||$recordType=="admin"||$recordType=="user" ? $recordType :"system" ) : "user";
         }
 
-        if ($recordType!=="system" && $recordType !=="user" && $recordType !=="admin" && $recordType !=="thirdparty" ) {
-            $this->error(10025,"Not valid Category!","RECORD->add");
+        if ( in_array($recordType,[static::Mode_System,static::Mode_User]) ) {
+            $recordType = !in_array( $userid, ['SYSTEM','1000','system'] ) ? static::Mode_User : static::Mode_System;
+        }else if( !in_array($recordType, [static::Mode_Admin,static::Mode_ThirdParty] ) ){
+            $this->error(10025,"Not valid Mode!","RECORD->add");
         }
 
         $table    = "record_".$recordType;
@@ -230,25 +225,32 @@ class ASRecord extends ASObject{
         if(!isset($userid )  ){ return $this->error(10086,i18n("SYS_PARA_REQ"),"ASRecord->add"); }
         if(!isset($content ) ){ return $this->error(10086,i18n("SYS_PARA_REQ"),"ASRecord->add"); }
 
-        $data = [
-            "userid"   => $userid,
-            "itemid"   => $itemid,
-            "type"     => $type,
-            "status"   => $status,
-            "event"    => $event,
-            "sign"     => $sign,
-            "host"     => $this->getHost(),
-            "ip"       => $this->getRealIP(),
-            "content"  => $content,
-        ];
+        if ( $content instanceof DBValues ){
+            $content = $content->toArray();
+        }
+        if( $content instanceof DBConditions ){
+            $content = $content->toArray();
+        }
+
+        $data = DBValues::init($table)
+            ->set("userid" )->string($userid)
+            ->set("itemid" )->string($itemid)
+            ->set("type"   )->string($type)
+            ->set("status" )->string($status)
+            ->set("event"  )->string($event)
+            ->set("sign"   )->string($sign)
+            ->set("host"   )->string($this->getHost())
+            ->set("ip"     )->string($this->getRealIP())
+            ->set("content")->jsonIf($content)
+            ->set('saasid')->stringIf(saasId());
 
         if($saveToFile){
 
-            File::write( static::generateLogName("$table/"), static::generateLogLine($data), getConfig('LOG_DIR') ?? SERVER_DIR.'/RECLOG/' );
+            File::write( static::generateLogName("{$table}/"), static::generateLogLine($data->toArray()), getConfig('LOG_DIR') ?? SERVER_DIR.'/RECLOG/' );
             return $this->success();
         }else{
 
-            return $this->getDB()->add($data,$table);
+            return $this->getDB()->add($data,$table );
         }
 
     }
@@ -268,8 +270,7 @@ class ASRecord extends ASObject{
      */
     public function log( $_ = null, $status = null, $itemid = null, $type = null, $content = null, $category=null, $userid = null, $sign = null ): ASResult
     {
-
-        return $this->add( $_, $status, $itemid, $type, $content, $category, $userid, $sign, true );
+        return $this->add($_,true );
     }
 
     /**
@@ -312,7 +313,7 @@ class ASRecord extends ASObject{
                 break;
 
             default:
-                # code...
+                $line = (string)$content;
                 break;
         }
         return $line;
@@ -341,26 +342,26 @@ class ASRecord extends ASObject{
         //判断服务器是否允许$_SERVER
         if(isset($_SERVER)){
             if(isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
-                $realip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+                $realIP = $_SERVER["HTTP_X_FORWARDED_FOR"];
             }elseif(isset($_SERVER["HTTP_CLIENT_IP"])) {
-                $realip = $_SERVER["HTTP_CLIENT_IP"];
+                $realIP = $_SERVER["HTTP_CLIENT_IP"];
             }elseif(isset($_SERVER["REMOTE_ADDR"])){
-                $realip = $_SERVER["REMOTE_ADDR"];
+                $realIP = $_SERVER["REMOTE_ADDR"];
             }else{
-                $realip = "NAN";
+                $realIP = "NAN";
             }
         }else{
             //不允许就使用getenv获取
             if(getenv("HTTP_X_FORWARDED_FOR")){
-                $realip = getenv( "HTTP_X_FORWARDED_FOR");
+                $realIP = getenv( "HTTP_X_FORWARDED_FOR");
             }elseif(getenv("HTTP_CLIENT_IP")) {
-                $realip = getenv("HTTP_CLIENT_IP");
+                $realIP = getenv("HTTP_CLIENT_IP");
             }else{
-                $realip = getenv("REMOTE_ADDR");
+                $realIP = getenv("REMOTE_ADDR");
             }
         }
 
-        return $realip;
+        return $realIP;
     }
 
 }

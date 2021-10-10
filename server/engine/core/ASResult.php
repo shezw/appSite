@@ -47,7 +47,7 @@ class ASResult
         $this->status  = 0;
         $this->message = "NO_MESSAGE";
         $this->content = NULL;
-        $this->time = new Time();
+//        $this->time = new Time();
     }
 
     /**
@@ -130,6 +130,10 @@ class ASResult
         return $this->content;
     }
 
+    public function getContentOr( $value ){
+        return $this->isSucceed() ? $this->content : $value;
+    }
+
     /**
      * 设置主体内容 setContent
      * @param $content
@@ -175,7 +179,7 @@ class ASResult
     }
 
     public function convertTo( string $type ){
-
+        $this->time = new Time();
         $res = [
             'status'=>$this->status,
             'message'=>$this->message,
@@ -191,7 +195,6 @@ class ASResult
         switch ( $type ){
             case 'string':
             return json_encode($res,256);
-            break;
             case 'array':
             default:
             return $res;
@@ -203,7 +206,7 @@ class ASResult
      * @return String
      */
     public function getTimeString():String{
-        return $this->time->formatOutput( TimeFormatEnum::FULL_TIME );
+        return $this->time->formatOutput( TimeFormat_FullTime );
     }
 
     /**

@@ -7,10 +7,10 @@ $website->requireGroupLevel(80000, 'manager/insufficient');
 $website->requireGroupCharacter(['super', 'manager', 'editor'], 'manager/insufficient');
 
 $website->params['itemClass'] = 'APS\User';
-$website->params['filters'] = \APS\Filter::purify($website->params, \APS\User::$countFilters);
+$website->params['filters'] = \APS\Filter::purify($website->params, \APS\User::filterFields);
 $website->params['filters']['groupid'] = '100';
 
-$callResult = \APS\ASAPI::systemInit('manager\itemList', $website->params, $website->user)->run();
+$callResult = \APS\ASAPI::systemInit(manager\itemList::class, $website->params, $website->user)->run();
 
 $website->setTitle('User');
 $website->setMenuActive(['user','userManage']);

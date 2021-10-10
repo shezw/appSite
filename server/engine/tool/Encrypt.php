@@ -229,7 +229,6 @@ class Encrypt{
 
 	public static function isNumber( $input ): bool
     {
-
 		return in_array(gettype($input), ['int','integer','float','double']);
 	}
 
@@ -253,7 +252,7 @@ class Encrypt{
             $encode['_V'] = $value;
         }
 
-        return $sub ? $encode : json_encode($encode);
+        return $sub ? $encode : json_encode($encode,256);
     }
 
     // 为ASJson解码
@@ -358,16 +357,19 @@ class Encrypt{
     	if(!isset($value)){ return NULL; }
         switch ($type) {
             case 'ASJson':
+            case DBField_ASJson:
             $v = static::ASJsonDecode($value);
             break;
             case 'JSON':
             case 'json':
+            case DBField_Json:
             $v = json_decode($value,true);
             break;
             case 'INT':
             case 'int':
             case 'INTEGER':
             case 'integer':
+            case DBField_Int:
             $v = (int)$value;
             break;
             case 'DOUBLE':
@@ -380,14 +382,17 @@ class Encrypt{
             case 'BOOLEAN':
             case 'bool':
             case 'boolean':
+            case DBField_Boolean:
             $v = ['true'=>true,'false'=>false,'TRUE'=>true,'FALSE'=>false,'0'=>false,'1'=>true,' '=>false,'NULL'=>false][$value] ?? false;
             break;
             case 'NULL':
             case 'null':
+            case DBField_Null:
             $v = NULL;
             break;
             case 'STRING':
             case 'string':
+            case DBField_String:
             default:
             $v = $value;
             break;

@@ -9,9 +9,11 @@
  * @version 2.0
  */
 
+use APS\User;
+
 include_once dirname(__DIR__).'/server/autoload.php';
 
-define('API_DIR',__DIR__);
+//define('API_DIR',__DIR__);
 
 
 //$a = \APS\JoinParams::common('APS\UserInfo')->asSubData('info');
@@ -29,7 +31,7 @@ define('API_DIR',__DIR__);
 //var_dump();
 //\APS\Mixer::debug($a);
 
-$user  = \APS\User::fromHeader();
+$user  = User::fromHeader();
 
 $route = _ASRoute( getConfig('API_ROUTE_FORMAT') ?? 'api/namespace/class/id'  );
 

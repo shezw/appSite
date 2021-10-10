@@ -6,13 +6,16 @@
 
 namespace user;
 
-class getList extends \APS\ASAPI
+use APS\ASAPI;
+use APS\ASResult;
+
+class getList extends ASAPI
 {
 
-    protected static $groupLevelRequirement = 900;
-    protected static $groupCharacterRequirement = 'manager';
+    const groupLevelRequirement = 900;
+    const groupCharacterRequirement = 'manager';
 
-    public function run():\APS\ASResult
+    public function run(): ASResult
     {
 
         return $this->success('请求用户列表api');

@@ -1,8 +1,13 @@
 <?php
 
-session_start();
+use APS\Management;
+use APS\User;
 
-\APS\User::common()->removeFromSession((getConfig('id','MANAGER') ?? 'APPSITE') . '_m');
+/** @var Management $website */
+
+if (!isset($_SESSION)) { session_start(); }
+
+User::common()->removeFromSession(getConfig('id',RouteScopeManagement) ?? ManagementDefaultID );
 
 $website->appendTemplateByFile(THEME_DIR.'common/header.html');
 

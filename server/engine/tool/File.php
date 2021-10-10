@@ -56,6 +56,12 @@ class File{
         return file_exists($fileUrl);
     }
 
+    public static function addTo( string $filename, $content, string $path = null ):bool
+    {
+        return static::write( $filename, $content,$path,'a' );
+    }
+
+
     /**
      * 建立文件( 默认追加 )
      * Create a file or append to old one
@@ -87,9 +93,7 @@ class File{
      */
     public static function newFile(String $filename, $content, string $path = null ): bool
     {
-
         return static::write($filename,$content,$path,'wb');
-
     }
 
     /**

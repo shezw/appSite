@@ -41,6 +41,20 @@ abstract class ASObject{
 	}
 
     /**
+     * 自动设定 主体
+     * @param bool $checker
+     * @param $sucContent
+     * @param $errContent
+     * @return $this
+     */
+	public function autoTake( bool $checker, $sucContent, $errContent ): ASObject
+    {
+        $this->setContent( $checker ? $sucContent : $errContent );
+        return $this;
+    }
+
+
+    /**
      * 设置结果包装中的主数据
      * set content of result
      * @param $content
@@ -62,13 +76,13 @@ abstract class ASObject{
      * 返回结果 通用
      * Returning result to the caller
      * @param Int|null $status
-     * @param String|null $message
+     * @param string|null $msg
      * @param String|null $sign
      * @return ASResult
      */
-	public function feedback( int $status = null , string $message = null, string $sign = null ):ASResult{
+	public function feedback( int $status = null , string $msg = null, string $sign = null ):ASResult{
         if( isset($status) ){ $this->result->setStatus($status); }
-		if( isset($message) ){ $this->result->setMessage($message); }
+		if( isset($msg) ){ $this->result->setMessage($msg); }
 		if( isset($sign) ){ $this->result->setSign($sign); }
 
 		$result = $this->result;
@@ -104,4 +118,15 @@ abstract class ASObject{
 		return $this->feedback(0,$message,$sign);
 	}
 
+    /**
+     * @param bool $checker
+     * @param string|null $sucMsg
+     * @param int $errStatus
+     * @param string|null $errMsg
+     * @return ASResult
+     */
+	public function autoFeedback( bool $checker, string $sucMsg = null, int $errStatus = -1, string $errMsg = null ): ASResult
+    {
+	    return $this->feedback( $checker ? 0 : $errStatus, $checker ? $errMsg : $sucMsg );
+    }
 }

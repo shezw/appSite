@@ -79,10 +79,10 @@
                     <a class="btn-block" href="#config" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="config">
                         [if[::configFileSaved=success::<i class="fe fe-check-circle text-success"></i>]if]
                         [if[::configFileSaved=failed::<i class="fe fe-x-circle text-danger"></i>]if]
-                        {i18n{ manager.createConfig }i18n}创建配置文件
+                        {i18n{ manager.createConfig }i18n}
                     </a>
-                    [if[::configFileSaved=success::config.php{i18n{ manager.fileCreated }i18n}]if]文件创建成功。
-                    [if[::configFileSaved=failed::{i18n{ manager.create }i18n}config.php{i18n{ manager.configFailedDescription }i18n}]if] 文件失败,请手动添加文件到 server目录下。
+                    [if[::configFileSaved=success::config.php{i18n{ manager.fileCreated }i18n}]if]
+                    [if[::configFileSaved=failed::{i18n{ manager.create }i18n}config.php{i18n{ manager.configFailedDescription }i18n}]if]
                 </div>
 
                 [if[::configFileSaved=failed::

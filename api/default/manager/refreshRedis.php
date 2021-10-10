@@ -13,11 +13,11 @@ use APS\ASResult;
 class refreshRedis extends ASAPI
 {
 
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    protected static $groupCharacterRequirement = ['super','manager'];
-    protected static $groupLevelRequirement = 90000;
+    const groupCharacterRequirement = [GroupRole_Super,GroupRole_Manager];
+    const groupLevelRequirement = GroupLevel_SuperAdmin;
 
     public function run(): ASResult
     {

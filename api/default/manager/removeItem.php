@@ -12,26 +12,22 @@ use APS\ASResult;
 
 class removeItem extends ASAPI
 {
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    private $itemClass = '\APS\ASModel';
-    private $itemId = '';
-
-    protected $scope = 'public';
-    public  $mode = 'JSON';
-
-    protected static $groupCharacterRequirement = ['super','manager','editor'];
-    protected static $groupLevelRequirement = 40000;
+    const groupCharacterRequirement = [GroupRole_Super,GroupRole_Manager,GroupRole_Editor];
+    const groupLevelRequirement = GroupLevel_Editor;
 
     public function run(): ASResult
     {
-        $this->itemClass = $this->params['itemClass'] ?? ASModel::class;
-        $this->itemId    = $this->params['itemId'];
+        $itemClass = $this->params['itemClass'] ?? ASModel::class;
+        $itemId = $this->params['itemId'];
 
-        if( !class_exists( $this->itemClass ) ){
-            $this->itemClass = 'APS\\'.$this->itemClass ;
+        if( !class_exists($itemClass) ){
+            $itemClass = 'APS\\'. $itemClass;
         }
 
-        return $updateItem = $this->itemClass::common()->remove( $this->itemId ) ?? ASResult::shared();
+        return $updateItem = $itemClass::common()->remove($itemId) ?? ASResult::shared();
 
     }
 

@@ -1,14 +1,16 @@
 <?php
-/** @var \APS\Website $website */
+/** @var Website $website */
+
+use APS\Encrypt;
+use APS\Website;
 
 $website->requireUser('manager/login');
 $website->requireGroupLevel(80000,'manager/insufficient');
-$website->requireGroupCharacter(['super','manager','editor'],'manager/insufficient');
+$website->requireGroupCharacter([GroupRole_Super,GroupRole_Manager,GroupRole_Editor],'manager/insufficient');
 
 $website->setTitle('Add category');
 $website->setMenuActive(['content','category','categoryAdd']);
-$website->setSubData('type',$website->params['type']??'product');
-$website->setSubData('random',\APS\Encrypt::shortId(8));
+$website->setSubData('random', Encrypt::shortId(8));
 $website->setSubData('customFooter',"
 ");
 $website->setSubData('customJS',"
@@ -23,6 +25,16 @@ $website->setSubData('customJS',"
         {preview:'#imagePreview',input:'#image'});	
 
 ");
+$website->setSubData('ValidTypes',[
+
+    ['uid'=>Type_Common , 'description'=>i18n('common','type')],
+    ['uid'=>Type_Media , 'description'=>i18n('media','type')],
+    ['uid'=>Type_Article , 'description'=>i18n('article','type')],
+    ['uid'=>Type_File , 'description'=>i18n('file','type')],
+    ['uid'=>Type_Product , 'description'=>i18n('product','type')],
+    ['uid'=>Type_Page , 'description'=>i18n('page','type')],
+
+]);
 
 
 $website->appendTemplateByFile(THEME_DIR.'common/header.html');

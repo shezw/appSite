@@ -18,32 +18,29 @@ use APS\User;
  */
 class userList extends \APS\ASAPI{
 
-    private $filters   = ['status'=>'enabled'];
-    private $page = 1;
-    private $size = 20;
-    private $order   = 'createtime DESC';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    protected static $groupCharacterRequirement = ['super','manager','editor'];
-    protected static $groupLevelRequirement = 40000;
-    public  $mode = 'JSON';
+    const groupCharacterRequirement = [GroupRole_Super,GroupRole_Manager,GroupRole_Editor];
+    const groupLevelRequirement = GroupLevel_Editor;
 
     public function run(): ASResult
     {
-        $this->filters   = $this->params['filters'] ?? ['status'=>'enabled'] ;
-        $this->page      = $this->params['page'] ?? 1;
-        $this->size      = $this->params['size'] ?? 10;
-        $this->order      = $this->params['order'] ?? 'createtime DESC';
+        $filters = $this->params['filters'] ?? ['status'=>'enabled'] ;
+        $page    = $this->params['page'] ?? 1;
+        $size    = $this->params['size'] ?? 20;
+        $order   = $this->params['order'] ?? 'createtime DESC';
 
-        $getCount =  User::common()->count( $this->filters ) ?? ASResult::shared();
-        $getList  =  User::common()->list( $this->filters, $this->page, $this->size, $this->order ) ?? ASResult::shared();
+        $getCount =  User::common()->countByArray($filters) ?? ASResult::shared();
+        $getList  =  User::common()->listByArray( $filters, $page, $size, $order) ?? ASResult::shared();
 
         $list = [];
-        $maxPage = (int)(($getCount->getContent() - 1 )/ $this->size + 1);
+        $maxPage = (int)(($getCount->getContent() - 1 )/ $size + 1);
         $list['nav'] = $list['navigation'] = [
             'total'=> $getCount->getContent(),
             'count'=> $maxPage,'max'=> $maxPage,
-            'current'=>$this->page,'page'=>$this->page,
-            'size'=>$this->size
+            'current'=> $page,'page'=> $page,
+            'size'=> $size
         ];
 
         if( !$getList->isSucceed() ){

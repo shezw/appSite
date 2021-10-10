@@ -10,7 +10,6 @@ return [
     'male'            => 'Male',
     'female'          => 'Female',
 
-    'vippackage'      => 'Vip Package',
     'test'            => 'Test',
 
     '0'               => 'Zero',
@@ -24,7 +23,7 @@ return [
     'blocked'         => 'Blocked',
     'needpay'         => 'Need To Pay',
     'paid'            => 'Paid',
-    'pedding'         => 'Pedding',
+    'pending'         => 'Pending',
     'waiting'         => 'Waiting',
     'confirmed'       => 'Confirmed',
     'verified'        => 'Verified',
@@ -35,12 +34,62 @@ return [
     'error'           => 'Error',
     'closed'          => 'Closed',
     'canceled'        => 'Canceled',
-    'submited'        => 'Submited',
+    'submited'        => 'Submitted',
+    'submitted'       => 'Submitted',
     'rejected'        => 'Rejected',
     'refunding'       => 'Refunding',
     'refunded'        => 'Refunded',
     'expired'         => 'Expired',
     'applied'         => 'Applied',
+
+    'STATUS'=>[
+        'enabled'         => 'Valid',
+        'default'         => 'Default',
+        'trash'           => 'Trash',
+        'sketch'          => 'Sketch',
+        'disabled'        => 'Invalid',
+        'offline'         => 'Off',
+        'blocked'         => 'Blocked',
+        'needpay'         => 'Need To Pay',
+        'paid'            => 'Paid',
+        'pending'         => 'Pending',
+        'waiting'         => 'Waiting',
+        'confirmed'       => 'Confirmed',
+        'verified'        => 'Verified',
+        'shipping'        => 'Shipping',
+        'precancel'       => 'Waiting For Cancel',
+        'needconfirm'     => 'Need To Confirm',
+        'done'            => 'Done',
+        'error'           => 'Error',
+        'closed'          => 'Closed',
+        'canceled'        => 'Canceled',
+        'submited'        => 'Submitted',
+        'submitted'       => 'Submitted',
+        'rejected'        => 'Rejected',
+        'refunding'       => 'Refunding',
+        'refunded'        => 'Refunded',
+        'expired'         => 'Expired',
+        'applied'         => 'Applied',
+
+        'sended'          => 'Sent',
+        'send'            => 'Sent',
+        'received'        => 'Received',
+        'read'            => 'Read',
+        'replayed'        => 'Replayed',
+        'replied'         => 'Replied',
+        'valid'           => 'Valid',
+        'released'        => 'Released',
+        'arrived'         => 'Arrived',
+        'locked'          => 'Locked',
+
+        'only-paid'       => 'Paid, Not Arrived',
+        'failed'          => 'Failed',
+        'reward'          => 'Reward',
+        'completed'       => 'Completed',
+        'prepare'         => 'Preparing',
+        'credited'        => 'Credited',
+
+    ],
 
     'free'            => 'Just go',
     'chooseSeat'      => 'Choose seat online',
@@ -91,14 +140,14 @@ return [
     'image'           => 'Image',
     'audio'           => 'Audio',
     'page'            => 'Page',
-    'website'         => 'Website',
     'item'            => 'Item',
     'payment'         => 'Payment',
-    'sended'          => 'Sended',
-    'send'            => 'Sended',
-    'received'        => 'Recieved',
-    'read'            => 'Readed',
-    'replyed'         => 'Replyed',
+    'sended'          => 'Sent',
+    'send'            => 'Sent',
+    'received'        => 'Received',
+    'read'            => 'Read',
+    'replayed'        => 'Replayed',
+    'replied'         => 'Replied',
     'commission'      => 'Commission',
     'transmission'    => 'Transmission',
     'income'          => 'Income',
@@ -109,10 +158,10 @@ return [
 
     'valid'           => 'Valid',
     'released'        => 'Released',
-    'arrivaled'       => 'Arrivaled',
+    'arrived'         => 'Arrived',
     'locked'          => 'Locked',
 
-    'only-paid'       => 'Paid, Not Arrivaled',
+    'only-paid'       => 'Paid, Not Arrived',
     'failed'          => 'Failed',
     'reward'          => 'Reward',
     'completed'       => 'Completed',
@@ -259,7 +308,7 @@ return [
     'SQL_COUNT_SUC' => 'SQL count succeed',
     'SQL_RM_SUC' => 'SQL delete success',
     'SYS_WORD_BLOCK'=>'Content contain blocked words.',
-    'SYS_FOMAT_ERROR'=> 'Fomat Error',
+    'SYS_FORMAT_ERROR'=> 'Fomat Error',
     'SYS_TIMEOUT' => 'Time out',
     'SYS_CALL_FAL'  => 'Callback failed or error',
 
@@ -311,6 +360,8 @@ return [
     'isFeatured'=>[
         '0' => 'Not Featured',
         '1' => 'Featured',
+        'false' => 'Not Featured',
+        'true' => 'Featured',
     ],
 
     'education'=>[
@@ -598,6 +649,38 @@ return [
         'datepicker'  =>  'M/D/Y h:i A',
      ],
 
+    'type'=>[
+
+        'email'=>'Email',
+        'subject'=>'EmailSubject',
+        'sms'=>'SMS',
+        'html'=>'HTML',
+        'message'=>'Message',
+        'notify'=>'Notify',
+        'normal'=>'Normal',
+        'media'=>'Media',
+        'image'=>'Image',
+        'audio'=>'Audio',
+        'video'=>'Video',
+        'article'=>'Article',
+        'url'=>'Url',
+        'file'=>'File',
+        'product'=>'Product',
+        'common'=>'Common',
+
+        'page'=>'Page',
+        'website'=>'Website',
+        'item'=>'Item',
+        'payment'=>'payment',
+
+        'commission'=>'Commission',
+        'transmission'=>'Transmission',
+        'bonus'=>'Bonus',
+
+        'balance'=>'Balance',
+        'point'=>'Point',
+
+    ],
 
     'manager'=>[
 
@@ -757,6 +840,7 @@ return [
         'sidebar_systemSettingConfig'=>'Config Manage',
         'sidebar_systemSettingDatabase'=>'Database Manage',
         'sidebar_systemSettingApiTest'=>'API Test',
+        'sidebar_systemSettingModel'=>'Model Manage',
 
         'sidebar_AppsiteJS'=>'AppSiteJS',
         'sidebar_AppsiteJSFormer'=>'Form',
@@ -826,6 +910,9 @@ return [
         'database_RelationDatabase'=>'MySQL',
         'database_RedisDatabase'=>'Redis',
         'clearRedis'=>'Clear Redis',
+
+        'systemModels'=>'Custom Models',
+        'customModels'=>'Custom Models',
 
         'tableDetail'=>'Table Detail',
 

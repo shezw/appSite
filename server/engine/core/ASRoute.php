@@ -4,8 +4,6 @@ namespace APS;
 
 use sample\test;
 
-include_once dirname(__DIR__) . "/supporting/ASRouteExportMode.php";
-
 /**
  * 路由管理 \ 钩子管理
  * ASRoute
@@ -57,7 +55,7 @@ class ASRoute extends ASObject{
         parent::__construct();
 
         $this->pathFormat = $pathFormat ?? 'class/action/id';
-        $this->mode = $mode ?? ASRouteExportMode::ASAPI;
+        $this->mode = $mode ?? ASAPI_Mode_ASAPI;
 
         $this->urlToRoute();
 
@@ -87,15 +85,18 @@ class ASRoute extends ASObject{
     public function urlToRoute()
     {
 
-        $path = $_GET['path'];
+        $path = $_GET['path'] ?? NULL;
         $webRouteTypes = explode('/',$this->pathFormat);
         $path = $path!='/' ? trim($path,'/') : null;
-        $path = isset($path) ?  explode( '/', $path ) : [];
+        $path = isset($path) && $path!=='' ?  explode( '/', $path ) : [];
 
         $rewritePath = [];
 
-        foreach ( $webRouteTypes as $i => $key ){
-            $rewritePath[$key] = $path[$i];
+        if( !empty($path) ) {
+
+            foreach ($webRouteTypes as $i => $key) {
+                $rewritePath[$key] = $path[$i] ?? null;
+            }
         }
 
         $this->route = $rewritePath;
@@ -106,8 +107,10 @@ class ASRoute extends ASObject{
         $INPUTS = json_decode(file_get_contents("php://input"),true) ?? []; # payload data
         $_INPUTS = array_merge($INPUTS,$_POST,$_GET);
 
-        $this->params = Filter::stripslashes_array($_INPUTS);
-        $this->convertParams();
+        $this->params = $_INPUTS;
+//        $this->params = Filter::stripslashes_array($_INPUTS);
+//        var_dump($this->params);
+//        $this->convertParams();
     }
 
     /**
@@ -119,6 +122,7 @@ class ASRoute extends ASObject{
 
         if(isset($this->params['path'])){ unset($this->params['path']); }
         $this->querys = $this->buildQuery($this->params); # Querys 保持原文格式
+        if( gettype($this->params)!=='array' ){return;}
 
         foreach ($this->params as $key => $value) {
             if( gettype($value) === 'string' && strstr($value,',')){
@@ -237,24 +241,22 @@ class ASRoute extends ASObject{
         header("Engine: Powered by AppSite.cn");
         header("AppSite: PHP全栈开发引擎 Cross-Platform Development Engine");
         switch ($this->mode) {
-            case 'API':
-            case 'ASAPI':
-                header("Content-type: text/plain; charset=utf-8");
-                echo $this->result->toString();
-                break;
-
-            case 'RAW':
+            case ASAPI_Mode_RAW:
                 header("Content-type: text/plain; charset=utf-8");
                 print_r($this->result->getContent());
                 break;
 
-            case 'HTML':
+            case ASAPI_Mode_HTML:
                 header("Content-type: text/html; charset=utf-8");
                 echo $this->result->getContent();
                 break;
 
-            case 'JSON':
+            case 'json':
             case 'javascript':
+            case ASAPI_Mode_API:
+            case ASAPI_Mode_ASAPI:
+            case ASAPI_Mode_Json:
+            case ASAPI_Mode_Javascript:
                 header("Content-type: application/json; charset=utf-8");
                 echo $this->result->toString();
                 break;
@@ -456,6 +458,7 @@ class ASRoute extends ASObject{
         }else{
             $this->result->setContent( $say );
             $this->export();
+            return '';
         }
     }
 

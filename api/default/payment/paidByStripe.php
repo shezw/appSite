@@ -13,10 +13,8 @@ use APS\ASResult;
 class paidByStripe extends ASAPI
 {
 
-    private $orderid = '';
-
-    protected $scope = 'public';
-    public    $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     // protected static $groupCharacterRequirement = ['super','manager','editor'];
     // protected static $groupLevelRequirement = 10000;

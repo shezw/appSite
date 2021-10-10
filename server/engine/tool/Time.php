@@ -12,8 +12,6 @@ namespace APS;
 
 use DateTime;
 
-include_once dirname(__DIR__) . "/supporting/TimeFormatEnum.php";
-
 /**
  * 时间
  * Time
@@ -274,7 +272,7 @@ class Time{
      * @param String $format
      * @return String
      */
-	public function formatOutput( string $format = TimeFormatEnum::LITE_TIME ):string{
+	public function formatOutput( string $format = TimeFormat_LiteTime ):string{
 
 		return date(i18n($format,'TimeFormat'),$this->time );
 	}
@@ -284,11 +282,12 @@ class Time{
      * 特定格式输出
      * Output by Specific format
      * @param String $StringFormat
+     * @param int|null $timeStamp
      * @return String
      */
-	public function customOutput( string $StringFormat = "Y-m-d H:s" ):string{
+	public function customOutput( string $StringFormat = "Y-m-d H:s", int $timeStamp = null ):string{
 
-		return date($StringFormat,$this->time );
+		return date($StringFormat,$timeStamp ?? $this->time );
     }
 
 
@@ -309,11 +308,11 @@ class Time{
 		
 		}else if ($duration + $this->now > $this->nextyear()->time ){ // 今年以后   n年n月n日
 			
-			return date(i18n(TimeFormatEnum::FULL_DATE,'TimeFormat'),$this->time);
+			return date(i18n(TimeFormat_FullDate,'TimeFormat'),$this->time);
 		
 		}else if ($duration>7*static::DAY)         { // 7天到1年   n年n月n日
 			
-			return date(i18n(TimeFormatEnum::LITE_DATE,'TimeFormat'),$this->time);
+			return date(i18n(TimeFormat_LiteDate,'TimeFormat'),$this->time);
 		
 		}else if ( $duration > static::DAY ) { // 1天到7天  n天后
 
@@ -353,11 +352,11 @@ class Time{
 		
 		}else if ($duration < ( $this->thisyear()->time - $instant) )   { // 今年之前   n年n月n日
 			
-			return date(i18n(TimeFormatEnum::FULL_DATE,'TimeFormat'),$this->time);
+			return date(i18n(TimeFormat_FullDate,'TimeFormat'),$this->time);
 		
 		}else if ( $duration < -7*static::DAY ) { // 7天以前   n年n月n日
 			
-			return date(i18n(TimeFormatEnum::LITE_DATE,'TimeFormat'),$this->time);
+			return date(i18n(TimeFormat_LiteDate,'TimeFormat'),$this->time);
 		
 		}else if ( $duration < -static::DAY ) { // 一天以前  n天前
 			
@@ -461,6 +460,19 @@ class Time{
         $s = ((int)$t[0])*3600+((int)$t[1])*60;
 
         return $s;
+    }
+
+    /**
+     * 获取标准13位时间戳
+     * @return float
+     */
+    public static function getMillisecond(): float
+    {
+
+        list($t1, $t2) = explode(' ', microtime());
+
+        return (float)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000);
+
     }
 
 }

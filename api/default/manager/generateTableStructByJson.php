@@ -1,14 +1,15 @@
 <?php
 namespace manager;
-use APS\ASModel;
+use APS\ASAPI;
+use APS\ASResult;
 
-class generateTableStructByJson extends \APS\ASAPI{
+class generateTableStructByJson extends ASAPI{
 
-    protected static $groupLevelRequirement = 900;
-    protected $scope = 'public';
-    public $mode = 'JSON';
+    const groupLevelRequirement = GroupLevel_SuperAdmin;
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    public function run(): \APS\ASResult
+    public function run(): ASResult
     {
         $json = $this->params['json'];
         if( !isset($json) ){

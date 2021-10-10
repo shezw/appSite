@@ -13,7 +13,7 @@ namespace APS;
  *
  * @package APS\core
  * @mark
- *     settingid    设置ID
+ *     uid          设置ID
  *     keyid        查询key
  *     description  描述 120字以内
  *     content      设置内容 k-v json
@@ -25,9 +25,66 @@ namespace APS;
  */
 class ASSetting extends ASModel{
 
-    // SETTING和普通 Model类不同
+    const table     = "system_setting";
+    const comment   = "系统设置";
+    const primaryid = "uid";
+    const addFields = [
+        'uid','keyid','saasid',
+        'description','content',
+        'scope',
+        'status','createtime','lasttime'
+    ];
+    const updateFields = [
+        'keyid','saasid',
+        'description',
+        'content','scope',
+        'status','createtime','lasttime'
+    ];
+    const detailFields = [
+        'uid','keyid','saasid',
+        'description',
+        'content','scope',
+        'status','createtime','lasttime'
+    ];
+    const overviewFields = [
+        'uid','keyid',
+        'description',
+        'content','scope',
+        'status','createtime','lasttime'
+    ];
+    const listFields = [
+        'uid','keyid','saasid',
+        'description',
+        'content','scope',
+        'status','createtime','lasttime'
+    ];
+    const filterFields = [
+        'uid','keyid','saasid',
+        'status','scope','createtime','lasttime'
+    ];
+    const depthStruct = [
+        'createtime'=>DBField_Int,
+        'lasttime'=>DBField_Int,
+        'content'=>DBField_ASJson
+    ];
 
-    protected static $rds_auto_cache = true;
+    const tableStruct = [
+
+        'uid'=>      ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'设置ID' ,      'idx'=>DBIndex_Unique ],
+        'saasid'     =>['type'=>DBField_String,  'len'=>8,   'nullable'=>1,  'cmt'=>'所属saas',     'idx'=>DBIndex_Index,],
+        'keyid'=>    ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'查询key' ,     'idx'=>DBIndex_Index ],
+        'description'=>['type'=>DBField_String,  'len'=>255, 'nullable'=>1,  'cmt'=>'描述 120字以内' ],
+        'content'=>  ['type'=>DBField_ASJson,      'len'=>-1,  'nullable'=>1,  'cmt'=>'设置内容 k-v json' ],
+        'scope'=>    ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'作用域' ],
+        'status'=>   ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'enabled', ],
+
+        'createtime'   =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',    'idx'=>DBIndex_Index, ],
+        'lasttime'     =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
+
+    // SETTING和普通 Model类不同
+    const rds_auto_cache = true;
+
 
     /**
      * 全局单例
@@ -44,14 +101,13 @@ class ASSetting extends ASModel{
     /**
      * 获取配置
      * getConf
-     * @param  string       $keyid
-     * @param  string|null  $scope
+     * @param string $keyId
+     * @param string|null $scope
      * @return mixed |null
      */
-    public function getConf( string $keyid, string $scope = null ){
-
-        $setting = $this->read($keyid,$scope);
-
+    public function getConf(string $keyId, string $scope = null ){
+        if( !_ASDB()->valid ){return null;}
+        $setting = $this->read($keyId,$scope);
         return $setting->isSucceed() ? $setting->getContent() : null ;
     }
 
@@ -59,19 +115,23 @@ class ASSetting extends ASModel{
     /**
      * 读取设置
      * read
-     * @param  string       $keyid
-     * @param  string|null  $scope
+     * @param string $keyId
+     * @param string|null $scope
      * @return ASResult
      */
-    public function read( string $keyid , string $scope = null ): ASResult
+    public function read(string $keyId , string $scope = null ): ASResult
     {
+        $filter = DBConditions::init(static::table)
+                ->where('keyid')->equal($keyId)
+                ->where('saasid')->equalIf(saasId())
+                ->and('status')->equal('enabled')
+                ->and('scope')->equal($scope);
 
-        if( !$this->has(['keyid'=>$keyid,'scope'=>$scope,'status'=>'enabled']) ){
+        if( !$this->has($filter) ){
             return $this->error(10086,i18n('SYS_NON'),'Setting->read');
         }
 
-        $DETAIL = $this->list(['keyid'=>$keyid,'scope'=>$scope,'status'=>'enabled'],1,1,'scope DESC, createtime DESC')->getContent()[0]['content'];
-        $setting = Encrypt::ASJsonDecode($DETAIL);
+        $setting = $this->list($filter,1,1,'scope DESC, createtime DESC')->getContent()[0]['content'];
 
         return $this->take($setting)->success(0,i18n('SYS_GET_SUC'));
 
@@ -80,48 +140,54 @@ class ASSetting extends ASModel{
     /**
      * 通过keyid ,scope 获取settingID
      * getSettingid
-     * @param  string       $keyid
-     * @param  string|null  $scope
+     * @param string $keyid
+     * @param string|null $scope
      * @return ASResult
      */
-    public function getSettingid( string $keyid, string $scope = null ): ASResult
+    public function getSettingId(string $keyid, string $scope = null ): ASResult
     {
+        $filter = DBConditions::init(static::table)
+                ->where('keyid')->equal($keyid)
+                ->and('saasid')->equalIf(saasId())
+                ->and('scope')->equal($scope);
 
-        $getFirst = $this->list(['keyid'=>$keyid,'scope'=>$scope],1,1,'scope DESC, createtime DESC');
+        $getFirst = $this->list($filter,1,1,'scope DESC, createtime DESC');
 
         if(!$getFirst->isSucceed()){
-            return $this->error(10086,i18n('SYS_NON'),'Setting->getSettingid');
+            return $this->error(10086,i18n('SYS_NON'),'Setting->getSettingId');
         }else{
-            return $this->take($getFirst->getContent()[0]['uid'])->success(i18n('SYS_GET_SUC'),'Setting->getSettingid');
+            return $this->take($getFirst->getContent()[0][static::primaryid])->success(i18n('SYS_GET_SUC'),'Setting->getSettingid');
         }
     }
 
     // 设定
-    public function set( string $keyid, $value, string $description = null, string $scope = null ): ASResult
+    public function set(string $keyId, $value, string $description = null, string $scope = null ): ASResult
     {
+        $values = DBValues::init('keyid')->string($keyId)
+            ->set('content')->ASJson($value)
+            ->set('saasid')->stringIf(saasId())
+            ->set('description')->stringIf($description)
+            ->set('scope')->stringIf($scope);
 
-        $data = ['keyid'=>$keyid,'content'=>$value,'scope'=>$scope,'description'=>$description];
-
-        $getSettingId = $this->getSettingid($keyid,$scope);
+        $getSettingId = $this->getSettingId($keyId,$scope);
 
         if($getSettingId->isSucceed()){
-            return $this->update($data,$getSettingId->getContent());
+            return $this->update($values,$getSettingId->getContent());
         }else{
-            return $this->add($data);
+            return $this->add($values);
         }
     }
 
     /**
      * 删除
      * delete
-     * @param  string       $keyid
-     * @param  string|null  $scope
+     * @param string $keyId
+     * @param string|null $scope
      * @return ASResult
      */
-    public function delete( string $keyid, string $scope = null ): ASResult
+    public function delete(string $keyId, string $scope = null ): ASResult
     {
-
-        $getSettingId = $this->getSettingid($keyid,$scope);
+        $getSettingId = $this->getSettingId($keyId,$scope );
 
         if($getSettingId->isSucceed()){
             return $this->remove($getSettingId->getContent());
@@ -134,90 +200,43 @@ class ASSetting extends ASModel{
     /**
      * 切换状态 (用于bool值切换)
      * switchStatus for boolean setting
-     * @param  string       $keyid
-     * @param  string|null  $scope
+     * @param string $keyId
+     * @param string|null $scope
      * @return bool|mixed
      */
-    public function switchStatus( string $keyid, string $scope = null ): bool
+    public function switchStatus(string $keyId, string $scope = null ): bool
     {
 
         if($this->_isCacheEnabled()){
 
-            return $this->getRedis()->read( [$keyid,$scope] );
+            return $this->getRedis()->read( [$keyId,$scope,saasId()] );
         }else{
 
-            $Setting = static::read( $keyid,$scope );
+            $Setting = static::read( $keyId,$scope );
             return $Setting->isSucceed() && $Setting->getContent();
         }
     }
 
-    public function switchSet( string $keyid, string $scope = null, bool $status = true ){
+    public function switchSet(string $keyId, string $scope = null, bool $status = true ){
 
         if($this->_isCacheEnabled()){
 
-            return $this->getRedis()->cache([$keyid,$scope],$status );
+            return $this->getRedis()->cache([$keyId,$scope,saasId()],$status );
         }else{
 
-            return $this->set($keyid,$status,null,$scope);
+            return $this->set($keyId,$status,null,$scope );
         }
     }
 
-    public function switchOn( string $keyid, string $scope = null ){
+    public function switchOn(string $keyId, string $scope = null ){
 
-        return $this->switchSet($keyid,$scope,true);
+        return $this->switchSet($keyId,$scope );
     }
 
-    public function switchOff( string $keyid, string $scope = null ){
+    public function switchOff(string $keyId, string $scope = null ){
 
-        return $this->switchSet($keyid,$scope,false);
+        return $this->switchSet($keyId,$scope,false);
     }
-
-
-    public static $table     = "system_setting";  // 表
-    public static $primaryid = "uid";     // 主字段
-    public static $addFields = [
-        'uid',
-        'keyid',
-        'description',
-        'content',
-        'scope',
-        'status',
-    ];      // 添加支持字段
-    public static $updateFields = [
-        'keyid',
-        'description',
-        'content',
-        'scope',
-        'status',
-    ];   // 更新支持字段
-    public static $detailFields = "*";   // 详情支持字段
-    public static $overviewFields = [
-        'uid',
-        'keyid',
-        'description',
-        'content',
-        'scope',
-        'status',
-    ]; // 概览支持字段
-    public static $listFields = [
-        'uid',
-        'keyid',
-        'description',
-        'content',
-        'scope',
-        'status',
-    ];     // 列表支持字段
-    public static $countFilters = [
-        'uid',
-        'keyid',
-        'status',
-        'scope',
-    ];
-    public static $depthStruct = [
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'content'=>'ASJson'
-    ];
 
 }
 

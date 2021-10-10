@@ -1,6 +1,7 @@
 <?php
 /**
- * Description
+ * 管理后台基础控制器
+ * Management website Controller based on Website Class
  * Managerment.php
  */
 
@@ -9,24 +10,23 @@ namespace APS;
 
 class Management extends Website
 {
-    protected $scope = 'manager';
+    const scope = RouteScopeManagement;
+    const rootPath  = ManagementDefaultRootPath;
+    const theme     = ManagementDefaultTheme;
+    const defaultID = ManagementDefaultID;
 
-    public function __construct(string $pathFormat)
-    {
-        parent::__construct($pathFormat);
-
-        $sitePath = getConfig('SITE_PATH') ?? '/';
-        $staticPath = $sitePath . 'website/static/';
-
-        $this->setConstant('Theme',      (getConfig('theme',"MANAGER")??'stisla') .'/');
-        $this->setConstant('ThemePath',  $this->constants['SitePath'].'manager/themes/'. (getConfig('theme',"MANAGER")??'stisla') .'/');
-        $this->setConstant('siteTitle', getConfig('title','MANAGER') ?? 'appsite' );
-        $this->setConstant('siteLogo', getConfig('logoUrl','MANAGER') ?? $staticPath.'appsiteJS/images/logo480.png' );
-        $this->setConstant('siteLogoW', getConfig('logoW','MANAGER') ?? $staticPath.'appsiteJS/images/logo-W.png');
-        $this->setConstant('siteLogoH', getConfig('logoH','MANAGER') ?? $staticPath.'appsiteJS/images/logo-H.png');
-        $this->setConstant('rootPath', getConfig('rootPath','MANAGER') ?? '/manager' );
-        $this->scope = (getConfig('id','MANAGER') ?? 'APPSITE') . '_m';
-        $this->initUser();
-    }
+//    public function __construct(string $pathFormat)
+//    {
+//        parent::__construct($pathFormat);
+//
+//        $this->constants
+//            ->setRootPath('manager')
+//            ->setTheme(getConfig('theme',"MANAGER")??'stisla')
+//            ->setTitle(getConfig('title','MANAGER') ?? 'appsite')
+//            ->setLogo(getConfig('logoUrl','MANAGER'),getConfig('logoW','MANAGER'), getConfig('logoH','MANAGER'))
+//            ;
+//        $this->scope = (getConfig('id','MANAGER') ?? 'APPSITE') . '_m';
+//        $this->initUser();
+//    }
 
 }

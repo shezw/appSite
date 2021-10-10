@@ -36,15 +36,20 @@ namespace APS;
  */
 class Website extends ASRoute {
 
+    const scope = RouteScopeWebsite;
+    const rootPath  = WebsiteDefaultRootPath;
+    const theme     = WebsiteDefaultTheme;
+    const defaultID = WebsiteDefaultID;
+
     /**
      * 静态数据
-     * @var array
+     * @var WebsiteConstants
      */
-    public $constants = [];
+    public $constants;
 
     /**
      * 当前用户对象 User Object
-     * @var \APS\User
+     * @var User
      */
     public $user;
 
@@ -67,49 +72,28 @@ class Website extends ASRoute {
      */
     public $html_template;
 
-    protected $scope = 'website';
+    public $id = 'appsite_w';
 
     public function __construct( string $pathFormat )
     {
         parent::__construct($pathFormat, 'HTML');
 
-        $theme = getConfig("theme",'WEBSITE') ?? 'boomerang';
-        $sitePath = getConfig('SITE_PATH') ?? '/';
-        $staticPath = $sitePath . 'static/';
-        $this->constants = [
-            'SiteDir'   => SITE_DIR,
-            'SitePath'  => $sitePath,
-            'Theme'     => $theme,
-            'ThemeDir'  => SITE_DIR."{$theme}/",
-            'ThemePath' => "{$sitePath}website/themes/{$theme}/",
-            'StaticPath'=> getConfig('STATIC_PATH') ?? "{$sitePath}website/static/",
-            'Params'    => $this->params,
-            'Query'     => $this->querys,
-            'Lang'      => _I18n()->currentLang(),
-            'title'     => getConfig('title','WEBSITE') ?? 'AppSite',
-            'siteLogo'  => getConfig('logoUrl','WEBSITE') ?? $staticPath.'appsiteJS/images/logo480.pgn',
-            'siteLogoW' => getConfig('logoW','WEBSITE') ?? $staticPath.'appsiteJS/images/logo-W.png',
-            'siteLogoH' => getConfig('logoH','WEBSITE') ?? $staticPath.'appsiteJS/images/logo-H.png',
-        ];
+        $theme = getConfig("theme",static::scope) ?? static::theme;
 
-        $this->scope = (getConfig('id','WEBSITE') ?? 'APPSITE') . '_w';
+        $this->constants = new WebsiteConstants( static::rootPath,$theme, static::scope );
+        $this->constants->setParams($this->params);
+        $this->constants->setQuery($this->querys);
+
+        $this->id = getConfig('id',static::scope) ?? static::defaultID;
         $this->initUser();
     }
 
-    public function setConstant( string $key, $value ){
-        $this->constants[$key] = $value;
-    }
-
     public function setTitle( string $title ){
-        $this->constants['title'] = $title;
-    }
-
-    public function setKeywords( string $keywords ){
-        $this->constants['keywords'] = $keywords;
+        $this->constants->setTitle($title);
     }
 
     public function setDescription( string $description ){
-        $this->constants['description'] = $description;
+        $this->constants->setDescription($description);
     }
 
     public function appendTemplate(string $htmlString ){
@@ -124,11 +108,12 @@ class Website extends ASRoute {
         }else{
 
             # 优先SESSION
-            session_start();
-            if( isset($_SESSION[$this->scope.'_userid']) ){
-                $this->user = User::fromSession($this->scope);
+            if (!isset($_SESSION)) { session_start(); }
+
+            if( isset($_SESSION[$this->id.'_userid']) ){
+                $this->user = User::fromSession($this->id);
                 if( !$this->user->isVerified() ){
-                    $this->user->removeFromSession($this->scope);
+                    $this->user->removeFromSession($this->id);
                 }
             }
 
@@ -146,7 +131,7 @@ class Website extends ASRoute {
             ];
 
             if( $this->user->isVerified() ){
-                $this->userData['avatar'   ]  = $this->user->detail['avatar'] ?? getConfig('defaultAvatar','WEBSITE');
+                $this->userData['avatar'   ]  = $this->user->detail['avatar'] ?? getConfig('defaultAvatar',static::scope);
                 $this->userData['username' ]  = $this->user->detail['username'];
                 $this->userData['nickname' ]  = $this->user->detail['nickname'];
                 $this->userData['groupid'  ]  = $this->user->getGroupId();
@@ -373,7 +358,7 @@ class Website extends ASRoute {
      */
     public function rend(){
 
-        $this->setSubData('constants',$this->constants);
+        $this->setSubData('constants',$this->constants->toArray());
         $this->setSubData('userData',$this->userData);
         $this->setSubData('timeDuration', floor((microtime(true) - TIME_START )*1000) );
         $this->result = ASResult::shared(0,'Website Rend',Mixer::mix($this->data,$this->html_template));
@@ -398,7 +383,7 @@ class Website extends ASRoute {
      */
     public function redirectTo( string $page ){
 
-        header("location:".$this->constants['SitePath'].$page );
+        header("location:".$this->constants->SitePath.$page );
         exit;
     }
 

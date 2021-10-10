@@ -9,6 +9,59 @@ namespace APS;
  */
 class ShieldWord extends ASModel{
 
+    const table     = "system_shieldword";
+    const comment   = "屏蔽词";
+    const primaryid = "uid";
+    const addFields = [
+        'title',
+        'authorid',
+        'uid',
+        'status',
+    ];
+    const updateFields = [
+        'title',
+        'status','createtime','lasttime'
+    ];
+    const detailFields = [
+        'uid', 'authorid',
+        'title',
+        'status','createtime','lasttime'
+    ];
+    const overviewFields = [
+        'uid', 'authorid',
+        'title',
+        'status','createtime','lasttime'
+    ];
+    const listFields = [
+        'uid', 'authorid',
+        'title',
+        'status','createtime','lasttime'
+    ];
+    const filterFields = [
+        'uid',
+        'title',
+        'authorid',
+        'status'
+    ];
+    const depthStruct = [
+        'createtime'=>DBField_Int,
+        'lasttime'=>DBField_Int,
+    ];
+
+    const tableStruct = [
+
+        'uid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'主ID' ,  'idx'=>DBIndex_Unique ],
+        'title'=>    ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'标签名' ],
+        'authorid'=> ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'创建人ID' ,  'idx'=>DBIndex_Index ],
+
+        'type'=>     ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'添加type时 即为特定类型下的标签' ],
+
+        'status'=>   ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'enabled', ],
+
+        'createtime'   =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',   'idx'=>DBIndex_Index, ],
+        'lasttime'     =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
+
     /**
      * 敏感词检测
      * inspection
@@ -60,13 +113,11 @@ class ShieldWord extends ASModel{
     public function getBlockList(  ): ASResult
     {
 
-        $conditions = ASDB::spliceCondition([
-            'status'=>'enabled'
-        ]);
+        $conditions = DBConditions::init()->where('status')->equal('enabled');
 
-        if ($this->count(['status'=>'enabled'])->getContent()<=0){ return $this->error(400,i18n('SYS_NON'),'ShieldWord->getBlockList');}
+        if ($this->count($conditions)->getContent()<=0){ return $this->error(400,i18n('SYS_NON'),'ShieldWord->getBlockList');}
 
-        $res = $this->getDB()->get('title',static::$table,$conditions,1,10000,'createtime DESC');
+        $res = $this->getDB()->get(DBFields::init()->and('title'),static::table,$conditions->limitWith(0,1000) );
 
         if( !$res->isSucceed() ){ return $res; }
 
@@ -79,39 +130,5 @@ class ShieldWord extends ASModel{
         return $this->take($shieldList)->success(i18n('SYS_GET_SUC'),'ShieldWord->getBlockList');
     }
 
-
-    public static $table     = "system_shieldword";  // 表
-    public static $primaryid = "uid";     // 主字段
-    public static $addFields = [
-        'title',
-        'authorid',
-        'uid',
-        'status',
-    ];      // 添加支持字段
-    public static $updateFields = [
-        'title',
-        'status',
-    ];   // 更新支持字段
-    public static $detailFields = "*";   // 详情支持字段
-    public static $overviewFields = [
-        'title',
-        'authorid',
-        'uid',
-        'status',
-    ]; // 概览支持字段
-    public static $listFields = [
-        'title',
-        'authorid',
-        'uid',
-        'status',
-    ];     // 列表支持字段
-    public static $countFilters = [
-        'title',
-        'authorid',
-    ];
-    public static $depthStruct = [
-        'createtime'=>'int',
-        'lasttime'=>'int',
-    ];
 
 }

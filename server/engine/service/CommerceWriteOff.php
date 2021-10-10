@@ -10,64 +10,49 @@ namespace APS;
 class CommerceWriteOff extends ASModel
 {
 
-    public static $table     = "commerce_writeoff";  // 表
-    public static $primaryid = "uid";     // 主字段
-    public static $addFields  = [
-        'uid',
-        'orderid',
-        'targetid',
-        'itemid',
-        'userid',
+    const table     = "commerce_writeoff";
+    const comment   = '电商-核销';
+    const primaryid = "uid";
+    const addFields  = [
+        'uid','orderid','targetid','itemid','userid',
+        'status','createtime','lasttime',
+    ];
+    const updateFields  = [
         'status',
     ];
-    public static $updateFields  = [
-        'status',
+    const detailFields  = [
+        'uid','orderid','targetid','itemid','userid',
+        'status','createtime','lasttime',
     ];
-    public static $detailFields  = ["*"];
-    public static $overviewFields  = [
-        'uid',
-        'orderid',
-        'targetid',
-        'itemid',
-        'userid',
-        'status',
-        'createtime',
-        'lasttime',
-        'sort',
-        'featured',
+    const overviewFields  = [
+        'uid','orderid','targetid','itemid','userid',
+        'status','createtime','lasttime',
     ];
-    public static $listFields  = [
-        'uid',
-        'orderid',
-        'targetid',
-        'itemid',
-        'userid',
-        'status',
-        'createtime',
-        'lasttime',
-        'sort',
-        'featured',
-
+    const listFields  = [
+        'uid','orderid','targetid','itemid','userid',
+        'status','createtime','lasttime',
     ];
-    public static $countFilters  = [
-        'uid',
-        'orderid',
-        'targetid',
-        'itemid',
-        'userid',
-        'status',
-        'createtime',
-        'lasttime',
-        'sort',
-        'featured',
-
+    const filterFields = [
+        'uid','orderid','targetid','itemid','userid',
+        'status','createtime','lasttime',
     ];
-    public static $depthStruct  = [
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'sort'=>'int',
-        'featured'=>'int',
+    const depthStruct  = [
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
     ];
 
+    const tableStruct = [
+
+        'uid'=>         ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'核销ID',  'idx'=>DBIndex_Unique ],
+        'orderid'=>     ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'订单ID',  'idx'=>DBIndex_Index ],
+        'itemid'=>      ['type'=>DBField_String,    'len'=>32,  'nullable'=>1,  'cmt'=>'对象ID',  'idx'=>DBIndex_Index ],
+        'targetid'=>    ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'核销绑定ID','idx'=>DBIndex_Index ],
+        'userid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'用户ID',  'idx'=>DBIndex_Index ],
+
+        'status'=>      ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'enabled',         ],
+
+        'createtime'=>  ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',           'idx'=>DBIndex_Index, ],
+        'lasttime'=>    ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
 
 }

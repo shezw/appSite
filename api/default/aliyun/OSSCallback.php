@@ -7,16 +7,18 @@
 namespace aliyun;
 
 use APS\AliyunOSS;
+use APS\ASAPI;
 use APS\ASResult;
 
-class OSSCallback extends \APS\ASAPI
+class OSSCallback extends ASAPI
 {
-
-    protected $scope = 'public';
+    const scope = ASAPI_Scope_Public;
 
     public function run(): ASResult
     {
-        return AliyunOSS::callback();
+        AliyunOSS::callback();
+
+        return $this->success();
     }
 
 

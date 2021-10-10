@@ -2,6 +2,7 @@
 
 namespace APS;
 
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 include SERVER_DIR."library/phpMailer/src/PHPMailer.php";
@@ -93,7 +94,7 @@ class SMTP extends ASObject {
      * @param  string  $emailAddress  收件邮箱地址
      * @param  string  $scope         作用域
      * @return ASResult
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
      * @version  1.0
      */
     public function verify( string $emailAddress, string $scope = 'verify'): ASResult
@@ -117,12 +118,22 @@ class SMTP extends ASObject {
      * @param array $params [参数 自动混合到对应模板]
      * @param string $template [模板 对应在MAILS常量中]
      * @return ASResult [array]                                  [result对象]
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
      * @version  [1.0]
      */
-    public function sendWithTemplate(string $emailAddress, array $params, string $template = 'verify'){
+    public function sendWithTemplate(string $emailAddress, array $params, string $template = 'verify'): ASResult
+    {
+        $templateModel = MediaTemplate::common();
 
-        return $this->send($emailAddress, MAILS[LOCATE::$LANG][$template]['subject'], MIXER::mix($params, MAILS[LOCATE::$LANG][$template]['content']));
+        $subjectTemplate = $templateModel->recent($template,Type_EmailSubject,_I18n()->currentLang());
+        $emailTemplate   = $templateModel->recent($template,Type_Email,_I18n()->currentLang());
+        if( !$subjectTemplate->isSucceed() ){ return $subjectTemplate; }
+        if( !$emailTemplate->isSucceed() ){ return $emailTemplate; }
+
+        $subject = Mixer::mix($params, $subjectTemplate);
+        $email   = Mixer::mix($params, $emailTemplate);
+
+        return $this->send($emailAddress, $subject , $email );
 
     }
 
@@ -133,7 +144,7 @@ class SMTP extends ASObject {
      * @param  string  $content   内容
      * @param  string  $text      纯文本模式内容  Content display in plain-text mode
      * @return ASResult
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
      */
     public function send(string $receiver, string $subject, string $content, string $text = NULL): ASResult
     {
@@ -183,7 +194,6 @@ class SMTP extends ASObject {
                 $this->take($state)->error(500, i18n('SMTP_SEND_FAL'), "SMTP->send") :
                 $this->take($receiver)->success(i18n('SMTP_SEND_SUC'),'SMTP->send');
     }
-
 
 }
 

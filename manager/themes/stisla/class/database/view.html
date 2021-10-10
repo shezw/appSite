@@ -42,10 +42,10 @@
                                 <thead>
                                 <tr>
                                     <th>
-                                        {i18n{ manager.database_Title }i18n}
+                                        {i18n{ manager.database_Table }i18n}
                                     </th>
                                     <th>
-                                        {i18n{ manager.database_Table }i18n}
+                                        {i18n{ manager.database_Title }i18n}
                                     </th>
                                     <th>
                                         <a href="#" class="text-muted sort" data-sort="goal-rows">
@@ -86,12 +86,12 @@
                                 <tbody class="list">
                                 ||loop??databases??
                                 <tr>
-                                    <td class="p-2">{{TABLE_COMMENT}}</td>
                                     <td class="p-2">
-                                        <a href="detail?table={{TABLE_NAME}}&comment={{TABLE_COMMENT}}" >
+                                        <a class="font-weight-bold a-text-l" href="detail?table={{TABLE_NAME}}&comment={{TABLE_COMMENT}}" >
                                             {{TABLE_NAME}}
                                         </a>
                                     </td>
+                                    <td class="p-2">{{TABLE_COMMENT}}</td>
                                     <td class="p-2 goal-rows">{{TABLE_ROWS}}</td>
                                     <td class="p-2 goal-length">{{AVG_ROW_LENGTH}}</td>
                                     <td class="p-2 goal-size">{{DATA_LENGTH}}</td>

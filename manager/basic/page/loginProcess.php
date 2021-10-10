@@ -4,13 +4,18 @@
  * welcome.php
  */
 
-/** @var \APS\Website $website */
+/** @var Website $website */
+
+use APS\ASAPI;
+use APS\Filter;
+use APS\User;
+use APS\Website;
 
 $website->appendTemplateByFile(THEME_DIR.'common/header.html');
 
-$loginParams = \APS\Filter::purify( $website->params, ['account','password'] );
+$loginParams = Filter::purify( $website->params, ['account','password'] );
 
-$loginAPI    = \APS\ASAPI::systemInit( '\account\passwordLogin', $loginParams );
+$loginAPI    = ASAPI::systemInit( account\passwordLogin::class, $loginParams );
 $userLogin   = $loginAPI->run();
 
 if ( $userLogin->isSucceed() ){
@@ -19,14 +24,16 @@ if ( $userLogin->isSucceed() ){
 
     $loginInfo = $userLogin->getContent();
 
-    $user = \APS\User::shared( $loginInfo['userid'],$loginInfo['token'],$loginInfo['scope'] );
-    $user->toSession( (getConfig('id','MANAGER') ?? 'APPSITE') . '_m' );
+    $user = User::shared( $loginInfo['userid'],$loginInfo['token'],$loginInfo['scope'] );
+    $user->toSession( getConfig('id',RouteScopeManagement) ?? ManagementDefaultID );
 
     $detail = $user->fullDetail();
     $userInfo = $detail->getContent();
-    $userInfo['avatar'] = $userInfo['avatar'] ?? getConfig('defaultAvatar','WEBSITE');
-    $website->setSubData('userInfo',$userInfo);
+    $userInfo['avatar'] = $userInfo['avatar'] ?? getConfig('defaultAvatar',RouteScopeWebsite);
 
+//    var_dump($userInfo);
+
+    $website->setSubData('userInfo',$userInfo);
 
     $website->setSubData('customJS',"
 
@@ -41,7 +48,8 @@ if ( $userLogin->isSucceed() ){
 
 }else{
 
-    session_start();
+    if (!isset($_SESSION)) { session_start(); }
+
     $_SESSION['loginError'] = $userLogin->toArray();
     $website->redirectTo('manager/login');
 }

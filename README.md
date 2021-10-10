@@ -67,35 +67,54 @@ ASModel是将数据与模型关联的一个基类。
 
 ```php
 class Article extends \APS\ASModel{
-    public static $table     = "item_article";  // 表
-    public static $primaryid = "uid";     // 主字段
+    const table     = "item_article";
+    const primaryid = "uid";
 
-    public static $addFields = [
+    const addFields = [
         'uid','categoryid','areaid',...'description','introduce',
         'viewtimes','sort','featured','status',
         'createtime','lasttime',
     ];
     ...
-    public static $detailFields  = ["*"];
+    const detailFields  = [...];
     ...
-    public static $listFields  = [
+    const listFields  = [
         'uid','categoryid','areaid',...'createtime','lasttime'
     ];
-    public static $countFilters  = [
+    const FilterFields  = [
         'uid','categoryid','areaid',...'createtime','lasttime'
     ];
-    public static $depthStruct  = [
-        'featured'=>'int',
-        'createtime'=>'int',
-        'lasttime'=>'int',
-        'sort'=>'int'
+    const depthStruct  = [
+		'gallery'=>DBField_Json,
+		'viewtimes'=>DBField_Int,
+		'featured'=>DBField_Boolean,
+		'createtime'=>DBField_TimeStamp,
+    ];
+    const tableStruct = [
+
+		'uid'           =>['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'索引ID' , 'idx'=>DBIndex_Unique ],
+		'categoryid'    =>['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'分类ID' , 'idx'=>DBIndex_Index ],
+		'type'          =>['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'类型 text,cover,video,gallery...' ],
+		...
+		'title'         =>['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'名称名' ,  'idx'=>DBIndex_FullText ],
+		'cover'         =>['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'封面' ],
+		'gallery'       =>['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'详情介绍' ],
+		...
+		'description'   =>['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'描述' ,   'idx'=>DBIndex_FullText ],
+		'introduce'     =>['type'=>DBField_RichText,  'len'=>-1,  'nullable'=>1,  'cmt'=>'详情介绍' ],
+		...
+		'viewtimes'     =>['type'=>DBField_Int,       'len'=>13,  'nullable'=>0,  'cmt'=>'播放次数',  'dft'=>0,       ],
+		'status'        =>['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'enabled',       ],
+		...
+		'createtime'    =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',           'idx'=>DBIndex_Index, ],
+		'featured'      =>['type'=>DBField_Boolean,  'len'=>1,  'nullable'=>0,  'cmt'=>'置顶',  'dft'=>0,    'idx'=>DBIndex_Index, ],
     ];
 }
 ```
 
-Article 在使用继承而来的方法 list() 时，就会自动使用 $table, $primaryid, $listFields属性实现列表数据查询。
+Article 在使用继承而来的方法 list() 时，就会自动使用 table, primaryid, listFields属性实现列表数据查询。
 
-##### countFilters 
+##### filterFields 
 用于设定查询时允许的检查字段范围（通常是建立了索引的字段,否则会降低查询效率）
 
 ##### depthStruct

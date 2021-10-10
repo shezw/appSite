@@ -8,9 +8,11 @@
 use APS\ASDB;
 use APS\ASResult;
 use APS\ASSetting;
+use APS\DBTableStruct;
 use APS\Encrypt;
 use APS\File;
 use APS\Mixer;
+use APS\Network;
 use APS\User;
 use APS\Website;
 
@@ -22,6 +24,63 @@ function fixPath( $path ): string
     return $path;
 }
 
+// 7p1uj(FD4YWrH.dC
+
+/**
+ * 根据数据结构生成数据库
+ * generate DataStruct
+ * @param array[DBTableStruct] $DBTableStructs
+ * @param bool $autoRemoveTable
+ * @return array
+ */
+function newDataStruct( array $tableClasses, bool $autoRemoveTable = false ): array
+{
+    $addResult = [];
+
+    for ( $i=0; $i< count($tableClasses); $i++ ){
+
+        $ASModelClass = $tableClasses[$i];
+        $addResult[] = _ASDB()->newTable(  DBTableStruct::init($ASModelClass::table)->fromArray($ASModelClass::tableStruct)->comment($ASModelClass::comment??$ASModelClass::table), $autoRemoveTable );
+    }
+    return $addResult;
+}
+
+/**
+ * 根据结构清理数据表
+ * clearDataStruct
+ * @param array[ASModel] $tableClasses
+ * @return array
+ */
+function clearDataStruct( array $tableClasses ): array
+{
+    $this->connect();
+    $dropResult = [];
+
+    for ( $i=0; $i< count($tableClasses); $i++ ){
+
+        $dropResult[] = $this->dropTable($tableClasses[$i]::table);
+    }
+    return $dropResult;
+}
+
+/**
+ * @param array $DBValues [Class=>DataList]
+ * @return array
+ */
+function insertBasicData( array $DBValues ): array
+{
+    $insertResult = [];
+
+    foreach ( $DBValues as $CLASS => $dataList ){
+
+        for ( $i = 0; $i<count($dataList); $i++ ){
+
+            $insertResult[] = $CLASS::common()->addByArray( $dataList[$i] );
+        }
+    }
+    return $insertResult;
+}
+
 $installed = false;
 
 $website->setTitle('Installation');
@@ -29,29 +88,30 @@ $website->appendTemplateByFile(THEME_DIR.'common/header.html');
 
 $step = $_GET['step'] ?? 'env';
 
-if (file_exists(SERVER_DIR.'config.php')){
+if ( $step==='reset' ){
+
+    session_destroy();
+
+    File::removeFile(SERVER_DIR.'config.php');
+    File::removeFile( STATIC_DIR.'js/config.website.js' );
+    File::removeFile( STATIC_DIR.'js/config.manager.js' );
+
+    $website->appendTemplateByFile(THEME_DIR.'page/install_reset.html');
+
+    $website->appendTemplateByFile(THEME_DIR.'common/footer.html');
+    $website->rend();
+
+    return;
+}
+
+if ( !$step==='reset' && file_exists(SERVER_DIR.'config.php')){
     $installed = true;
     $step = 'done';
 }
 
-// Fix initial theme path
-switch ( $step ){
-    case 'env':
-    case 'linkDB':
-    case 'setConfig':
-    case 'process':
-
-        $website->setConstant('Theme','stisla');
-        $website->setConstant('ThemePath','/manager/themes/stisla/');
-        $website->setConstant('StaticPath','/website/static/');
-    break;
-}
-
 
 switch ( $step ){
     case 'env':
-
-        File::removeFile(SERVER_DIR.'config.php');
 
         $environments = [];
 
@@ -106,17 +166,20 @@ switch ( $step ){
 
         File::removeFile(SERVER_DIR.'config.php');
 
+        $DB_Connected = false;
+
         $website->setSubData('db',$website->params);
+        if ( $website->params['host'] ?? false ){
+            $DB = new ASDB($website->params['host'],$website->params['user'],$website->params['pass'],$website->params['base']);
+            $DB_Connected = $DB->touch();
 
-        $DB = new ASDB($website->params['host'],$website->params['user'],$website->params['pass'],$website->params['base']);
-
-        $DB_Connected = $DB->touch();
-
-        $website->setSubData('version',$DB->getVersion());
+            $website->setSubData('version',$DB->getVersion());
+        }
         $website->setSubData('canNext',$DB_Connected);
 
         if( $DB_Connected ){
-            session_start();
+            if (!isset($_SESSION)) { session_start(); }
+
             $_SESSION['db'] = $website->params;
         }else{
             $_SESSION['db'] = null;
@@ -149,7 +212,7 @@ switch ( $step ){
         $configData     = [
             'db'=>$_SESSION['db'],
             'redis'=>[
-                'host'=>$website->params['redishost'] ? $website->params['redishost'] : '127.0.0.1',
+                'host'=>$website->params['redishost'] ?? '127.0.0.1',
                 'port'=>$website->params['redisport'] ?? 6379,
                 'db'=>$website->params['redisDB'] ?? 1
             ],
@@ -181,21 +244,20 @@ switch ( $step ){
             $configData['db']['base']
         ));
 
-        $databaseStruct = require_once SERVER_DIR.'engine/databaseStruct.php';
-        $createDatabase = _ASDB()->newDataStruct($databaseStruct,$configData['db']['base'])->getContent();
+        $createDatabase = newDataStruct(DefaultModels,$configData['db']['base']);
         $website->setSubData('databaseSuccess', checkMultipleResult($createDatabase) );
         $website->setSubData('databaseResult', getMultipleResultString($createDatabase));
 
         if( !$website->data['databaseSuccess'] ){
-            _ASDB()->clearDataStruct( $databaseStruct );
+            clearDataStruct( DefaultModels );
             break;
         }
 
     # 初始化数据
     # Initiate data
 
-        $databaseInitData = require_once SERVER_DIR.'engine/databaseInitData.php';
-        $insertData = _ASDB()->autoInsertData($databaseInitData,$configData['db']['base'])->getContent();
+        $databaseInitData = require_once SERVER_DIR.'engine/initData.php';
+        $insertData = insertBasicData($databaseInitData);
         $website->setSubData('dataResult', getMultipleResultString($insertData));
         $website->setSubData('dataSuccess', checkMultipleResult($insertData) );
 
@@ -209,8 +271,8 @@ switch ( $step ){
         $customResult   = [];
 
         # 创建管理员账户
-        $website->params['groupid'] = 900;
-        $customResult[] = User::common()->add($website->params);
+        $website->params['groupid'] = Group_SuperAdmin;
+        $customResult[] = User::common()->addByArray($website->params);
         $customResult[] = ASSetting::common()->set('MAIN_PATH',$configData['site']['path']);
         $customResult[] = ASSetting::common()->set('SITE_PATH',$configData['site']['website']);
         $customResult[] = ASSetting::common()->set('API_PATH',$configData['site']['api']);
@@ -272,7 +334,9 @@ switch ( $step ){
 
     case 'done':
 
-        $network = new \APS\Network();
+        session_destroy();
+
+        $network = new Network();
         $ad = $network->getJson('https://appsite.cn/api/Advertising/installSuccess');
         $website->setSubData('ad',$ad['content']);
 

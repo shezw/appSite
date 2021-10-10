@@ -34,11 +34,20 @@
                                 </div>
                             </div>
 
+                            <div class="col-4">
 
-                            <div class="form-group a-field require valid " a-field-type="input" a-field-length="255" a-field-name="type">
-                                <!-- <label>{i18n{ manager.type }i18n} * </label> -->
+                                <div class="form-group a-field valid " a-field-type="select" a-field-length="255" a-field-name="type">
+                                    <label>
+                                        {i18n{ manager.type }i18n}
+                                    </label>
 
-                                <input type="hidden" class="form-control a-field-main" value="{{type}}" placeholder="{i18n{ manager.type }i18n}">
+                                    <select class="form-control a-field-main input-c" data-toggle="select" data-options='{"minimumResultsForSearch": -1,"placeholder":"{i18n{ manager.type }i18n}"}'>
+                                        <option disabled="disabled" selected="selected" value="">{i18n{ manager.type }i18n}</option>
+
+                                        ||loop??ValidTypes??<option value='{{uid}}'>{{title}} {{description}}</option>loop||
+
+                                    </select>
+                                </div>
 
                             </div>
 

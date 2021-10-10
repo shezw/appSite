@@ -20,6 +20,11 @@ class Network{
 
 	private $_decodeResponse = false;
 
+	const POST_REQUEST = "POST";
+	const GET_REQUEST  = "GET";
+	const PUT_REQUEST  = "PUT";
+	const DELETE_REQUEST = "DELETE";
+
 	public function __construct(){
 
 		$this->setHeader('X-Requested-With', 'XMLHttpRequest');
@@ -89,36 +94,36 @@ class Network{
         }
 	}
 
-	public function get($url, array $params = null, $encode = false){
+	public function get($url, array $params = null){
 
 		$this->setParams($params);
-		return $this->_request('get', $url, $encode);
+		return $this->_request(static::GET_REQUEST,$url);
 	}
 
 	public function post($url, array $params = null){
 
 		$this->setParams($params);
-		return $this->_request('post', $url);
+		return $this->_request(static::POST_REQUEST,$url);
 	}
 
 	public function put($url, array $params = null){
 
 		$this->setParams($params);
-		return $this->_request('put', $url);
+		return $this->_request(static::PUT_REQUEST,$url);
 	}
 
 	public function delete($url, array $params = null){
 
 		$this->setParams($params);
-		return $this->_request('delete', $url);
+		return $this->_request(static::DELETE_REQUEST,$url);
 	}
 
-    public function getJson( string $url, array $params = null, $encode = false){
+    public function getJson( string $url, array $params = null){
         $this->_decodeResponse = true;
-        return $this->get($url,$params,$encode);
+        return $this->get($url,$params);
     }
 
-    public function putJson( string $url, array $params = null, $encode = false){
+    public function putJson( string $url, array $params = null ){
         $this->_decodeResponse = true;
         return $this->post($url,$params);
     }
@@ -130,46 +135,33 @@ class Network{
 		$this->_keyPath = $keyPath;
 	}
 
-	private function _request($method, $url, $encode = false){
+	private function _request( $method, $url ){
 		
 		if (empty($url)) {
 			return false;
 		}
-		$method = in_array($method, array('get', 'post', 'put', 'delete')) ? $method : 'get';
+		$method = in_array($method, array(static::GET_REQUEST, static::POST_REQUEST, static::PUT_REQUEST, static::DELETE_REQUEST)) ? $method : static::GET_REQUEST;
 		$ch = curl_init();
-		if (!empty($this->_header)) {
-			$header = [];
-			foreach ($this->_header as $k => $v) {
-				$header[] = trim(trim($k, ' '), ':') . ': ' . $v;
-			}
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-		}
-		if (!empty($this->_userAgent)) {
-			curl_setopt($ch, CURLOPT_USERAGENT, $this->_userAgent);
-		}
-		if (!empty($this->_refrence)) {
-			curl_setopt($ch, CURLOPT_REFERER, $this->_refrence);
-		}
-		if ($method == 'get' && !empty($this->_params)) {
-			$param = http_build_query($this->_params);
-			$param = $encode ?: urldecode($param);
-			$url = $url . '?' . $param;
-		} elseif ($method == 'post') {
-			if (!empty($this->_params)) {
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_params);
-			}
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-		} elseif ($method == 'put') {
-			if (!empty($this->_params)) {
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_params);
-			}
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-		} elseif ($method == 'delete') {
-			if (!empty($this->_params)) {
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_params);
-			}
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-		}
+
+		switch ( $method ){
+
+            case static::GET_REQUEST:
+                if(!empty($this->_params)){
+                    $url .= '?'.urlencode( http_build_query($this->_params) );
+                }
+            break;
+
+            case static::POST_REQUEST:
+            $this->_header['Content-Type'] = "application/json";
+            case static::PUT_REQUEST:
+            case static::DELETE_REQUEST:
+
+            if (!empty($this->_params)) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_params);
+            }
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            break;
+        }
 
 		if ($this->_useCert == true) {
 			curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
@@ -177,6 +169,19 @@ class Network{
 			curl_setopt($ch, CURLOPT_SSLKEYTYPE, 'PEM');
 			curl_setopt($ch, CURLOPT_SSLKEY, $this->_keyPath);
 		}
+        if (!empty($this->_header)) {
+            $header = [];
+            foreach ($this->_header as $k => $v) {
+                $header[] = "{$k}: {$v}";
+            }
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        }
+        if (!empty($this->_userAgent)) {
+            curl_setopt($ch, CURLOPT_USERAGENT, $this->_userAgent);
+        }
+        if (!empty($this->_refrence)) {
+            curl_setopt($ch, CURLOPT_REFERER, $this->_refrence);
+        }
 
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);

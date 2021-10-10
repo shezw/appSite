@@ -56,17 +56,18 @@
             </div>
         </li>
         <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-            <img alt="image" src="{{userData.avatar}}" class="rounded-circle mr-1">
+            [if[::userData.avatar::<img alt="image" src="{{userData.avatar}}" class="rounded-circle mr-1">]if]
+            [not[::userData.avatar::<img alt="image" src="{{constants.ThemePath}}assets/img/avatar/avatar-3.png" class="rounded-circle mr-1">]not]
             <div class="d-sm-none d-lg-inline-block">Hi, {{userData.nickname}}</div></a>
             <div class="dropdown-menu dropdown-menu-right">
-                <a href="{{constants.rootPath}}/profile" class="dropdown-item has-icon">
+                <a href="/{{constants.RootPath}}/profile" class="dropdown-item has-icon">
                     <i class="far fa-user"></i> Profile
                 </a>
-                <a href="{{constants.rootPath}}/setting" class="dropdown-item has-icon">
+                <a href="/{{constants.RootPath}}/setting" class="dropdown-item has-icon">
                     <i class="fas fa-cog"></i> Settings
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="{{constants.rootPath}}/logout" class="dropdown-item has-icon text-danger">
+                <a href="/{{constants.RootPath}}/logout" class="dropdown-item has-icon text-danger">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </div>

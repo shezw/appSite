@@ -14,6 +14,72 @@ namespace APS;
 class MessageNotification extends ASModel{
 
 
+    const table     = "message_notification";
+    const comment   = '消息-通知';
+    const primaryid = "uid";
+    const addFields = [
+        'uid','saasid', 'senderid', 'receiverid', 'replyid',
+        'type', 'status',
+        'content', 'link', 'linkparams', 'linktype',
+    ];
+    const updateFields = [
+        'status', 'link', 'replyid', 'linkparams', 'linktype',
+    ];
+    const detailFields = [
+        'uid','saasid', 'senderid', 'receiverid', 'replyid',
+        'type', 'status',
+        'content', 'link', 'linkparams', 'linktype',
+        'sort','featured','createtime', 'lasttime',
+    ];
+    const overviewFields = [
+        'uid','saasid', 'senderid', 'receiverid', 'replyid',
+        'type', 'status',
+        'content', 'link', 'linkparams', 'linktype',
+        'sort','featured','createtime', 'lasttime',
+    ];
+    const listFields = [
+        'uid','saasid', 'senderid', 'receiverid', 'replyid',
+        'type', 'status',
+        'content', 'link', 'linkparams', 'linktype',
+        'sort','featured','createtime', 'lasttime',
+    ];
+    const filterFields = [
+        'uid','saasid', 'senderid', 'receiverid', 'replyid',
+        'type', 'status',
+        'linktype',
+        'createtime',
+        'sort','featured','createtime', 'lasttime',
+    ];
+    const depthStruct = [
+        'linkparams'=>DBField_Json,
+        'sort'=>DBField_Int,
+        'featured'=>DBField_Boolean,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp,
+    ];
+
+    const tableStruct = [
+
+        'uid'=>         ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'通知ID' , 'idx'=>DBIndex_Unique ],
+        'saasid'=>      ['type'=>DBField_String,  'len'=>8,   'nullable'=>1,    'cmt'=>'所属saas',  'idx'=>DBIndex_Index,],
+        'senderid'=>    ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'发送方ID' ,        'idx'=>DBIndex_Index ],
+        'receiverid'=>  ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'接收方ID' ,        'idx'=>DBIndex_Index ],
+        'replyid'=>     ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'回复到ID' ],
+        'status'=>      ['type'=>DBField_String,    'len'=>24,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'sent', ],
+
+        'content'=>     ['type'=>DBField_String,    'len'=>512, 'nullable'=>1,  'cmt'=>'消息内容' ],
+
+        'type'=>        ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'消息类型',  'dft'=>'normal',        ],
+
+        'link'=>        ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'消息链接url' ],
+        'linkparams'=>  ['type'=>DBField_Json,      'len'=>511, 'nullable'=>1,  'cmt'=>'消息链接参数 k-v json' ],
+        'linktype'=>    ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'消息链接类型' ],
+
+        'createtime'=>  ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',      'idx'=>DBIndex_Index, ],
+        'lasttime'=>    ['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
+
+
     /**
      * 普通相互发送消息
      * send message to user
@@ -26,7 +92,7 @@ class MessageNotification extends ASModel{
     public function send( string $from, string $to, string $content , string $type = 'message'  ): ASResult
     {
 
-        return $this->add(['status'=>'send','senderid'=>$from,'receiverid'=>$to,'content'=>$content,'type'=>$type]);
+        return $this->add(static::initValuesFromArray(['status'=>'send','senderid'=>$from,'receiverid'=>$to,'content'=>$content,'type'=>$type]));
     }
 
 
@@ -36,14 +102,14 @@ class MessageNotification extends ASModel{
      * @param  string  $userid
      * @param  string  $content
      * @param  string  $link
-     * @param  array   $linkparams
-     * @param  string  $linktype
+     * @param  array   $linkParams
+     * @param  string  $linkType
      * @return ASResult
      */
-    public function notify( string $userid, string $content, string $link = null, array $linkparams = null, string $linktype = null ): ASResult
+    public function notify( string $userid, string $content, string $link = null, array $linkParams = null, string $linkType = null ): ASResult
     {
-
-        return $this->add(['status'=>'send','senderid'=>'system','receiverid'=>$userid,'content'=>$content,'type'=>'notify','link'=>$link,'linkparams'=>$linkparams,'linktype'=>$linktype]);
+        $data = static::initValuesFromArray(['status'=>'send','senderid'=>'system','receiverid'=>$userid,'content'=>$content,'type'=>'notify','link'=>$link,'linkparams'=>$linkParams,'linktype'=>$linkType]);
+        return $this->add($data);
     }
 
     /**
@@ -52,14 +118,15 @@ class MessageNotification extends ASModel{
      * @param  string  $userid
      * @param  string  $content
      * @param  string  $link
-     * @param  array   $linkparams
-     * @param  string  $linktype
+     * @param  array   $linkParams
+     * @param  string  $linkType
      * @return ASResult
      */
-    public function suggest( string $userid, string $content, string $link = null, array $linkparams = null, string $linktype = null): ASResult
+    public function suggest( string $userid, string $content, string $link = null, array $linkParams = null, string $linkType = null): ASResult
     {
+        $data = static::initValuesFromArray(['status'=>'send','senderid'=>$userid,'receiverid'=>'system','content'=>$content,'type'=>'suggest','link'=>$link,'linkparams'=>$linkParams,'linktype'=>$linkType]);
 
-        return $this->add(['status'=>'send','senderid'=>$userid,'receiverid'=>'system','content'=>$content,'type'=>'suggest','link'=>$link,'linkparams'=>$linkparams,'linktype'=>$linktype]);
+        return $this->add($data);
     }
 
 
@@ -68,35 +135,38 @@ class MessageNotification extends ASModel{
     /**
      * 所有发信 计数
      * countSent
-     * @param  string       $userid
-     * @param  string|null  $type
-     * @param  string|null  $status
-     * @param  array|null   $moreFilters
+     * @param string $userid
+     * @param string|null $type
+     * @param string|null $status
+     * @param DBConditions|null $moreFilters
      * @return ASResult
      */
-    public function countSent( string $userid , string $type = null , string $status = null, array $moreFilters = null ): ASResult
+    public function countSent( string $userid , string $type = null , string $status = null, DBConditions $moreFilters = null ): ASResult
     {
+        $filters = $moreFilters ?? DBConditions::init(static::table)
+                ->where('senderid')->equal($userid)
+                ->and('type')->equalIf($type)
+                ->and('status')->equalIf($status);
 
-        $moreFilters = array_merge($moreFilters ?? [],['senderid'=>$userid,'type'=>$type,'status'=>$status]);
-
-        return $this->count($moreFilters);
+        return $this->count($filters);
     }
 
     /**
      * 所有收信 计数
      * countReceive
-     * @param  string       $userid
-     * @param  string|null  $type
-     * @param  string|null  $status
-     * @param  array|null   $moreFilters
+     * @param string $userid
+     * @param string|null $type
+     * @param string|null $status
+     * @param DBConditions|null $moreFilters
      * @return ASResult
      */
-    public function countReceive( string $userid, string $type = null, string $status = null, array $moreFilters = null ): ASResult
+    public function countReceive( string $userid, string $type = null, string $status = null, DBConditions $moreFilters = null ): ASResult
     {
-
-        $moreFilters = array_merge($moreFilters ?? [],['receiverid'=>$userid,'type'=>$type,'status'=>$status]);
-
-        return $this->count($moreFilters);
+        $filters = $moreFilters ?? DBConditions::init(static::table)
+                ->where('receiverid')->equal($userid)
+                ->and('type')->equalIf($type)
+                ->and('status')->equalIf($status);
+        return $this->count($filters);
     }
 
     /**
@@ -108,8 +178,11 @@ class MessageNotification extends ASModel{
      */
     public function countNew( string $userid , string $type = 'message' ): ASResult
     {
-
-        return $this->count(['receiverid'=>$userid,'status'=>'send','type'=>$type]);
+        $conditions = DBConditions::init(static::table)
+            ->where('receiverid')->equal($userid)
+            ->and('type')->equal($type)
+            ->and('status')->equalIf('send');
+        return $this->count($conditions);
     }
 
     public function countNewMessage( string $userid ):ASResult { return $this->countNew($userid,'message'); }
@@ -126,7 +199,12 @@ class MessageNotification extends ASModel{
      */
     public function countMyMessage( string $userid , string $status = null, string $senderid = null ): ASResult
     {
-        return $this->count(['receiverid'=>$userid,'senderid'=>$senderid,'status'=>$status,'type'=>'message']);
+        $conditions = DBConditions::init(static::table)
+            ->where('receiverid')->equal($userid)
+            ->and('type')->equal('message')
+            ->and('status')->equalIf($status)
+            ->and('senderid')->equalIf($senderid);
+        return $this->count($conditions);
     }
 
     /**
@@ -138,7 +216,11 @@ class MessageNotification extends ASModel{
      */
     public function countMyNotification( string $userid , string $status = null ): ASResult
     {
-        return $this->count(['receiverid'=>$userid,'status'=>$status,'type'=>'notify']);
+        $conditions = DBConditions::init(static::table)
+            ->where('receiverid')->equal($userid)
+            ->and('status')->equalIf($status)
+            ->and('type')->equal('notify');
+        return $this->count($conditions);
     }
 
     /**
@@ -151,8 +233,12 @@ class MessageNotification extends ASModel{
      */
     public function countSentMessage( string $userid, string $status = null, string $receiverid = null ): ASResult
     {
-
-        return $this->count(['senderid'=>$userid,'receiverid'=>$receiverid,'status'=>$status,'type'=>'message']);
+        $conditions = DBConditions::init(static::table)
+            ->where('senderid')->equal($userid)
+            ->and('receiverid')->equalIf($receiverid)
+            ->and('status')->equalIf($status)
+            ->and('type')->equal('message');
+        return $this->count($conditions);
     }
 
     /**
@@ -164,7 +250,12 @@ class MessageNotification extends ASModel{
      */
     public function countMySuggest( string $userid, string $status = null ): ASResult
     {
-        return $this->count(['senderid'=>$userid,'receiverid'=>'system','status'=>$status,'type'=>'suggest']);
+        $conditions = DBConditions::init(static::table)
+            ->where('senderid')->equal($userid)
+            ->and('receiverid')->equal('system')
+            ->and('status')->equalIf($status)
+            ->and('type')->equal('suggest');
+        return $this->count($conditions);
     }
 
     /**
@@ -178,7 +269,11 @@ class MessageNotification extends ASModel{
      */
     public function myNotificationList( string $userid, string $status = null, $page = 1, $size = 20 ): ASResult
     {
-        return $this->list(['receiverid'=>$userid,'status'=>$status,'type'=>'notify'],$page,$size, 'createtime DESC');
+        $conditions = DBConditions::init(static::table)
+            ->where('receiverid')->equal($userid)
+            ->and('status')->equalIf($status)
+            ->and('type')->equal('notify');
+        return $this->list($conditions,$page,$size, 'createtime DESC');
     }
 
     /**
@@ -193,7 +288,12 @@ class MessageNotification extends ASModel{
      */
     public function mySentMessageList( string $userid, string $status = null, string $receiverid = null, int $page = 1, int $size = 20 ): ASResult
     {
-        return $this->list(['senderid'=>$userid,'status'=>$status,'receiverid'=>$receiverid,'type'=>'message'],$page,$size);
+        $conditions = DBConditions::init(static::table)
+            ->where('senderid')->equal($userid)
+            ->and('status')->equalIf($status)
+            ->and('receiverid')->equalIf($receiverid)
+            ->and('type')->equal('message');
+        return $this->list($conditions,$page,$size);
     }
 
     /**
@@ -207,15 +307,19 @@ class MessageNotification extends ASModel{
      */
     public function mySuggestList( string $userid, string $status = null, int $page = 1, int $size = 20 ): ASResult
     {
-        return $this->list(['senderid'=>$userid,'status'=>$status,'receiverid'=>'system','type'=>'suggest'],$page,$size);
+        $conditions = DBConditions::init(static::table)
+            ->where('senderid')->equal($userid)
+            ->and('status')->equalIf($status)
+            ->and('receiverid')->equalIf('system')
+            ->and('type')->equal('suggest');
+        return $this->list($conditions,$page,$size);
     }
 
 
     // 对系统内单位进行标记( 进行认证反馈或是回复标注 )
     public function mark( $content, string $itemid, string $itemtype ): ASResult
     {
-
-        return $this->add(['status'=>'send','senderid'=>'system','receiverid'=>$itemid,'type'=>$itemtype,'content'=>$content]);
+        return $this->add(static::initValuesFromArray(['status'=>'send','senderid'=>'system','receiverid'=>$itemid,'type'=>$itemtype,'content'=>$content]));
     }
 
 
@@ -231,8 +335,11 @@ class MessageNotification extends ASModel{
      */
     public function myMessageList( string $userid = null, string $status = null, string $senderid = null, int $page = 1, int $size = 20 ): ASResult
     {
-
-        return $this->list(['receiverid'=>$userid,'status'=>$status,'senderid'=>$senderid],$page,$size);
+        $conditions = DBConditions::init(static::table)
+            ->where('receiverid')->equal($userid)
+            ->and('status')->equalIf($status)
+            ->and('senderid')->equalIf($senderid);
+        return $this->list($conditions,$page,$size);
     }
 
     /**
@@ -243,9 +350,7 @@ class MessageNotification extends ASModel{
      */
     public function read( string $uid ): ASResult
     {
-
         return $this->status($uid,'read');
-
     }
 
 
@@ -253,13 +358,13 @@ class MessageNotification extends ASModel{
      * 设置已回复
      * Set replied
      * @param string $uid
-     * @param string|null $replyid
+     * @param string|null $replyId
      * @return ASResult
      */
-    public function replied( string $uid , string $replyid = null ): ASResult
+    public function replied( string $uid , string $replyId = null ): ASResult
     {
 
-        return $this->update(['status'=>'replied','replyid'=>$replyid],$uid);
+        return $this->update(static::initValuesFromArray(['status'=>'replied','replyid'=>$replyId]),$uid);
 
     }
 
@@ -268,88 +373,43 @@ class MessageNotification extends ASModel{
      * readAll
      * @param  string       $userid
      * @param  string|null  $type
-     * @param  string|null  $senderid
+     * @param  string|null  $senderId
      * @return ASResult
      */
-    public function readAll( string $userid, string $type = null, string $senderid = null): ASResult
+    public function readAll( string $userid, string $type = null, string $senderId = null): ASResult
     {
+        $conditions = DBConditions::init(static::table)
+            ->where('receiverid')->equal($userid)
+            ->and('senderid')->equalIf($senderId)
+            ->and('type')->equalIf($type);
 
-        $conditions = [
-            'receiverid'=>$userid,
-            'senderid'=>$senderid,
-            'type'=>$type
-        ];
-
-        return $this->getDB()->update(['status'=>'read'],static::$table,$conditions);
+        return $this->getDB()->update(DBValues::init('status')->string('read'),static::table,$conditions);
     }
 
 
-    public function suggestList( array $filters ): ASResult
+    public function suggestList( DBConditions $filters ): ASResult
     {
-
-        $filters['type'] = 'suggest';
+        $filters->and('type')->equal('suggest');
 
         return $this->list($filters);
 
     }
 
-    public function messageList( array $filters ): ASResult
+    public function messageList( DBConditions $filters ): ASResult
     {
-
-        $filters['type'] = 'message';
+        $filters->and('type')->equal('message');
 
         return $this->list($filters);
 
     }
 
-    public function notificationList( array $filters ): ASResult
+    public function notificationList( DBConditions $filters ): ASResult
     {
-
-        $filters['type'] = 'notify';
+        $filters->and('type')->equal('notify');
 
         return $this->list($filters);
 
     }
-
-
-
-    public static $table     = "message_notification";
-    public static $primaryid = "uid";
-    public static $addFields = [
-        'uid', 'senderid', 'receiverid', 'replyid',
-        'type', 'status',
-        'content', 'link', 'linkparams', 'linktype',
-    ];
-    public static $updateFields = [
-        'status', 'link', 'replyid', 'linkparams', 'linktype',
-    ];   // 更新支持字段
-    public static $detailFields = "*";
-    public static $overviewFields = [
-        'uid', 'senderid', 'receiverid', 'replyid',
-        'type', 'status',
-        'content', 'link', 'linkparams', 'linktype',
-        'sort','featured','createtime', 'lasttime',
-    ]; // 概览支持字段
-    public static $listFields = [
-        'uid', 'senderid', 'receiverid', 'replyid',
-        'type', 'status',
-        'content', 'link', 'linkparams', 'linktype',
-        'sort','featured','createtime', 'lasttime',
-    ];     // 列表支持字段
-    public static $countFilters = [
-        'uid', 'senderid', 'receiverid', 'replyid',
-        'type', 'status',
-        'linktype',
-        'createtime',
-        'sort','featured','createtime', 'lasttime',
-    ];
-    public static $depthStruct = [
-        'linkparams'=>'ASJson',
-        'sort'=>'int',
-        'featured'=>'int',
-        'createtime'=>'int',
-        'lasttime'=>'int',
-    ];
 
 
 }

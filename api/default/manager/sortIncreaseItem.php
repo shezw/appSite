@@ -13,28 +13,23 @@ use APS\ASResult;
 class sortIncreaseItem extends ASAPI
 {
 
-    private $itemClass = '\APS\ASModel';
-    private $itemId = '';
-    private $size = 1;
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
-    protected $scope = 'public';
-    public $mode = 'JSON';
-
-    protected static $groupCharacterRequirement = ['super', 'manager', 'editor'];
-    protected static $groupLevelRequirement = 40000;
-
+    const groupCharacterRequirement = [GroupRole_Super,GroupRole_Manager,GroupRole_Editor];
+    const groupLevelRequirement = GroupLevel_Editor;
 
     public function run(): ASResult
     {
-        $this->itemClass = $this->params['itemClass'] ?? ASModel::class;
-        $this->itemId = $this->params['itemId'];
-        $this->size = (int)($this->params['size'] ?? 1);
+        $itemClass = $this->params['itemClass'] ?? ASModel::class;
+        $itemId = $this->params['itemId'];
+        $size = (int)($this->params['size'] ?? 1);
 
-        if (!class_exists($this->itemClass)) {
-            $this->itemClass = 'APS\\' . $this->itemClass;
+        if (!class_exists($itemClass)) {
+            $itemClass = 'APS\\' . $itemClass;
         }
 
-        return $updateItem = $this->itemClass::common()->increaseSort( $this->itemId, $this->size ) ?? ASResult::shared();
+        return $updateItem = $itemClass::common()->increaseSort( $itemId, $size) ?? ASResult::shared();
 
     }
 

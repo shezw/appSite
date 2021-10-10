@@ -6,6 +6,10 @@ use OSS\Core\OssException;
 use WeChat\Exceptions\InvalidDecryptException;
 use WeChat\Exceptions\InvalidResponseException;
 use WeChat\Exceptions\LocalCacheException;
+use WeChat\Pay;
+use WeChat\Script;
+use WeMini\Crypt;
+use WeOpen\Oauth;
 
 include_once SERVER_DIR.'library/weChatDev/include.php';
 
@@ -16,10 +20,10 @@ include_once SERVER_DIR.'library/weChatDev/include.php';
  */
 class Wechat extends ASObject{
 
-    var $appid;
+    var $appID;
     var $token;
-    var $appsecret;
-    var $encodingaeskey;
+    var $appSecret;
+    var $encodingAESKey;
 
     # 配置商户支付参数
     var $mch_id;
@@ -33,21 +37,21 @@ class Wechat extends ASObject{
     var $cache_path;
 
     # 开放平台参数
-    var $openkey;
-    var $opensecret;
+    var $openKey;
+    var $openSecret;
 
     # 小程序参数
-    private $miniid;
-    private $minisecret;
+    private $miniId;
+    private $miniSecret;
 
     public function __construct(){
 
         parent::__construct();
 
-        $this->appid           = getConfig('WXMP_ID','WECHAT');
+        $this->appID           = getConfig('WXMP_ID','WECHAT');
         $this->token           = getConfig('WXMP_TOKEN','WECHAT');
-        $this->appsecret       = getConfig('WXMP_SECRET','WECHAT');
-        $this->encodingaeskey  = getConfig('WXMP_EncodingAESKey','WECHAT');
+        $this->appSecret       = getConfig('WXMP_SECRET','WECHAT');
+        $this->encodingAESKey  = getConfig('WXMP_EncodingAESKey','WECHAT');
 
         # 配置商户支付参数
         $this->mch_id          = getConfig('WXPAY_ID','WECHAT');
@@ -57,11 +61,11 @@ class Wechat extends ASObject{
         $this->ssl_key        = getConfig('WXPAY_SSLCERT_PATH','WECHAT').'apiclient_key.pem';
         $this->ssl_cer        = getConfig('WXPAY_SSLKEY_PATH','WECHAT').'apiclient_cert.pem';
 
-        $this->openkey        = getConfig('WXOPEN_ID','WECHAT');
-        $this->opensecret     = getConfig('WXOPEN_SECRET','WECHAT');
+        $this->openKey        = getConfig('WXOPEN_ID','WECHAT');
+        $this->openSecret     = getConfig('WXOPEN_SECRET','WECHAT');
 
-        $this->miniid         = getConfig('WXMINI_ID','WECHAT');
-        $this->minisecret     = getConfig('WXMINI_SECRET','WECHAT');
+        $this->miniId         = getConfig('WXMINI_ID','WECHAT');
+        $this->miniSecret     = getConfig('WXMINI_SECRET','WECHAT');
 
         # 配置缓存目录，需要拥有写权限
         $this->cache_path     = __DIR__.'/weCache/' ;
@@ -70,10 +74,10 @@ class Wechat extends ASObject{
 
     public function getConfig():array {
         return [
-            'appid' => $this->appid,
+            'appid' => $this->appID,
             'token' => $this->token,
-            'appsecret' => $this->appsecret,
-            'encodingaeskey' => $this->encodingaeskey,
+            'appsecret' => $this->appSecret,
+            'encodingaeskey' => $this->encodingAESKey,
 
             # 配置商户支付参数
             'mch_id' => $this->mch_id,
@@ -86,8 +90,8 @@ class Wechat extends ASObject{
             # 配置缓存目录，需要拥有写权限
             'cache_path' => $this->cache_path,
 
-            'openkey' => $this->openkey,
-            'opensecret' => $this->opensecret,
+            'openkey' => $this->openKey,
+            'opensecret' => $this->openSecret,
         ];
     }
 
@@ -132,7 +136,7 @@ class Wechat extends ASObject{
 
         $device   = isset($params['device']) ? $params['device'] : 'mobile';
         $isPc     = $device!=='mobile';
-        $wechat   = $isPc ? new \WeOpen\Oauth($this->getConfig()) : new \WeChat\Oauth($this->getConfig());
+        $wechat   = $isPc ? new Oauth($this->getConfig()) : new \WeChat\Oauth($this->getConfig());
 
         if( !strstr($params['callbackurl'], '://')){ $params['callbackurl'] = str_replace('http:/','http://',str_replace('https:/', 'https://', $params['callbackurl'])); }
 
@@ -157,7 +161,7 @@ class Wechat extends ASObject{
     {
 
         $isPc     = isset($params['device']) && $params['device']!=='mobile';
-        $wechat   = $isPc ? new \WeOpen\Oauth($this->getConfig()) : new \WeChat\Oauth($this->getConfig());
+        $wechat   = $isPc ? new Oauth($this->getConfig()) : new \WeChat\Oauth($this->getConfig());
 
         try {
             $result = $wechat->getOauthAccessToken();
@@ -203,7 +207,7 @@ class Wechat extends ASObject{
 
         $config = [ 'appid'=> getConfig('WXMINI_ID','WECHAT'), 'appsecret'=> getConfig('WXMINI_SECRET','WECHAT') ];
 
-        $mini = new \WeMini\Crypt($config);
+        $mini = new Crypt($config);
 
         try {
             $userInfo = $mini->userInfo($params['code'], $params['iv'], $params['encryptedData']);
@@ -234,27 +238,23 @@ class Wechat extends ASObject{
         $userInfo = isset($params['unionid'])||isset($params['openid']) ? $params : $this->getInfo($params,'miniProgram');
         $wechatid = $userInfo['unionid'] ?? $userInfo['openid'];
 
-        if ( !User::common()->has(['wechatid'=>$wechatid]) ) { # 未注册
+        if ( !User::common()->has(DBConditions::init()->where('wechatid')->equal($wechatid) ) ) { # 未注册
 
             if (isset($userInfo)) {
                 try {
                     $avatar = AliyunOSS::common()->uploadUrlFile($userInfo['headimgurl']??$userInfo['avatarUrl']);
                 }catch (OssException $e) { }
-                $data = [
-                    'avatar'   => $avatar,  // 头像 上传到oss
-                    'wechatid' => $wechatid, // OpenId
-                    'nickname' => $userInfo['nickname'] ?? $userInfo['nickName'],    // 昵称
-                    'country'  => $userInfo['country'],     // 国家
-                    'province' => $userInfo['province'],    // 省份
-                    'city'     => $userInfo['city'],        // 城市
-                ];
-                $data['gender'] = $userInfo['sex'] ?? $userInfo['gender'] ?? 0;
+                $data = DBValues::init('avatar')->stringIf($avatar)
+                    ->set('wechatid')->string($wechatid)
+                    ->set('nickname')->stringIf($userInfo['nickname'] ?? $userInfo['nickName'])
+                    ->set('country')->stringIf($userInfo['country'])
+                    ->set('province')->stringIf($userInfo['province'])
+                    ->set('city')->stringIf($userInfo['city'])
+                    ->set('gender')->stringIf($userInfo['sex'] ?? $userInfo['gender']);
             }
 
             // start regist
-            $addUser =  isset($data) ?
-                        User::common()->add($data):
-                        User::common()->add(['wechatid'=>$wechatid,'status'=>'enabled']) ;
+            $addUser =  isset($data) ? User::common()->add($data) : User::common()->add( DBValues::init('wechatid')->string($wechatid) ) ;
 
             if (!$addUser->isSucceed()){ return $addUser;}
 
@@ -297,9 +297,9 @@ class Wechat extends ASObject{
         $userInfo = isset($params['unionid'])||isset($params['openid']) ? $params : $this->getInfo($params,'bindWechat');
         $wechatid = $userInfo['unionid'] ?? $userInfo['openid'];
 
-        if ( !User::common()->has(['wechatid'=>$wechatid]) ) { # 未注册
+        if ( !User::common()->has(DBConditions::init()->where('wechatid')->equal($wechatid) ) ) { # 未注册
 
-            $bind = User::common()->update(['wechatid'=>$wechatid],$params['userid']);
+            $bind = User::common()->update( DBValues::init('wechatid')->string($wechatid), $params['userid']);
             return $bind->isSucceed() ? $this->success(i18n('SYS_SUC')) :$this->error(500,'Bind Failed') ;
 
         }else{
@@ -319,7 +319,7 @@ class Wechat extends ASObject{
     public function jsapiPay( string $openid, CommerceOrder $order ): ASResult
     {
 
-        $wechat = new \WeChat\Pay($this->getConfig());
+        $wechat = new Pay($this->getConfig());
 
         $options = [
             'body'             => $order->title,
@@ -360,10 +360,10 @@ class Wechat extends ASObject{
      */
     public function paymentCallback(){
 
-        $wechat   = new \WeChat\Pay($this->getConfig());
+        $wechat   = new Pay($this->getConfig());
         try {
             $result = $wechat->getNotify();
-            $orderid = $result['out_trade_no'];
+//            $orderid = $result['out_trade_no'];
 
             //第二：执行业务逻辑
 
@@ -410,7 +410,7 @@ class Wechat extends ASObject{
         // 获得订单详情
         $order = CommerceOrder::instance($orderid);
 
-        $wechat  = new \WeChat\Pay($this->getConfig());
+        $wechat  = new Pay($this->getConfig());
 
         $options = [
             'body'             => $order['title'],
@@ -445,7 +445,7 @@ class Wechat extends ASObject{
     public function refundCallback(): ASResult
     {
 
-        $wechat   = new \WeChat\Pay($this->getConfig());
+        $wechat   = new Pay($this->getConfig());
         try {
             $result = $wechat->getNotify();
 
@@ -469,7 +469,7 @@ class Wechat extends ASObject{
                 return $this->error(12345,'业务逻辑错误','Wechat->refundCallback:call');
             }
 
-            $order->update( ['refundid'=>$data['paymenttradeno'],'status'=>'refunded'], $orderid );
+            $order->update( DBValues::init('refundid')->stringIf($data['paymenttradeno'])->set('status')->string('refunded'), $orderid );
 
             // 2.3 进行回复
             ob_clean();
@@ -495,7 +495,7 @@ class Wechat extends ASObject{
      */
     public function transfers( string $openid , float $amount, $description = '付款到微信钱包' ){
 
-        $wechat = new \WeChat\Pay($this->getConfig());
+        $wechat = new Pay($this->getConfig());
 
         $options = [
             'partner_trade_no' => time(),
@@ -560,7 +560,7 @@ class Wechat extends ASObject{
     public function getJssdkConfig($url): ASResult
     {
 
-        $wechat = new \WeChat\Script($this->getConfig());
+        $wechat = new Script($this->getConfig());
 
         try {
             $result = $wechat->getJsSign($url);

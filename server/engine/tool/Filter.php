@@ -88,7 +88,7 @@ class Filter{
      * 修复双斜杠
      * Fix double stripslashes in array
      * @param array|null $array
-     * @return array|null
+     * @return void
      */
 	public static function stripslashes_array( array &$array = NULL )
     {
@@ -100,11 +100,10 @@ class Filter{
 					$array[$key] = stripslashes($value); 
 				} 
 				if (is_array($value)) { 
-					$array[$key] = Filter::stripslashes_array($value); 
+					Filter::stripslashes_array($value);
 				} 
 			}
 		}
-		return $array; 
 	}
 
     /**
@@ -115,11 +114,15 @@ class Filter{
      */
 	public static function addslashesAll( $array ){
 
-		if (gettype($array)=='array') {
+	    if( gettype($array) == 'object' ){
+	        return $array;
+        }else if (gettype($array)=='array') {
 			foreach ($array as $key => $value) {
 				$array[$key] = Filter::addslashesAll($value);
 			}
-		}elseif(gettype($array)!=='object'){
+	    }else if( Encrypt::isNumber($array) ){
+	        return $array;
+        }elseif(gettype($array)!=='object'){
 			return addslashes($array);
 		}else{
 			return [];

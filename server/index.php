@@ -15,7 +15,7 @@ require_once __DIR__.'/autoload.php';
 
 //\APS\UserGroup::common()->update(['menuaccess'=>['operation','setting','settingApiTest']],'300');
 
-_ASRoute()->setMode('RAW');
+_ASRoute()->setMode(ASAPI_Mode_RAW);
 _ASRoute()->GoodSay(false);
 
 //_ASRedis()->flush();

@@ -5,7 +5,7 @@ $website->requireGroupLevel(80000,'manager/insufficient');
 $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficient');
 
 $website->params['itemClass'] = 'APS\CommerceShipping';
-$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\CommerceShipping::$countFilters );
+$website->params['filters']   = \APS\Filter::purify( $website->params, \APS\CommerceShipping::filterFields );
 
 $callResult = \APS\ASAPI::systemInit( 'manager\itemList', $website->params, $website->user )->run() ;
 

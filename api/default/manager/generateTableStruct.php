@@ -1,20 +1,25 @@
 <?php
 namespace manager;
+use APS\ASAPI;
 use APS\ASModel;
+use APS\ASResult;
+use APS\DBTableStruct;
 
-class generateTableStruct extends \APS\ASAPI{
+class generateTableStruct extends ASAPI{
 
-    protected static $groupLevelRequirement = 900;
-    protected $scope = 'public';
-    public $mode = 'JSON';
+    const groupLevelRequirement = GroupLevel_SuperAdmin;
+    const scope = ASAPI_Scope_Public;
+    public $mode = ASAPI_Mode_Json;
 
-    public function run(): \APS\ASResult
+    public function run(): ASResult
     {
-        $className = $this->params['class'];
+        $className = $this->params['class'] ?? ASModel::class;
         if( !isset($className) ){
             return $this->error(103,'Please Input class name.');
         }
 
-        return _ASDB()->newTable( ['fields'=>$className::$dataStruct, 'table'=>$className::$table] );
+        return _ASDB()->newTable(
+            DBTableStruct::init( $className::table )->fromArray( $className::tableStruct )
+        );
     }
 }

@@ -9,10 +9,11 @@
 
 namespace commerce;
 
+use APS\AnalysisProduct;
 use APS\ASAPI;
 use APS\ASResult;
 use APS\CommerceOrder;
-use APS\MailTemplate;
+use APS\MediaTemplate;
 use APS\Mixer;
 use APS\SMTP;
 use APS\Time;
@@ -21,21 +22,21 @@ use PHPMailer\PHPMailer\Exception;
 class orderPaid extends ASAPI
 {
 
-    protected $scope = 'system';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_System;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {
 
-        $orderid = $this->params['orderid'];
+        $orderId = $this->params['orderid'];
 
-        $order = CommerceOrder::common()->detail($orderid)->getContent();
+        $order = CommerceOrder::common()->detail($orderId)->getContent();
 
         $email = $order['details']['shippingAddress']['email'];
 
         foreach ( $order['details']['items'] as $k => $item ){
 
-            \APS\AnalysisProduct::common()->add([
+            AnalysisProduct::common()->addByArray([
                 'productid'=>$item['productid'],
                 'price'=>$item['price'],
                 'sale'=>$item['sale'],
@@ -55,24 +56,24 @@ class orderPaid extends ASAPI
         $order['site'] = getConfig('title','WEBSITE');
 
         $smtp = new SMTP();
-        $smtp->setFrom(NULL, getConfig('title','WEBSITE') );
+        $smtp->setFrom(getConfig('title','WEBSITE') );
 
-        $content = Mixer::mix($order, MailTemplate::$orderConfirmed );
+        $content = Mixer::mix($order, MediaTemplate::common()->recent('orderConfirmed',Type_Email)->getContent() );
 
         try {
-            $smtp->send($email, "Your order has been confirmed", $content);
+            $smtp->send($email, MediaTemplate::common()->recent('orderConfirmed',Type_EmailSubject)->getContentOr("Your order has been confirmed"), $content);
         } catch (Exception $e) {
             return $this->take($e)->error(11,'Send Failed');
         }
 
 
         $adminNotify = new SMTP();
-        $adminNotify->setFrom(NULL, getConfig('title','WEBSITE'));
+        $adminNotify->setFrom(getConfig('title','WEBSITE'));
 
-        $content = Mixer::mix( $order, MailTemplate::$newPaidOrder );
+        $content = Mixer::mix( $order, MediaTemplate::common()->recent('newPaidOrder',Type_Email)->getContent() );
 
         try{
-            $adminNotify->send('contact@honeybay.life', "Order payment completion.", $content);
+            $adminNotify->send('', MediaTemplate::common()->recent('newPaidOrder',Type_EmailSubject)->getContentOr("Order payment completion."), $content);
         } catch ( Exception $e ){
             return $this->take($e)->error(11,'Send Failed');
         }

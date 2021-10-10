@@ -10,3 +10,6 @@
 [submodule "server/library/weChatDev"]
 	path = server/library/weChatDev
 	url = https://github.com/shezw/WeChatDeveloper
+[submodule "server/library/pluploadHandler"]
+	path = server/library/pluploadHandler
+	url = https://github.com/shezw/plupload-handler-php

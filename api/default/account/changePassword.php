@@ -7,6 +7,7 @@
 namespace account;
 
 
+use APS\ASAPI;
 use APS\ASResult;
 use APS\Filter;
 use APS\Mixer;
@@ -18,10 +19,10 @@ use APS\User;
  *
  * @package account
  */
-class changePassword extends \APS\ASAPI{
+class changePassword extends ASAPI{
 
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {
@@ -44,7 +45,7 @@ class changePassword extends \APS\ASAPI{
             return $checkPassword;
         }
 
-        return User::common()->update(['password'=>$password],$this->user->userid);
+        return User::common()->updateByArray(['password'=>$password],$this->user->userid);
 
     }
 

@@ -20,23 +20,38 @@ namespace APS;
  */
 class AccessOperation extends ASModel{
 
-    public static $table         = 'access_operation';
-    public static $primaryid     = 'uid';
-    public static $addFields     = ['uid','title','description','scope','parentid','mergeparents'];
-    public static $countFilters  = ['title','parentid','scope','status'];
-    public static $searchFilters = ['title','description'];
+    const table         = 'access_operation';
+    const comment       = '系统操作权限';
+    const primaryid     = 'uid';
+    const addFields     = ['uid','saasid','title','description','scope','parentid','mergeparents'];
+    const detailFields  = ['uid','saasid','title','description','scope','parentid','mergeparents'];
+    const listFields    = ['uid','saasid','title','description','scope','parentid','mergeparents'];
+    const updateFields  = ['title','description','scope','parentid','mergeparents'];
+    const filterFields  = ['title','saasid','parentid','scope','status'];
+    const tableStruct = [
 
-    public static $depthStruct = [
-        'mergeparents'=>'ASJson',
+        'uid'           =>['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'索引ID',  'idx'=>DBIndex_Unique ],
+        'saasid'        =>['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'所属saas',  'idx'=>DBIndex_Index,],
+        'parentid'      =>['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'父级ID',  'idx'=>DBIndex_Index ],
+        'mergeparents'  =>['type'=>DBField_Json,      'len'=>128, 'nullable'=>1,  'cmt'=>'合并父级 120字符以内（用于快速迭代查询）JSON' ],
+        'title'         =>['type'=>DBField_String,    'len'=>24,  'nullable'=>0,  'cmt'=>'权限名称'],
+        'description'   =>['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'描述 120字以内' ],
+        'scope'         =>['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'权限作用域'],
+        'status'        =>['type'=>DBField_String,    'len'=>16,  'nullable'=>0,  'cmt'=>'状态 // disabled弃用',  'dft'=>'enabled', ],
+
+        'createtime'    =>['type'=>DBField_TimeStamp, 'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间', 'idx'=>DBIndex_Index, ],
+        'lasttime'      =>['type'=>DBField_TimeStamp, 'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
+
+    const depthStruct = [
+        'mergeparents'=>DBField_Json,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp
     ];
 
     public function newOperation( string $title, string $description, string $scope = 'common', string $parentid = null): ASResult
     {
-
-        if ( $this->has([
-            'title'=>$title,
-            'scope'=>$scope,
-        ]) ){
+        if ( $this->has(DBConditions::init()->where('title')->equal($title)->and('scope')->equal($scope)) ){
             return $this->error(610,i18n('ACC_OPR_EXT'),'AccessOperation->newOperation');
         }
 
@@ -47,13 +62,14 @@ class AccessOperation extends ASModel{
             $mergeparents[] = $parentid;
         }
 
-        return $this->add([
+        return $this->add( AccessOperation::initValuesFromArray([
             'title'=>$title,
             'description'=>$description,
             'scope'=>$scope,
             'parentid'=>$parentid,
-            'mergeparents'=>$mergeparents ?? null
-        ]);
+            'mergeparents'=>$mergeparents ?? null,
+            'saasid'=>saasId()
+        ]));
     }
 
     # 检查权限
@@ -65,17 +81,17 @@ class AccessOperation extends ASModel{
      * @param  string  $uid
      * @return bool
      */
-    public function can( string $groupid, string $uid ):bool{
-
+    public function can( string $groupid, string $uid ):bool
+    {
         $operations = $this->detail($uid)['mergeparents'];
         $operations[] = $uid;
 
-        return Relation::common()->has([
-            'itemid'=>$groupid,
-            'itemtype'=>UserGroup::$table,
-            'targetid'=>$operations,
-            'targettype'=>static::$table
-        ]);
+        return Relation::common()->has(DBConditions::init()->where('itemid')->equal($groupid)
+        ->and('itemtype')->equal(UserGroup::table)
+        ->and('targetid')->equal($operations)
+        ->and('targettype')->equal(static::table)
+        ->and('saasid')->equalIf(saasId())
+        );
     }
 
     /**
@@ -86,12 +102,12 @@ class AccessOperation extends ASModel{
      * @param  string  $scope
      * @return bool
      */
-    public function canBy( string $groupid, string $operation, string $scope = 'common' ):bool{
+    public function canBy( string $groupid, string $operation, string $scope = 'common' ):bool
+    {
+        $getUid = $this->find( $operation,$scope );
 
-        $queryuid = $this->find( $operation,$scope );
-
-        if( !$queryuid->isSucceed() ){ return false; }
-        return $this->can( $groupid, $queryuid->getContent() );
+        if( !$getUid->isSucceed() ){ return false; }
+        return $this->can( $groupid, $getUid->getContent() );
 
     }
 
@@ -105,8 +121,7 @@ class AccessOperation extends ASModel{
      */
     public function find( string $operation, string $scope = 'common' ): ASResult
     {
-
-        $list = $this->list(['title'=>$operation,'scope'=>$scope]);
+        $list = $this->list(DBConditions::init('scope')->equal($scope)->and('title')->equal($operation)->and('saasid')->equalIf(saasId()));
 
         return $list->isSucceed() ? $this->take($list->getContent()[0]['uid'])->success() : $list;
     }
@@ -118,9 +133,9 @@ class AccessOperation extends ASModel{
      * @param  string  $uid
      * @return ASResult
      */
-    public function ban( string $groupid, string $uid ):ASResult{
-
-        $combineId = Relation::common()->getBindId($groupid,UserGroup::$table,$uid,static::$table);
+    public function ban( string $groupid, string $uid ):ASResult
+    {
+        $combineId = Relation::common()->getBindId($groupid,UserGroup::table,$uid,static::table);
 
         return $combineId->isSucceed() ? Relation::common()->unBind($combineId->getContent()) : $combineId ;
     }
@@ -135,8 +150,7 @@ class AccessOperation extends ASModel{
      */
     public function grant( string $groupid, string $uid ): ASResult
     {
-
-        return Relation::common()->bind($groupid,UserGroup::$table,$uid,static::$table);
+        return Relation::common()->bind($groupid,UserGroup::table,$uid,static::table);
     }
 
 }

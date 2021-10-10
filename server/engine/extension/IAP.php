@@ -54,7 +54,7 @@ class IAP extends ASObject {
             if (!is_array($data)) {
 
                 $status  = 552;
-                $message = i18n('SYS_FOMAT_ERROR');
+                $message = i18n('SYS_FORMAT_ERROR');
                 $content = $response;
 
             }else{

@@ -13,21 +13,24 @@ use APS\CommerceCoupon;
 use APS\CommerceOrder;
 use APS\CommerceProduct;
 use APS\CommerceShipping;
+use APS\DBConditions;
+use APS\DBValues;
 use APS\User;
 use APS\UserAddress;
 
 class placeOrder extends ASAPI
 {
 
-    protected $scope = 'public';
-    public    $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     private function addEmailAddress( array $address, string $userid ){
 
-        if( UserAddress::common()->count(['userid'=>$userid])->getContent() == 0 ){
+        if( UserAddress::common()->count(UserAddress::uidCondition($userid))->getContent() == 0 ){
             $address['type'] = 'shipping';
             $address['userid'] = $userid;
-            $addAddress = UserAddress::common()->add($address);
+
+            $addAddress = UserAddress::common()->add(  UserAddress::initValuesFromArray($address) );
         }
     }
 
@@ -103,7 +106,7 @@ class placeOrder extends ASAPI
 
         $order['payment'] = $this->params['payment'];
 
-        $addOrder = CommerceOrder::common()->add($order);
+        $addOrder = CommerceOrder::common()->add( CommerceOrder::initValuesFromArray($order) );
 
         if( !$addOrder->isSucceed() ){
 
@@ -113,17 +116,17 @@ class placeOrder extends ASAPI
         // 下单成功 扣除库存
         foreach ( $this->params['items'] as $i => $item ) {
 
-            CommerceProduct::common()->decrease('stock',['productid'=>$item['productid']],$item['count']);
+            CommerceProduct::common()->decrease('stock',DBConditions::init()->where('productid')->equal($item['productid']),$item['count']);
         }
 
         CommerceOrder::common()->status($addOrder->getContent(), 'needpay' );
 
         if( $this->params['autoRegist'] && $this->params['autoRegist'] != 'false' ) {
 
-            $addUser = User::common()->add([
-                'email'=> $order['details']['shippingAddress']['email'],
-                'nickname'=> $order['details']['shippingAddress']['firstname'] . ' ' .$order['details']['shippingAddress']['lastname']
-            ]);
+            $addUser = User::common()->add(
+                DBValues::init('email')->stringIf($order['details']['shippingAddress']['email'])
+                    ->set('nickname')->stringIf($order['details']['shippingAddress']['firstname'] . ' ' .$order['details']['shippingAddress']['lastname'])
+            );
 
             $authorize = User::common()->systemAuthorize($addUser->getContent())->getContent();
             $user = new User($authorize['userid'],$authorize['token'],$authorize['scope']);

@@ -1,17 +1,22 @@
 <?php
 
-/** @var \APS\Website $website */
+/** @var Website $website */
+
+use APS\Category;
+use APS\Encrypt;
+use APS\Website;
+
 $website->requireUser('manager/login');
 $website->requireGroupLevel(80000,'manager/insufficient');
 $website->requireGroupCharacter(['super','manager','editor'],'manager/insufficient');
 
-$getCategory = \APS\Category::common()->list(['type'=>'product']);
+$getCategory = Category::common()->listByArray(['type'=>'product']);
 if( $getCategory->isSucceed() ){
     $website->setSubData('categoryList',$getCategory->getContent());
 
 }
 
-$website->setSubData('random',\APS\Encrypt::shortId(8));
+$website->setSubData('random', Encrypt::shortId(8));
 $website->setSubData('customFooter',"
 ");
 $website->setSubData('customJS',"

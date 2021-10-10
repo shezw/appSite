@@ -7,6 +7,7 @@
 namespace account;
 
 
+use APS\ASAPI;
 use APS\ASResult;
 use APS\Filter;
 use APS\Mixer;
@@ -21,14 +22,14 @@ use APS\User;
  * @param   string      mobile
  * @package account
  */
-class regist extends \APS\ASAPI{
+class regist extends ASAPI{
 
-    protected $scope = 'public';
-    public  $mode = 'JSON';
+    const scope = ASAPI_Scope_Public;
+    const mode = ASAPI_Mode_Json;
 
     public function run(): ASResult
     {
-        $scope   = $this->params["scope"] ?? 'common';
+        $scope   = $this->params["scope"] ?? AccessScope_Common;
 
         $registUser = User::common()->add($this->params);
 

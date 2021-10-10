@@ -13,21 +13,17 @@ use APS\Media;
 
 class deleteMedia extends ASAPI{
 
-    private $mediaId   = '';
-    public  $mode = 'JSON';
+    const mode = ASAPI_Mode_Json;
+    const scope = ASAPI_Scope_Public;
 
-    protected static $groupCharacterRequirement = ['super','manager'];
-    protected static $groupLevelRequirement = 80000;
-
-    protected $scope = 'public';
+    const groupCharacterRequirement = [GroupRole_Super,GroupRole_Manager];
+    const groupLevelRequirement = GroupLevel_Admin;
 
     public function run(): ASResult
     {
+        $mediaId = $this->params['mediaId'];
 
-        $this->mediaId    = $this->params['mediaId'];
-
-        return Media::common()->delete( $this->mediaId );
-
+        return Media::common()->delete($mediaId);
     }
 
 }

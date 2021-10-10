@@ -10,78 +10,35 @@ namespace APS;
 class AccessToken extends ASModel
 {
 
+    const table = 'access_token';
+    const comment   = '权限令牌';
 
-    /**
-     * 数据表名
-     * @var string
-     */
-    public static $table = 'access_token';
+    const primaryid = 'uid';
+    const addFields = ['uid','userid','saasid','token','scope','expire','createtime','lasttime'];
+    const updateFields = ['uid','userid','saasid','token','scope','expire','createtime','lasttime'];
+    const detailFields = ['uid','userid','saasid','token','scope','expire','createtime','lasttime'];
+    const overviewFields = ['uid','userid','saasid','token','scope','expire','createtime','lasttime'];
+    const listFields = ['uid','userid','saasid','token','scope','expire','createtime','lasttime'];
+    const filterFields = ['uid','userid','saasid','scope','expire','createtime','lasttime'];
 
-    /**
-     * 主索引字段
-     * @var string
-     */
-    public static $primaryid = 'NAN';
+    const tableStruct = [
 
-    /**
-     * 添加支持字段
-     * @var array [string]
-     */
-    protected static $addFields;
+        'uid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'索引ID',  'idx'=>DBIndex_Unique ],
+        'userid'=>   ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'用户ID',  'idx'=>DBIndex_Index ],
+        'saasid'=>   ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'所属saas','idx'=>DBIndex_Index,],
+        'token'=>    ['type'=>DBField_String,    'len'=>511, 'nullable'=>0,  'cmt'=>'token令牌'],
+        'scope'=>    ['type'=>DBField_String,    'len'=>16,  'nullable'=>0,  'cmt'=>'权限作用域',  'idx'=>DBIndex_Index ],
+        'expire'=>   ['type'=>DBField_TimeStamp, 'len'=>11,  'nullable'=>0,  'cmt'=>'过期时间 时间戳 必填',   'dft'=>0,  'idx'=>DBIndex_Index ],
 
-    /**
-     * 更新支持字段
-     * @var array [string]
-     */
-    protected static $updateFields;
+        'createtime'=>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'创建时间',   'idx'=>DBIndex_Index, ],
+        'lasttime'  =>['type'=>DBField_TimeStamp,'len'=>13, 'nullable'=>0,  'cmt'=>'上一次更新时间', ],
+    ];
 
-    /**
-     * 详情支持字段
-     * @var array [string]
-     */
-    protected static $detailFields;
-
-    /**
-     * 外部接口详情支持字段
-     * @var array [string]
-     */
-    protected static $publicDetailFields;
-
-    /**
-     * 概览支持字段
-     * @var array [string]
-     */
-    protected static $overviewFields;
-
-    /**
-     * 列表支持字段
-     * @var array [string]
-     */
-    protected static $listFields;
-
-    /**
-     * 外部接口列表支持字段
-     * @var array [string]
-     */
-    protected static $publicListFields;
-
-    /**
-     * 计数查询支持筛选字段
-     * @var array [string]
-     */
-    protected static $countFilters;
-
-    /**
-     * 多重数据结构
-     * @var array [string=>any]
-     */
-    protected static $depthStruct    = null;
-
-    /**
-     * 搜索支持字段
-     * @var array [string]
-     */
-    protected static $searchFilters  = null;
+    const depthStruct    = [
+        'expire'=>DBField_TimeStamp,
+        'createtime'=>DBField_TimeStamp,
+        'lasttime'=>DBField_TimeStamp
+    ];
 
 
     /**
@@ -92,18 +49,19 @@ class AccessToken extends ASModel
      * @param  int     $duration
      * @return ASResult
      */
-    public function addToken( string $userid, string $scope = 'common', int $duration = Time::THIRTY ):ASResult{
+    public function addToken( string $userid, string $scope = AccessScope_Common, int $duration = Time::THIRTY ):ASResult{
 
         $t        = time();
         $expire   = (int)$t+(int)$duration;
-        $token    = Encrypt::minId(64);
+        $token    = Encrypt::minId(128);
 
-        $data = [
+        $data = AccessToken::initValuesFromArray([
             'userid'   => $userid,
             'scope'    => $scope,
             'token'    => $token,
             'expire'   => $expire,
-        ];
+            'saasid'   => saasId()
+        ]);
 
         $DB = $this->add($data);
 
@@ -111,10 +69,6 @@ class AccessToken extends ASModel
         return $this->take(['token'=>$token,'scope'=>$scope,'expire'=>$expire,'userid'=>$userid])->success(i18n('SYS_ADD_SUC'),'ACCESS::addToken');
     }
 
-    public function beforeAdd(array &$data)
-    {
-        unset($data[static::$primaryid]);
-    }
 
     /**
      * 更新令牌 访问
@@ -136,11 +90,6 @@ class AccessToken extends ASModel
         return $this->addToken($userid,$scope,$duration);
     }
 
-    public function beforeUpdate(array &$data)
-    {
-        unset($data[static::$primaryid]);
-    }
-
     /**
      * 检测令牌
      * checkToken
@@ -151,7 +100,9 @@ class AccessToken extends ASModel
      */
     public function checkToken( string $userid, string $token, string $scope='common'):ASResult{
 
-        $dbCheck = $this->getDB()->check($token,'token',static::$table,['userid'=>$userid,'scope'=>$scope],' expire DESC, createtime DESC ');
+        $dbCheck = $this->getDB()->check($token,'token',static::table,
+            DBConditions::init()->where('userid')->equal($userid)->and('scope')->equal($scope)->and('saasid')->equalIf(saasId())
+                ->orderWith(' expire DESC, createtime DESC '));
 
         return $dbCheck->isSucceed() ?
             $this->take($token)->success(i18n('AUTH_SUC'),'ACCESS::checkToken') :
@@ -164,25 +115,26 @@ class AccessToken extends ASModel
 
     /**
      * 添加第三方token
-     * @param  string    $unionid   用户ID
+     * @param  string    $unionId   用户ID
      * @param  string    $token     令牌
      * @param  string    $scope     作用域
      * @param  int       $duration  权限时长
      * @param  int|null  $expire    过期时间
      * @return ASResult
      */
-    public function addUnionToken( string $unionid, string $token, string $scope, int $duration = 0, int $expire = null ):ASResult{
+    public function addUnionToken(string $unionId, string $token, string $scope, int $duration = 0, int $expire = null ):ASResult{
 
         $expire   = $expire ?? time()+(int)( $duration*0.9 );
 
-        $data = [
-            'userid'   => $unionid,
+        $data = static::initValuesFromArray([
+            'userid'   => $unionId,
             'scope'    => $scope,
             'token'    => $token,
             'expire'   => $expire,
-        ];
+            'saasid'   => saasId()
+        ]);
 
-        $DB = $this->getDB()->add($data,static::$table);
+        $DB = $this->getDB()->add($data,static::table);
 
         if ( !$DB->isSucceed() ) { return $DB; }
         return $this->take($token)->success(i18n('SYS_ADD_SUC'),'ACCESS::addToken');
@@ -192,16 +144,21 @@ class AccessToken extends ASModel
     /**
      * 检测token是否有效
      * check Union token is valid
-     * @param  string  $unionid
+     * @param  string  $unionId
      * @param  string  $token
      * @param  string  $scope
      * @return boolean
      */
-    public function isValidUnionToken( string $unionid, string $token, string $scope = 'access_token' ):bool{
+    public function isValidUnionToken(string $unionId, string $token, string $scope = 'access_token' ):bool{
 
-        $now  = time();
-
-        $DB = $this->getDB()->count( static::$table, "expire>{$now} AND userid='{$unionid}' AND token='{$token}' AND scope='{$scope}'");
+        $DB = $this->getDB()->count( static::table,
+            DBConditions::init()
+                ->where('expire')->bigger(time())
+                ->and('userid')->equal($unionId)
+                ->and('token')->equal($token)
+                ->and('scope')->equal($scope)
+                ->and('saasid')->equalIf(saasId())
+        );
 
         return $DB->getContent() > 0;
     }
@@ -212,11 +169,15 @@ class AccessToken extends ASModel
      * @param  string $scope 作用域
      * @return ASResult
      */
-    public function getUnionToken( string $union, string $scope='access_token' ):ASResult{
-
-        $now  = time();
-
-        $DB = $this->getDB()->get('token', static::$table, "expire>{$now} AND userid='{$union}' AND scope='{$scope}'");
+    public function getUnionToken( string $union, string $scope='access_token' ):ASResult
+    {
+        $DB = $this->getDB()->get(DBFields::init()->and('token'), static::table,
+            DBConditions::init()
+                ->where('expire')->bigger(time())
+                ->and('userid')->equal($union)
+                ->and('scope')->equal($scope)
+                ->and('saasid')->equalIf(saasId())
+        );
 
         if ( !$DB->isSucceed() ) { return $DB; }
         return $DB;
@@ -224,29 +185,31 @@ class AccessToken extends ASModel
 
     /**
      * 更新第三方token
-     * @param  string    $unionid   第三方id
+     * @param  string    $unionId   第三方id
      * @param  string    $token     令牌
      * @param  string    $scope     作用域
      * @param  int       $duration  持续时长
      * @param  int|null  $expire
      * @return ASResult
      */
-    public function refreshUnionToken( string $unionid, string $token, string $scope = 'access_token', int $duration = 0, int $expire = null ):ASResult{
+    public function refreshUnionToken(string $unionId, string $token, string $scope = 'access_token', int $duration = 0, int $expire = null ):ASResult{
 
-        if($this->hasUnionToken($unionid,$scope)){
+        if($this->hasUnionToken($unionId,$scope)){
 
-            $data = [
-                'token'  =>$token,
-                'expire' =>$expire ?? time()+(int)($duration*0.9),
-            ];
+            $data = DBValues::init('token')->string($token)->set('expire')->number($expire ?? time()+(int)($duration*0.9));
 
-            $conditions  = "userid='{$unionid}' AND scope='{$scope}' ORDER BY createtime DESC LIMIT 1 ";
+            $conditions = DBConditions::init( static::table )
+                ->and('userid')->equal($unionId)
+                ->and('scope')->equal($scope)
+                ->and('saasid')->equalIf(saasId())
+                ->orderBy('createtime', DBOrder_DESC )
+                ->limitWith();
 
-            return $this->getDB()->update($data, static::$table, $conditions);
+            return $this->getDB()->update($data, static::table, $conditions);
 
         }else{
 
-            return $this->addUnionToken($unionid,$token,$scope,$duration);
+            return $this->addUnionToken($unionId,$token,$scope,$duration);
         }
     }
 
@@ -254,13 +217,13 @@ class AccessToken extends ASModel
     /**
      * 是否存在该第三方token
      * hasUnionToken
-     * @param  string  $unionid
+     * @param  string  $unionId
      * @param  string  $scope
      * @return bool
      */
-    public function hasUnionToken( string $unionid, string $scope='access_token' ):bool{
+    public function hasUnionToken(string $unionId, string $scope='access_token' ):bool{
 
-        $DB_COUNT = $this->getDB()->count(static::$table,"scope='{$scope}' AND userid='{$unionid}'");
+        $DB_COUNT = $this->getDB()->count(static::table,DBConditions::init()->where('scope')->equal($scope)->and('userid')->equal($unionId)->and('saasid')->equalIf(saasId()));
         return $DB_COUNT->getContent() > 0;
 
     }
@@ -271,9 +234,8 @@ class AccessToken extends ASModel
 
     public function clearToken(): ASResult
     {
-
         $t  = time()- 3 * Time::DAY ;
-        return $this->getDB()->remove(static::$table,"expire<{$t}");
+        return $this->getDB()->remove(static::table,DBConditions::init()->where('expire')->less($t)->and('saasid')->equalIf(saasId()));
     }
 
 

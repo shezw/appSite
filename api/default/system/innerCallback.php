@@ -1,12 +1,16 @@
 <?php
 
+use APS\ASAPI;
+use APS\ASResult;
+use APS\Filter;
+
 /**
  * 系统回调
  * innerCallback
  */
-class innerCallback extends \APS\ASAPI{
+class innerCallback extends ASAPI{
 
-    protected $scope = 'system';
+    const scope = ASAPI_Scope_System;
 
     /**
      * 回调数组
@@ -15,7 +19,7 @@ class innerCallback extends \APS\ASAPI{
      */
     protected $params;
 
-    public function run(): \APS\ASResult
+    public function run(): ASResult
     {
         if( isset($this->params) ){ return $this->success('Empty Call','innerCallback'); }
         if( gettype($this->params)=='string'){
@@ -30,8 +34,8 @@ class innerCallback extends \APS\ASAPI{
         for ( $i = 0 ; $i < $count; $i++ ){
 
             $api    = $callbacks[$i]['api'] ?? $callbacks[$i]['action'];
-            $params = \APS\Filter::removeInvalid( $callbacks[$i]['params'] );
-            $callResult = \APS\ASAPI::systemInit( $api, $params )->run() ;
+            $params = Filter::removeInvalid( $callbacks[$i]['params'] );
+            $callResult = ASAPI::systemInit( $api, $params )->run() ;
 
             if( $callResult->isSucceed() ){
                 $success ++ ;

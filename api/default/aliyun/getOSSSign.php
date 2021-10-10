@@ -7,17 +7,17 @@
 namespace aliyun;
 
 use APS\AliyunOSS;
+use APS\ASAPI;
 use APS\ASResult;
 
-class getOSSSign extends \APS\ASAPI
+class getOSSSign extends ASAPI
 {
 
-    public $mode = 'JSON';
+    const mode = ASAPI_Scope_Public;
+    const scope = ASAPI_Scope_Public;
+    const groupLevelRequirement = 10000;
+
     private $type = 'image';
-
-    protected $scope = 'public';
-
-    protected static $groupLevelRequirement = 10000;
 
     public function run(): ASResult
     {

@@ -59,5 +59,9 @@ return
     'settingDatabase'=>[
         'level'=>90000,
         'character'=>'super'
+    ],
+    'settingModel'=>[
+        'level'=>90000,
+        'character'=>'super'
     ]
 ];
