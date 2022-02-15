@@ -12,6 +12,7 @@ class Article extends ASModel{
     const table     = "item_article";
     const comment   = '文章模块';
     const primaryid = "uid";
+    const alias     = 'article';
 
     const addFields = [
         'uid','categoryid','authorid','areaid','regionid','saasid',

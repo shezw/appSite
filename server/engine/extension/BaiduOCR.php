@@ -35,7 +35,7 @@ class BaiduOCR extends ASObject{
     {
 
         $ocr = new AipOcr($this->id,$this->ak,$this->sk);
-        $res = $ocr->passport(AliyunOSS::getBase64($url,true));
+        $res = $ocr->passport(Uploader::getBase64($url,true));
 
         if(!isset($res['words_result'])){
             return $this->take($res)->error(600,'No valid data return back','BaiduOCR->analysisPassport');
@@ -69,7 +69,7 @@ class BaiduOCR extends ASObject{
     {
 
         $ocr = new AipOcr($this->id,$this->ak,$this->sk);
-        $res = $ocr->businessLicense(AliyunOSS::getBase64($url,true));
+        $res = $ocr->businessLicense(Uploader::getBase64($url,true));
 
         if(!isset($res['words_result'])){
             return $this->take($res)->error(600,'No valid data return back','BaiduOCR->analysisPassport');

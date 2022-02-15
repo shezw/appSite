@@ -21,17 +21,18 @@ class UserComment extends ASModel{
     const primaryid = "uid";
     const addFields = [
         'uid','userid',
-        'itemid','itemtype',
+        'itemid','itemtype','details',
         'title','content','status',
         'featured','sort','createtime','lasttime',
     ];
     const updateFields = [
-        'featured',
+        'details',
+        'featured','sort',
         'status',
     ];
     const detailFields = [
         'uid','userid',
-        'itemid','itemtype',
+        'itemid','itemtype','details',
         'title','content','status',
         'featured','sort','createtime','lasttime',
     ];
@@ -43,17 +44,18 @@ class UserComment extends ASModel{
     ];
     const listFields = [
         'uid','userid',
-        'itemid','itemtype',
+        'itemid','itemtype','details',
         'title','content','status',
         'featured','sort','createtime','lasttime',
     ];
     const filterFields = [
         'uid','userid',
-        'itemid','itemtype',
+        'itemid','itemtype','details',
         'featured','sort','createtime','lasttime',
         'status'
     ];
     const depthStruct = [
+        'details'=>DBField_Json,
         'featured'=>DBField_Boolean,
         'sort'=>DBField_Int,
         'createtime'=>DBField_TimeStamp,
@@ -69,6 +71,7 @@ class UserComment extends ASModel{
 
         'title'=>    ['type'=>DBField_String,    'len'=>63,  'nullable'=>1,  'cmt'=>'标题 30字以内' ,     'idx'=>DBIndex_FullText ],
         'content'=>  ['type'=>DBField_String,    'len'=>511, 'nullable'=>1,  'cmt'=>'内容 250字以内' ,    'idx'=>DBIndex_FullText ],
+        'details'=>  ['type'=>DBField_Json,      'len'=>511, 'nullable'=>1,  'cmt'=>'数据参数 k-v json' ],
 
         'status'=>   ['type'=>DBField_String,    'len'=>12,  'nullable'=>0,  'cmt'=>'状态',    'dft'=>'enabled',       ],
 

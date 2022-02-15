@@ -3,6 +3,7 @@
 use APS\Area;
 use APS\ASSetting;
 use APS\Category;
+use APS\CommerceProduct;
 use APS\MediaTemplate;
 use APS\User;
 use APS\UserAccount;
@@ -13,8 +14,10 @@ use APS\UserPocket;
 return [
 
     User::class => [
-        ['uid'=>SuperAdminUID,  'username'=>'superadmin',  'nickname'=>'超管',    'groupid'=>Group_SuperAdmin, 'status'=>Status_Super ,  'userid'=>SuperAdminUID, 'point'=>1000 ],
-        ['uid'=>AdminUID,       'username'=>'administor',  'nickname'=>'管理员',  'groupid'=>Group_Admin,      'status'=>Status_Enabled, 'userid'=>AdminUID, 'point'=>1000 ],
+        ['uid'=>SuperAdminUID,  'username'=>'superadmin',  'nickname'=>i18n(SuperAdminUID),    'groupid'=>Group_SuperAdmin, 'status'=>Status_Super ,  'userid'=>SuperAdminUID, 'avatar'=>DefaultAvatar, 'point'=>1000 ],
+        ['uid'=>AdminUID,       'username'=>'administor',  'nickname'=>i18n(AdminUID),  'groupid'=>Group_Admin,      'status'=>Status_Enabled, 'userid'=>AdminUID, 'avatar'=>DefaultAvatar, 'point'=>1000 ],
+
+        ['uid'=>"00000000",     'username'=>'demoUser',    'nickname'=>'Non-existent', 'groupid'=>Group_Registered, 'status'=>Status_Enabled, 'avatar'=>DefaultAvatar, 'point'=>100]
     ],
     UserGroup::class =>[
 
@@ -44,7 +47,33 @@ return [
         ['parentid'=>Type_Media,'type'=>Type_Media,  'title'=>'音频' ],
         ['parentid'=>Type_Media,'type'=>Type_Media,  'title'=>'文件' ],
 
+        [
+            "uid"=>"c_demo",
+            "title"=>"House Decoration",
+            "alias"=>"house",
+            "type"=> CommerceProduct::class,
+
+            "cover"=>"/website/static/images/category_house.jpeg"
+        ]
     ],
+
+    CommerceProduct::class =>[
+        [
+            "uid"=>"p_demo",
+            "title"=>"Green grass and stones",
+            "description"=>"This is a demo product description, please delete it and add it with your own data. ",
+            "cover"=>"/website/static/images/product.jpg",
+            "price"=>15.99,
+            "sale"=>9.99,
+            "stock"=>99,
+
+            "authorid"=>AdminUID,
+            "categoryid"=>"c_demo"
+        ]
+
+    ],
+
+
     Area::class =>[
 
         ['areaid'=>'root','title'=>'系统地区','description'=>'默认地区','level'=>0,'location'=>'126.15170,25.87275' ],
@@ -114,7 +143,7 @@ return [
         ['keyid'=> 'REDIS_PORT',           'content'=>6379,        'description'=>'Redis Port'],
         ['keyid'=> 'SERVER_IP',            'content'=>NULL,        'description'=>'服务器ip'],
 
-        ['keyid'=> 'title',          'scope'=>'MANAGER', 'content'=>'管理后台' , 'description'=>'后台名称',],
+        ['keyid'=> 'title',          'scope'=>'MANAGER', 'content'=>'Management' , 'description'=>'后台名称',],
         ['keyid'=> 'description',    'scope'=>'MANAGER', 'content'=>'AppSite Back-End Management', 'description'=>'后台简介',],
         ['keyid'=> 'id',             'scope'=>'MANAGER', 'content'=>'appsite_m', 'description'=>'后台识别ID 用于本地缓存',],
         ['keyid'=> 'rootPath',       'scope'=>'MANAGER', 'content'=>'manager', 'description'=>'自定义根目录,用于隐藏后台地址。需要与Rewrite规则匹配。',],
@@ -122,13 +151,14 @@ return [
         ['keyid'=> 'logoW',          'scope'=>'MANAGER', 'content'=>NULL, 'description'=>'横版logo',],
         ['keyid'=> 'logoH',          'scope'=>'MANAGER', 'content'=>NULL, 'description'=>'竖版logo',],
 
-        ['keyid'=> 'title',        'scope'=>'WEBSITE', 'content'=>'AppSite' , 'description'=>'网站名称',],
-        ['keyid'=> 'id',           'scope'=>'WEBSITE', 'content'=>'appsite_w', 'description'=>'前台识别ID 用于本地缓存',],
-        ['keyid'=> 'logoUrl',      'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo480.png', 'description'=>'LOGO地址',],
-        ['keyid'=> 'logoW',        'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo-W.png', 'description'=>'横版logo',],
-        ['keyid'=> 'logoH',        'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo-H.png', 'description'=>'竖版logo',],
-        ['keyid'=> 'defaultAvatar','scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/avatar.jpg', 'description'=>'默认头像 完整链接'],
-        ['keyid'=> 'imagePreview', 'scope'=>'WEBSITE', 'content'=>NULL, 'description'=> '默认预览 完整链接 '],
+        ['keyid'=> 'title',          'scope'=>'WEBSITE', 'content'=>'AppSite' , 'description'=>'网站名称',],
+        ['keyid'=> 'description',    'scope'=>'WEBSITE', 'content'=>'Fullstack Engine', 'description'=>'网站描述',],
+        ['keyid'=> 'id',             'scope'=>'WEBSITE', 'content'=>'appsite_w', 'description'=>'前台识别ID 用于本地缓存',],
+        ['keyid'=> 'logoUrl',        'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo480.png', 'description'=>'LOGO地址',],
+        ['keyid'=> 'logoW',          'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo-W.png', 'description'=>'横版logo',],
+        ['keyid'=> 'logoH',          'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/logo-H.png', 'description'=>'竖版logo',],
+        ['keyid'=> 'defaultAvatar',  'scope'=>'WEBSITE', 'content'=>'/website/static/appsiteJS/images/avatar.jpg', 'description'=>'默认头像 完整链接'],
+        ['keyid'=> 'imagePreview',   'scope'=>'WEBSITE', 'content'=>NULL, 'description'=> '默认预览 完整链接 '],
 
         /* 安全防护配置 */
 
@@ -138,8 +168,8 @@ return [
 
         ['keyid'=>'MEDIA_HOST_UPLOAD',     'description'=>'是开启直传服务器',  'content'=> 0,],
         ['keyid'=>'CUSTOM_OSS_DOMAIN',     'description'=>'自定义云存储绑定域名',  'content'=> NULL,],
-        ['keyid'=>'MEDIA_UPLOAD_ENGINE',   'description'=>'外部上传',  'content'=> 'ALIYUN_OSS' ,],
-        ['keyid'=>'MEDIA_TEMP_DIR',        'description'=>'上传缓存目录',  'content'=> ':/tmp/',],
+        ['keyid'=>'MEDIA_UPLOAD_ENGINE',   'description'=>'外部上传',  'content'=> StorageLocation_LocalStatic ,],
+        ['keyid'=>'MEDIA_TEMP_DIR',        'description'=>'上传缓存目录',  'content'=> TEMP_DIR,],
         ['keyid'=>'MEDIA_POLICY_DURATION', 'description'=>'上传签名有效时长',  'content'=> 300  ,],
         ['keyid'=>'MEDIA_MAX_SIZE',        'description'=>'最大视频文件大小',  'content'=> 500*1024*1024 ,],
         ['keyid'=>'MEDIA_MAX_VIDEO_SIZE',  'description'=>'最大视频文件大小',  'content'=> 500*1024*1024 ,],
@@ -207,7 +237,7 @@ return [
         ['keyid'=>'OSS_KEYSECRET',     'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'阿里云存储SECRET' ],
         ['keyid'=>'OSS_ENDPOINT',      'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'阿里云存储ENDPOINT' ],
         ['keyid'=>'OSS_BUCKET',        'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'阿里云存储BUCKET' ],
-        ['keyid'=>'CUSTOM_OSS_DOMAIN',        'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'自定义绑定阿里云域名' ],
+        ['keyid'=>'CUSTOM_OSS_DOMAIN', 'scope'=>'ALIYUN', 'content'=>NULL , 'description'=>'自定义绑定阿里云域名' ],
 
         /* ALIYUN SMS 阿里云短信 */
 

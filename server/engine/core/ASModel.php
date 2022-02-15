@@ -11,7 +11,7 @@ namespace APS;
  *
  * @package APS\core
  */
-abstract class ASModel extends ASBase {
+abstract class ASModel extends ASBase{
 
     /**
      * @var array (name=>[properties])
@@ -19,16 +19,14 @@ abstract class ASModel extends ASBase {
     const tableStruct = [];
 
     /**
-     * 数据表名
-     * @var string
+     * @var string 数据表名
      */
 	const table = "ASModel";
 
 	const comment = "抽象模型";
 
     /**
-     * 主索引字段
-     * @var string
+     * @var string 主索引字段
      */
 	const primaryid = 'uid';
 
@@ -36,49 +34,49 @@ abstract class ASModel extends ASBase {
      * 添加支持字段
      * @var array [string]
      */
-    const addFields = [];
+    const addFields = null;
 
     /**
      * 更新支持字段
      * @var array [string]
      */
-    const updateFields = [];
+    const updateFields = null;
 
     /**
      * 详情支持字段
      * @var array [string]
      */
-    const detailFields = [];
+    const detailFields = null;
 
     /**
      * 外部接口详情支持字段
      * @var array [string]
      */
-    const publicDetailFields = [];
+    const publicDetailFields = null;
 
     /**
      * 概览支持字段
      * @var array [string]
      */
-    const overviewFields = [];
+    const overviewFields = null;
 
     /**
      * 列表支持字段
      * @var array [string]
      */
-    const listFields = [];
+    const listFields = null;
 
     /**
      * 外部接口列表支持字段
      * @var array [string]
      */
-    const publicListFields = [];
+    const publicListFields = null;
 
     /**
      * 计数、查询筛选 支持字段 ( 原countFilters )
      * @var array [string]
      */
-    const filterFields = [];
+    const filterFields = null;
 
     /**
      * 数据转换规则
@@ -220,7 +218,7 @@ abstract class ASModel extends ASBase {
 //        }
 
 		$this->beforeUpdate($data);
-//
+
 //		$data = Filter::purify($data,static::updateFields);
 //
 //		if (count($data)<1) {
@@ -332,7 +330,6 @@ abstract class ASModel extends ASBase {
      */
 	public function detail(string $uid , $public = false ): ASResult
     {
-
         $this->RedisHash = [$uid,$public];
 
         if( static::rds_auto_cache && $this->_hasCache() ){
@@ -343,12 +340,6 @@ abstract class ASModel extends ASBase {
 
         $fields     = DBFields::initBySimpleList( ($public && !empty(static::publicDetailFields)) ? static::publicDetailFields : static::detailFields );
         $conditions = DBConditions::init(static::table)->where(static::primaryid)->equal($uid)->limitWith(0,1);
-
-		$params = [ 
-			'fields'     => $fields->toArray(),
-			'table'      => static::table,
-			'conditions' => $conditions->toArray()
-		];
 
 		$this->DBGet($fields,$conditions);
 		$this->setId($uid);
@@ -549,13 +540,15 @@ abstract class ASModel extends ASBase {
      * @param  JoinParams[]|array|string[]   $mergeJoins
      * @param  JoinParams[]|array|string[]   $subJoins
 	 * @return   ASResult
+     *
+     * @deprecated
 	 */
-//	public function joinCount(  array $filters = null, array $mergeJoins = null, array $subJoins = null ): ASResult
-//    {
-//	    $primaryParams = JoinPrimaryParams::common(static::class);
-//	    if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
-//		return $this->advancedJoinCount( $primaryParams ,$mergeJoins,$subJoins );
-//	}
+	public function joinCount(  array $filters = null, array $mergeJoins = null, array $subJoins = null ): ASResult
+    {
+	    $primaryParams = JoinPrimaryParams::common(static::class);
+	    if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
+		return $this->advancedJoinCount( $primaryParams ,$mergeJoins,$subJoins );
+	}
 //
 //	public function countByQuickJoin(DBJoinParams $joinParams)
 //    {
@@ -570,24 +563,29 @@ abstract class ASModel extends ASBase {
      * @param  JoinParams[]|array|string[]   $mergeJoins
      * @param  JoinParams[]|array|string[]   $subJoins
      * @return ASResult
+     *
+     * @deprecated
      */
-//	public function advancedJoinCount( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null ): ASResult
-//    {
-//
-//		$this->beforeJoinCount( $primaryParams,$mergeJoins,$subJoins );
-//
-//		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-//
-//		$this->DBJoinCount( $primaryParams, $joinParams );
-//
-//		$this->beforeJoinCountReturn( $this->result );
-//
-//		return $this->feedback();
-//
-//	}
-//
-//	public function beforeJoinCount( JoinPrimaryParams &$filters = null, array &$mergeJoins = null, array &$subJoins = null ){  }
-//	public function beforeJoinCountReturn( ASResult &$result ){  }
+	public function advancedJoinCount( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null ): ASResult
+    {
+
+		$this->beforeJoinCount( $primaryParams,$mergeJoins,$subJoins );
+
+		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
+
+		$this->DBJoinCount( $primaryParams, $joinParams );
+
+		$this->beforeJoinCountReturn( $this->result );
+
+		return $this->feedback();
+
+	}
+
+    /** @deprecated **/
+	public function beforeJoinCount( JoinPrimaryParams &$filters = null, array &$mergeJoins = null, array &$subJoins = null ){  }
+
+    /** @deprecated **/
+	public function beforeJoinCountReturn( ASResult &$result ){  }
 
 
 	/**
@@ -596,27 +594,130 @@ abstract class ASModel extends ASBase {
 	 * @param    array|null               $filters        主表条件
 	 * @param    JoinParams[]|null   $joins          合并查询表
 	 * @return   boolean
+     *
+     * @deprecated
 	 */
-//	public function joinHas(  array $filters = null, array $joins = null ): bool
-//    {
-//
-//	    $primaryParams = JoinPrimaryParams::common( static::class );
-//	    $primaryParams->withResultFilter($filters);
-//
-//	    $joinParams = [];
-//
-//		foreach ($joins as $key => $jParams) {
-//
-//		    if( isset($jParams->conditions) ){
-//		        $joinParams[] = $jParams;
-//            }
-//		}
-//
-//		$this->DBJoinCount( $primaryParams, $joinParams );
-//
-//		return $this->result->getContent() > 0;
-//
-//	}
+	public function joinHas(  array $filters = null, array $joins = null ): bool
+    {
+
+	    $primaryParams = JoinPrimaryParams::common( static::class );
+	    $primaryParams->withResultFilter($filters);
+
+	    $joinParams = [];
+
+		foreach ($joins as $key => $jParams) {
+
+		    if( isset($jParams->conditions) ){
+		        $joinParams[] = $jParams;
+            }
+		}
+
+		$this->DBJoinCount( $primaryParams, $joinParams );
+
+		return $this->result->getContent() > 0;
+
+	}
+
+    /**
+     * @param DBConditions $filters  Conditions/Filters for primary table
+     * @param DBJoinParam[] $joins   List of DBJoinParams
+     * @param int $page
+     * @param int $size
+     * @param string|null $sort
+     * @param bool $public
+     * @return ASResult
+     */
+	public function listWithJoin(DBConditions $filters, array $joins, int $page =1, int $size=20, string $sort = null, bool $public = false ): ASResult{
+
+        $filters->purify( $public && !empty(static::publicListFields) ? static::publicListFields : static::listFields );
+        $filters->and('saasid')->equalIf(saasId());
+	    $filters->limitWith($size * ($page - 1),$size);
+        if( $sort ){
+            $filters->orderWith($sort);
+        }
+
+        $primaryJoin = DBJoinParam::convincePrimaryForList(static::class, $filters );
+
+        $joinParams = DBJoinParams::init( $primaryJoin );
+
+        for ($i=0; $i<count($joins); $i++ ){
+            $joinParams->leftJoin( $joins[$i] );
+        }
+
+        $this->RedisHash = [$joinParams->toArray(),$page,$size,$sort];
+
+        if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
+
+        $this->result = $this->getByJoin( $joinParams );
+
+        if($this->result->isSucceed()) {
+
+            $list = $this->result->getContent();
+
+            for ($i = 0; $i < count($list); $i++) {
+
+                $list[$i] = $this->convert($list[$i]);
+            }
+            $this->result->setContent($list);
+
+            static::rds_auto_cache && $this->_cache() && $this->_trackCache(static::class, 'listWithJoin', $this->RedisHash);
+        }
+
+        $this->beforeListReturn($this->result);
+
+        return $this->feedback();
+    }
+
+    /**
+     * @param array $filters
+     * @param DBJoinParam[] $joinParamArray
+     * @param int $page
+     * @param int $size
+     * @param string|null $sort
+     * @return ASResult
+     */
+    public function listWithJoinByArray( array $filters, array $joinParamArray, int $page=1, int $size=20, string $sort = null):ASResult{
+
+        $conditions = static::initConditionFromArray($filters);
+
+        return $this->listWithJoin( $conditions, $joinParamArray, $page,$size,$sort );
+    }
+
+    /**
+     * @param string $uid
+     * @param DBJoinParam[] $joins   List of DBJoinParams
+     * @param bool $public
+     * @return ASResult
+     */
+    public function detailWithJoin( string $uid, array $joins, bool $public = false ): ASResult
+    {
+        $primaryJoin = DBJoinParam::convincePrimaryForDetail(static::class, $uid);
+
+        $joinParams = DBJoinParams::init( $primaryJoin );
+
+        for ($i=0; $i<count($joins); $i++ ){
+            $joinParams->leftJoin( $joins[$i] );
+        }
+
+        $this->RedisHash = [$joinParams->toArray()];
+
+        if( static::rds_auto_cache && $this->_hasCache() ) return $this->_getCache();
+
+        $this->result = $this->getByJoin($joinParams);
+        $this->setId($uid);
+
+        if($this->result->isSucceed()){
+            $this->result->setContent($this->convert($this->result->getContent()[0]));
+        }
+
+        static::rds_auto_cache
+        && $this->result->isSucceed()
+        && $this->_cache();
+
+        return $this->feedback();
+
+    }
+
 
 	/**
      * 多表联合查询
@@ -628,15 +729,17 @@ abstract class ASModel extends ASBase {
 	 * @param    int $size           大小
 	 * @param    string|null              $sort           排序
 	 * @return   ASResult
+     *
+     * @deprecated => listWithJoin
 	 */
-//	public function joinList( array $filters = null, array $mergeJoins = null, array $subJoins = null, int $page = 1, int $size = 20, string $sort = null ): ASResult
-//    {
-//
-//        $primaryParams = JoinPrimaryParams::common(static::class);
-//        if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
-//
-//		return $this->advancedJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
-//	}
+	public function joinList( array $filters = null, array $mergeJoins = null, array $subJoins = null, int $page = 1, int $size = 20, string $sort = null ): ASResult
+    {
+
+        $primaryParams = JoinPrimaryParams::common(static::class);
+        if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
+
+		return $this->advancedJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
+	}
 
     /**
      * Description
@@ -648,49 +751,54 @@ abstract class ASModel extends ASBase {
      * @param  int                          $size
      * @param  string|null                  $sort
      * @return ASResult|mixed
+     *
+     * @deprecated
      */
-//	public function advancedJoinList( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null, int $page =1, int $size = 20, string $sort = null ): ASResult
-//    {
-//
-//		$this->RedisHash = [$primaryParams->toArray(),JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins),$page,$size,$sort];
-//
-//		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
-//
-//		$this->beforeJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
-//
-//		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-//
-//		$this->DBJoinGet( $primaryParams, $joinParams, $page, $size, $sort );
-//
-//		if($this->result->isSucceed()){
-//
-//            $list = $this->result->getContent();
-//
-//            for ($i=0; $i < count($list); $i++) {
-//
-//                $list[$i] = $this->convert($list[$i]);
-//
-//                if(isset($subJoins)){
-//                    foreach ($subJoins as $key => $jParams) {
-//
-//                        $CLASS = $jParams->modelClass;
-//                        $list[$i][$jParams->alias] = $this->convert($list[$i][$jParams->alias],$CLASS::depthStruct);
-//                    }
-//                }
-//            }
-//            $this->result->setContent($list);
-//
-//			$this->_cache();
-//		}
-//
-//		$this->beforeJoinListReturn($this->result);
-//
-//		return $this->feedback();
-//
-//	}
-//
-//	public function beforeJoinList( JoinPrimaryParams &$primaryParams = null, array &$mergeJoins = null, array &$subJoins = null, int &$page=1, int &$size=25, string &$sort = null ){  }
-//	public function beforeJoinListReturn( ASResult &$result ){  }
+	public function advancedJoinList( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null, int $page =1, int $size = 20, string $sort = null ): ASResult
+    {
+
+		$this->RedisHash = [$primaryParams->toArray(),JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins),$page,$size,$sort];
+
+		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
+
+		$this->beforeJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
+
+		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
+
+		$this->DBJoinGet( $primaryParams, $joinParams, $page, $size, $sort );
+
+		if($this->result->isSucceed()){
+
+            $list = $this->result->getContent();
+
+            for ($i=0; $i < count($list); $i++) {
+
+                $list[$i] = $this->convert($list[$i]);
+
+                if(isset($subJoins)){
+                    foreach ($subJoins as $key => $jParams) {
+
+                        $CLASS = $jParams->modelClass;
+                        $list[$i][$jParams->alias] = $this->convert($list[$i][$jParams->alias],$CLASS::depthStruct);
+                    }
+                }
+            }
+            $this->result->setContent($list);
+
+			$this->_cache();
+		}
+
+		$this->beforeJoinListReturn($this->result);
+
+		return $this->feedback();
+
+	}
+
+	/** @deprecated **/
+	public function beforeJoinList( JoinPrimaryParams &$primaryParams = null, array &$mergeJoins = null, array &$subJoins = null, int &$page=1, int &$size=25, string &$sort = null ){  }
+
+	/** @deprecated **/
+	public function beforeJoinListReturn( ASResult &$result ){  }
 
 
     /**
@@ -700,49 +808,45 @@ abstract class ASModel extends ASBase {
      * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
      * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
      * @return   ASResult
+     *
+     * @deprecated -> detailWithJoin
      */
-//	public function joinDetail(string $uid, array $mergeJoins = null, array $subJoins = null ): ASResult
-//    {
-//
-//		$this->RedisHash = [$uid,JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins)];
-//
-//		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
-//
-//		$this->beforeJoinDetail($uid,$mergeJoins,$subJoins);
-//
-//		$primaryParams = JoinPrimaryParams::common(static::class)->get(static::detailFields)->withResultFilter([static::primaryid=>$uid]);
-//
-//		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-//
-//		$this->DBJoinGet( $primaryParams, $joinParams, 1, 1 );
-//		$this->setId($uid);
-//
-//		if($this->result->isSucceed()){
-//
-//			$detail = $this->convert($this->result->getContent()[0]);
-//
-//            if(isset($subJoins)){
-//                foreach ($subJoins as $key => $jParams) {
-//
-//                    $CLASS = $jParams->modelClass;
-//                    $detail[$jParams->alias] = $this->convert($detail[$jParams->alias],$CLASS::depthStruct);
-//                }
-//            }
-//
-//			$this->result->setContent( $detail );
-//			static::rds_auto_cache && $this->_cache();
-//		}
-//
-//		$this->beforeJoinDetailReturn($this->result);
-//
-//		return $this->feedback();
-//	}
-
-	public function detailByJoin(): ASResult
+	public function joinDetail(string $uid, array $mergeJoins = null, array $subJoins = null ): ASResult
     {
 
+		$this->RedisHash = [$uid,JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins)];
 
-    }
+		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
+
+		$this->beforeJoinDetail($uid,$mergeJoins,$subJoins);
+
+		$primaryParams = JoinPrimaryParams::common(static::class)->get(static::detailFields)->withResultFilter([static::primaryid=>$uid]);
+
+		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
+
+		$this->DBJoinGet( $primaryParams, $joinParams, 1, 1 );
+		$this->setId($uid);
+
+		if($this->result->isSucceed()){
+
+			$detail = $this->convert($this->result->getContent()[0]);
+
+            if(isset($subJoins)){
+                foreach ($subJoins as $key => $jParams) {
+
+                    $CLASS = $jParams->modelClass;
+                    $detail[$jParams->alias] = $this->convert($detail[$jParams->alias],$CLASS::depthStruct);
+                }
+            }
+
+			$this->result->setContent( $detail );
+			static::rds_auto_cache && $this->_cache();
+		}
+
+		$this->beforeJoinDetailReturn($this->result);
+
+		return $this->feedback();
+	}
 
     /**
      * 查询前参数处理
@@ -756,13 +860,15 @@ abstract class ASModel extends ASBase {
 
 
 	/**
+     * @deprecated
+     *
      * 自动完善JOIN参数
 	 * fillJoinParams
      * @param    JoinParams[]|array|string[]  $joins      参数
      *                                                    Quick Mode  ['APS\UserInfo','APS\UserGroup']
      *                                                    k-v   Mode  ['info'=>'APS\UserInfo','group'=>'APS\UserGroup']
      *                                                    Full  Mode  [ JoinParams,JoinParams... ]
-	 * @param    bool|boolean             $isSubJoin      是否作为子集结果
+	 * @param    bool                        $isSubJoin   是否作为子集结果
 	 * @return   array                                    结果参数
 	 */
 	public function fillJoinParams( array $joins = null , bool $isSubJoin = false ): array
@@ -1007,25 +1113,25 @@ abstract class ASModel extends ASBase {
 		return $this->increase( 'sort', static::uidCondition($uid) , 0 - $size );
 	}
 
-    // view 被查看一次
-    public function view( string $uid , int $size = 1 ): ASResult
+    /** 被查看一次 Increase viewtimes */
+    public function viewed( string $uid , int $size = 1 ): ASResult
     {
 		return $this->increase( 'viewtimes', static::uidCondition($uid) , $size );
     }
 
-    // 字段增长
+    /** 字段增长 Increase number at field */
     public function increase( string $field, DBConditions $conditions = null , float $size = 1 ): ASResult
     {
         return $this->getDB()->increase($field,static::table,$conditions,$size);
     }
 
-    // 字段减少
+    /** 减少字段数值 Decrease number at field */
     public function decrease( string $field, DBConditions $conditions = null , float $size = 1 ): ASResult
     {
         return $this->getDB()->increase($field,static::table,$conditions,0 -$size);
     }
 
-	// 检测是否当前状态
+    /** 检测是否当前状态 */
 	public function isStatus( string $uid , string $status ): bool
     {
 		return $this->count(
@@ -1035,12 +1141,17 @@ abstract class ASModel extends ASBase {
             )->getContent() == 1;
 	}
 
-	// 检测当前ID是否存在数据库中
+	/** 检测当前ID是否存在数据库中 **/
 	public function isExist( string $uid ): bool
     {
 		return $this->count(static::uidCondition($uid))->getContent() > 0;
 	}
 
+    /**
+     * 以数组建立查询条件
+     * @param array $filter
+     * @return DBConditions
+     */
 	public static function initConditionFromArray( array $filter ): DBConditions
     {
         $conditions = DBConditions::init(static::table);
@@ -1119,6 +1230,11 @@ abstract class ASModel extends ASBase {
         return $conditions;
     }
 
+    /**
+     * 处理预定义符号
+     * @param $value
+     * @return string
+     */
     public static function execSymbol( &$value ): string{
 
         $symbol = QuerySymbol_None;
@@ -1158,7 +1274,11 @@ abstract class ASModel extends ASBase {
         return $symbol;
     }
 
-
+    /**
+     * 以数组建立数据存储
+     * @param array $data
+     * @return DBValues
+     */
 	public static function initValuesFromArray( array $data ): DBValues
     {
         $values = new DBValues();

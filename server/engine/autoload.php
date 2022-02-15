@@ -39,6 +39,10 @@ define( 'EngineRegisterDict' , [
         'I18n',           # 本地化
         'Block',          # 核心区块
         'Mixer',          # 模板\数据混合
+
+        'ImageUtil',      # 图像处理工具
+        'Uploader',       # 服务端本地上传
+
     ],
     'core'=>[             /** 核心层 */
 
@@ -261,13 +265,13 @@ function _I18n( string $lang = null ): I18n{
 
 /**
  * 本地化翻译快捷方式
- * Shortcut of I18n->translate method
+ * Shortcut of I18n->transcoding method
  * @param String $code
  * @param String|null $scope
  * @return String
  */
 function i18n( string $code, string $scope = null ):String{
-    return isset($scope) ? _I18n()->transcoding($code,$scope) : _I18n()->translate($code);
+    return _I18n()->transcoding($code,$scope ?? i18n_Common );
 }
 
 /**

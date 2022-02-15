@@ -48,7 +48,7 @@ class AccessVerify extends ASModel{
      */
     public function begin( string $origin, int $duration, string $scope = 'common' ):ASResult{
 
-        $code   = Encrypt::radomNum(getConfig('ACCESSVERIFY_LENGTH')??6);
+        $code   = Encrypt::randomNumber(getConfig('ACCESSVERIFY_LENGTH')??6);
         $expire = time()+$duration;
 
         $data = static::initValuesFromArray([

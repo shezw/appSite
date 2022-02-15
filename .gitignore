@@ -7,8 +7,11 @@
 
 # 下面三个文件将会在安装时自动生成，用于保存一些配置信息。
 # 不推荐保存到仓库中
+/manager/route/custom/*
 
 /server/config.php
+
 /website/static/js/config.manager.js
 /website/static/js/config.website.js
 
+/website/route/custom/*

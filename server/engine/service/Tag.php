@@ -12,6 +12,8 @@ class Tag extends ASModel {
     const table     = "item_tag";
     const comment   = '通用 标签';
     const primaryid = "uid";
+    const alias     = 'tag';
+
     const addFields = [
         'uid','saasid','authorid','type',
         'title','cover','description',

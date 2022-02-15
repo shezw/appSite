@@ -176,6 +176,12 @@ define("CONFIG",[
 
     ],
 
+    'INNER_UPLOADER'=>[
+
+        'KEYID'         => {{uploaderKey}} ,
+        'KEYSECRET'     => {{uploaderSecret}} ,
+    ],
+
     'ALIYUN'=>[
 
         /* 阿里云存储 ALIYUN OSS */
@@ -219,7 +225,7 @@ define("CONFIG",[
     /* 媒体上传管理设置 */
 
     'MEDIA_HOST_UPLOAD'       => 0,                // 是开启直传服务器
-    'MEDIA_UPLOAD_ENGIN'      => 'ALIYUN_OSS' ,    // 外部上传
+    'MEDIA_UPLOAD_ENGINE'     => 'ALIYUN_OSS' ,    // 外部上传
     'MEDIA_TEMP_DIR'          => ':/tmp/',         // 上传缓存目录
     'MEDIA_POLICY_DURATION'   => 300  ,            // 上传签名有效时长
 

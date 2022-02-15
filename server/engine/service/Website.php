@@ -36,7 +36,7 @@ namespace APS;
  */
 class Website extends ASRoute {
 
-    const scope = RouteScopeWebsite;
+    const scope     = RouteScopeWebsite;
     const rootPath  = WebsiteDefaultRootPath;
     const theme     = WebsiteDefaultTheme;
     const defaultID = WebsiteDefaultID;
@@ -74,6 +74,10 @@ class Website extends ASRoute {
 
     public $id = 'appsite_w';
 
+    private $menu = [];
+
+    private $menuActive = [];
+
     public function __construct( string $pathFormat )
     {
         parent::__construct($pathFormat, 'HTML');
@@ -86,6 +90,7 @@ class Website extends ASRoute {
 
         $this->id = getConfig('id',static::scope) ?? static::defaultID;
         $this->initUser();
+        $this->inquireMenu();
     }
 
     public function setTitle( string $title ){
@@ -96,9 +101,10 @@ class Website extends ASRoute {
         $this->constants->setDescription($description);
     }
 
-    public function appendTemplate(string $htmlString ){
-
+    public function appendTemplate(string $htmlString ): Website
+    {
         $this->html_template .= $htmlString;
+        return $this;
     }
 
     public function initUser( User $user = null){
@@ -123,70 +129,158 @@ class Website extends ASRoute {
             }
         }
 
-        if( isset($this->user) ){
+        if( !isset($this->user) ){
 
-            $this->userData = [
-                'isVerified' => $this->user->isVerified(),
-                "userid"     => $this->user->userid,
-            ];
+            $this->user = new User();
+        }
 
-            if( $this->user->isVerified() ){
-                $this->userData['avatar'   ]  = $this->user->detail['avatar'] ?? getConfig('defaultAvatar',static::scope);
-                $this->userData['username' ]  = $this->user->detail['username'];
-                $this->userData['nickname' ]  = $this->user->detail['nickname'];
-                $this->userData['groupid'  ]  = $this->user->getGroupId();
-                $this->userData['character']  = $this->user->getGroupCharacter();
-                $this->userData['level'    ]  = $this->user->getGroupLevel();
-            }
+        $this->userData = [
+            'isVerified' => $this->user->isVerified(),
+            "userid"     => $this->user->userid,
+        ];
+
+        if( $this->user->isVerified() ){
+            $this->userData['avatar'   ]  = $this->user->detail['avatar'] ?? getConfig('defaultAvatar',static::scope);
+            $this->userData['username' ]  = $this->user->detail['username'];
+            $this->userData['nickname' ]  = $this->user->detail['nickname'];
+            $this->userData['groupid'  ]  = $this->user->getGroupId();
+            $this->userData['character']  = $this->user->getGroupCharacter();
+            $this->userData['level'    ]  = $this->user->getGroupLevel();
         }
     }
 
 
+    /**
+     * @param string $key
+     * @param string|null $scope
+     */
+    public function inquireMenu( string $key = 'sidebar', string $scope = null ){
 
-    public function blendMenuAccess( array $menuAccessConfig, string $toSubDataKey = 'menu' ){
+        $defaultMenu = file_exists( SITE_ROUTE_CUSTOM."menu/{$key}.json" ) ? json_decode(file_get_contents(SITE_ROUTE_DEFAULT."menu/{$key}.json"),true) : [];
+        $customMenu = file_exists( SITE_ROUTE_CUSTOM."menu/{$key}.json" ) ? json_decode(file_get_contents(SITE_ROUTE_CUSTOM."menu/{$key}.json"),true) : [];
 
-        $menuAccess = [];
+        $configMenu =  getConfig($key,$scope ?? static::scope);
 
-        if( $this->user->isVerified() ){
-            if( !empty($menuAccessConfig) ){
+        $menuKeys = [];
+        $menu = [];
 
-                foreach ( $menuAccessConfig as $key => $accessOptions ){
+        if( $defaultMenu ){
 
-                    if(
-                        # 超级管理员全开模式     Unlimited Mode by Super Admin
-                        $this->user->getGroupCharacter() == 'super' ||
+            foreach ( $defaultMenu as $i => $m ){
+                $menuKeys[] = $m['id'];
+                $menu[] = $m;
+            }
+        }
 
-                        # 用户组授权模式       User Group MenuAccess Mode
-                        in_array($key,$this->user->getMenuAccess()) ||
+        if( $customMenu ){
 
-                        # 分段检测模式        Limit Check Mode
-                        (
-                            (!isset($accessOptions['groupid'])   || $this->user->getGroupId() == $accessOptions['groupid'] ) &&
-                            (!isset($accessOptions['character']) || $this->user->getGroupCharacter() == $accessOptions['character'] ) &&
-                            (!isset($accessOptions['level'])     || $this->user->getGroupLevel() >= $accessOptions['level'] )  &&
-                            true
-                        )
-                    ){
-                        $menuAccess[$key] = true;
-                    }
+            foreach ( $customMenu as $i => $m ){
+                if( in_array($m['id'],$menuKeys) ){
+                    $menu[array_search($m['id'],$menuKeys, true)] = $m;
+                }else{
+                    $menuKeys[] = $m['id'];
+                    $menu[] = $m;
                 }
             }
         }
-        $this->setSubData($toSubDataKey,$menuAccess);
-    }
 
+        if( $configMenu ){
 
-    public function blendMenuAccessByFile( string $absolutePathOfMenuAccessConfigFile, string $toSubDataKey = 'menu' ){
-
-        $this->blendMenuAccess(file_exists($absolutePathOfMenuAccessConfigFile) ? include $absolutePathOfMenuAccessConfigFile : [],$toSubDataKey);
-    }
-
-    public function setMenuActive( array $actives ){
-        $menuActives = [];
-        foreach ( $actives as $i => $key ){
-            $menuActives[$key] = ['active'=>'active','expended'=>'true','show'=>'show'];
+            foreach ( $configMenu as $i => $m ){
+                if( in_array($m['id'],$menuKeys) ){
+                    $menu[array_search($m['id'],$menuKeys, true)] = $m;
+                }else{
+                    $menuKeys[] = $m['id'];
+                    $menu[] = $m;
+                }
+            }
         }
-        $this->setSubData('menuActive',$menuActives);
+
+        # Sort Menu
+        usort($menu, "\\APS\\Website::compareMenuSort" );
+
+        $this->menu = $menu;
+
+        $this->blendMenuAccess($this->menu);
+
+        $this->setSubData('menu',$this->menu);
+    }
+
+    private static function compareMenuSort( array $a, array $b ): int{
+        return $a['sort'] <= $b['sort'] ? -1 : 1;
+    }
+
+    public function insertMenu( string $key = 'footerMenu', string $scope = RouteScopeWebsite, string $subDataKey = 'footerMenu' ){
+
+        $configMenu =  getConfig($key,$scope );
+
+        $this->blendMenuAccess($configMenu);
+
+        $this->setSubData( $subDataKey, $configMenu );
+    }
+
+    public function blendMenuActive( &$menu = null ){
+
+        if ( !isset($menu) ){
+            $this->blendMenuActive( $this->menu );
+            return;
+        }
+
+        foreach ( $menu as $i => $single ){
+
+            if( in_array( $single['id'], $this->menuActive )){
+                $menu[$i]['active'] = 'active';
+                $menu[$i]['expended'] = 'true';
+                $menu[$i]['show'] = 'show';
+
+                if( isset($single['children']) ){
+                    $this->blendMenuActive( $menu[$i]['children'] );
+                }
+            }
+        }
+
+        $this->setSubData( 'menu', $this->menu );
+    }
+
+
+    public function setMenuActive( array $actives, &$menu = null ){
+
+        $this->menuActive = $actives;
+
+    }
+
+
+    public function blendMenuAccess( array &$menu ){
+
+        $currentGroupID = $this->user->getGroupId();
+        $currentCharacter = $this->user->getGroupCharacter();
+        $currentLevel = $this->user->getGroupLevel();
+
+        foreach ( $menu as $i => $single ){
+
+            if(
+                # 超级管理员全开模式     Unlimited Mode by Super Admin
+                $this->user->getGroupCharacter() == 'super' ||
+
+                # 用户组授权模式       User Group MenuAccess Mode
+                in_array($single['id'],$this->user->getMenuAccess()) ||
+
+                # 分段检测模式        Limit Check Mode
+                (
+                    (!isset($single['groupid'])   || $currentGroupID == $single['groupid'] ) &&
+                    (!isset($single['character']) || $currentCharacter == $single['character'] || (is_array($single['character']) && in_array($currentCharacter,$single['character'])) ) &&
+                    (!isset($single['level'])     || $currentLevel >= $single['level'] )  &&
+                    true
+                )
+            ){
+                if( isset($single['children']) ){
+                    $this->blendMenuAccess($menu[$i]['children']);
+                }
+            }else{
+                unset($menu[$i]);
+            }
+        }
+
     }
 
 
@@ -265,7 +359,7 @@ class Website extends ASRoute {
      * requireUser
      * @param  string  $redirectTo
      */
-    public function requireUser( string $redirectTo ){
+    public function requireLogin(string $redirectTo ){
 
         if( !$this->user ||  !$this->user->isVerified() ){
             $this->redirectTo($redirectTo);
@@ -279,7 +373,7 @@ class Website extends ASRoute {
      * @param  string  $redirectTo
      */
     public function requireGroup( string $groupId, string $redirectTo ){
-        $this->requireUser( $redirectTo );
+        $this->requireLogin( $redirectTo );
         if( $this->userData['groupid'] !== $groupId ){
             $this->redirectTo($redirectTo);
         }
@@ -292,7 +386,7 @@ class Website extends ASRoute {
      * @param  string  $redirectTo
      */
     public function requireGroupLevel( int $level, string $redirectTo ){
-        $this->requireUser( $redirectTo );
+        $this->requireLogin( $redirectTo );
         if( $this->userData['level'] < $level ){
             $this->redirectTo($redirectTo);
         }
@@ -301,11 +395,13 @@ class Website extends ASRoute {
     /**
      * 强制要求用户角色
      * requireGroupCharacter
-     * @param  string|array  $character
-     * @param  string        $redirectTo
+     * @param string|array $character
+     * @param string $redirectTo
+     * @return Website
      */
-    public function requireGroupCharacter( $character, string $redirectTo ){
-        $this->requireUser( $redirectTo );
+    public function requireGroupCharacter( $character, string $redirectTo ): Website
+    {
+        $this->requireLogin( $redirectTo );
         if( gettype($character) == 'string' ){
             if( $this->userData['character']!=='super' && $this->userData['character'] !== $character ){
                 $this->redirectTo($redirectTo);
@@ -315,20 +411,19 @@ class Website extends ASRoute {
                 $this->redirectTo($redirectTo);
             }
         }
+        return $this;
     }
 
 
     /**
      * 通过文件追加模板文件
-     * appendMoudleByFile
-     * @param  string  $absoluteFilePath    绝对路径
+     * appendModuleByFile
+     * @param string $absoluteFilePath 绝对路径
+     * @return Website
      */
-    public function appendTemplateByFile(string $absoluteFilePath ){
-
-        if( file_exists($absoluteFilePath) ){
-
-            $this->appendTemplate( file_get_contents($absoluteFilePath) );
-        }
+    public function appendTemplateByFile(string $absoluteFilePath ): Website
+    {
+        return file_exists($absoluteFilePath) ? $this->appendTemplate( file_get_contents($absoluteFilePath) ) : $this;
     }
 
     /**
@@ -358,10 +453,11 @@ class Website extends ASRoute {
      */
     public function rend(){
 
+        $this->blendMenuActive();
         $this->setSubData('constants',$this->constants->toArray());
         $this->setSubData('userData',$this->userData);
         $this->setSubData('timeDuration', floor((microtime(true) - TIME_START )*1000) );
-        $this->result = ASResult::shared(0,'Website Rend',Mixer::mix($this->data,$this->html_template));
+        $this->result = ASResult::shared(0,'Website Rend',Mixer::mix($this->data,$this->html_template, $this->constants->toArray() ));
         $this->export();
     }
 

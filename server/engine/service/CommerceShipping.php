@@ -12,6 +12,8 @@ class CommerceShipping extends ASModel{
     const table = 'commerce_shipping';
     const comment = '电商-物流';
     const primaryid = 'uid';
+    const alias     = 'shipping';
+
     const addFields = [
 		'uid','saasid','title','cover','description','amount','details','status','createtime','sort','featured'
     ];

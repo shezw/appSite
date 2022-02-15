@@ -13,46 +13,49 @@ class Media extends ASModel{
     const table     = "item_media";
     const comment   = "通用媒体";
     const primaryid = "uid";
+    const alias     = 'media';
+
     const addFields = [
         'uid', 'categoryid', 'authorid',
-        'type', 'url', 'size', 'meta',
+        'type','server', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
     ];
     const updateFields = [
         'authorid', 'categoryid',
-        'type', 'url', 'size', 'meta',
+        'type','server', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
     ];
     const detailFields = [
         'uid', 'categoryid', 'authorid',
-        'type', 'url', 'size', 'meta',
+        'type','server', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
         'createtime', 'lasttime',
     ];
     const overviewFields = [
         'uid', 'categoryid', 'authorid',
-        'type', 'url', 'size', 'meta',
+        'type','server', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
         'createtime', 'lasttime',
     ];
     const listFields = [
         'uid', 'categoryid', 'authorid',
-        'type', 'url', 'size', 'meta',
+        'type','server', 'url', 'size', 'meta',
         'password',
         'sort', 'featured', 'status',
         'createtime', 'lasttime',
     ];
     const filterFields = [
         'uid', 'categoryid', 'authorid',
-        'type', 'url',
+        'type','server', 'url',
         'sort', 'featured', 'status',
         'createtime', 'lasttime',
     ];
     const depthStruct = [
+        'server'=>DBField_Int,
         'size'=>DBField_Int,
         'sort'=>DBField_Int,
         'featured'=>DBField_Boolean,
@@ -71,6 +74,8 @@ class Media extends ASModel{
         // 'permission'=>   ['type'=>DBFieldType_INT,   'len'=>5,   'nullable'=>0,  'cmt'=>'权限需求',  'dft'=>0,       ],
 
         'type'=>        ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'类型 ',   'idx'=>DBIndex_Index ],
+        'server'=>      ['type'=>DBField_Int,      'len'=>5,  'nullable'=>0,  'cmt'=>'存储服务器','dft'=>0, ],
+        // StorageLocationAliOSS, StorageLocation_LocalStatic
 
         'url'=>         ['type'=>DBField_String,    'len'=>255, 'nullable'=>0,  'cmt'=>'url地址'],
         'size'=>        ['type'=>DBField_Int,       'len'=>20,  'nullable'=>0,  'cmt'=>'文件大小',  'dft'=>0,      ],
@@ -94,13 +99,19 @@ class Media extends ASModel{
      */
     public function delete( string $uid ): ASResult
     {
+        $media = $this->detail($uid)->getContent();
+        $url = $media['url'];
+        $storageLocation = $media['server'];
 
-        $url = $this->detail($uid)->getContent()['url'];
+        switch ( $storageLocation ){
 
-        $removeFile = AliyunOSS::common()->removeFile($url);
-        /*
-        当前直接移除 阿里云oss文件 未来考虑更多平台接入
-         */
+            case StorageLocation_LocalStatic:
+                $removeFile = Uploader::common()->removeFile( $url );
+                break;
+            case StorageLocation_AliOSS:
+                $removeFile = AliyunOSS::common()->removeFile($url);
+                break;
+        }
 
         if(!$removeFile->isSucceed()){ return $removeFile; }
 

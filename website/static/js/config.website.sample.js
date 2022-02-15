@@ -27,16 +27,9 @@
 
 var CONFIGS = {
 
-    hosthttp           : 'http',
-    domain             : '{{site.path}}',
-    domainhost         : '{{site.path}}',
-    serverhost         : '{{site.api}}',
-    recordhost         : '{{site.api}}',
-    userhost           : '{{site.api}}',
-    apihost            : '{{site.api}}',
-    urihost            : '{{site.api}}',
-    wxhost             : '{{site.api}}',
-    fronthost          : '{{site.path}}',
+    sitePath           : '{{site.path}}',
+    apiServer          : '{{site.api}}',
+    storageLocation    : '{{storageLocation}}',
 
     version            : '{{version}}',
 
@@ -49,6 +42,6 @@ var CONFIGS = {
 
     lang               : 'zh-CN',
 
-    appid              : '{{uid}}_w',
+    appID              : '{{uid}}_w'
 
 };

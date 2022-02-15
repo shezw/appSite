@@ -13,6 +13,8 @@ class MediaTemplate extends ASModel{
     const table     = "media_template";
     const comment   = '媒体模板';
     const primaryid = "uid";
+    const alias     = 'template';
+
     const addFields = [
         'uid', 'categoryid','saasid', 'authorid','keyid',
         'description','type','content', 'status',

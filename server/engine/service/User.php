@@ -9,6 +9,8 @@ namespace  APS;
  */
 class User extends ASModel {
 
+    const alias     = 'user';
+
     const addFields = [
         # Account
         'uid','saasid','username','password','email','mobile',
@@ -52,6 +54,13 @@ class User extends ASModel {
         'realstatus',
         # Pocket
         'point','balance','type',
+    ];
+
+    const detailFields = [
+        # Account
+        'uid','saasid','username','password','email','mobile',
+        'nickname','avatar','cover','description','introduce',
+        'birthday','gender','groupid','areaid','status',
     ];
 
     const depthStruct = [
@@ -314,11 +323,6 @@ class User extends ASModel {
             $uid = $data->getValue(UserAccount::primaryid);
         }
 
-        if ( $data->has('password') ){
-            $ENCR = new Encrypt(4);
-            $data->set('password')->string( $ENCR->hashPassword($data->getValue('password')) );
-        }
-
         $accountData = $data->purifyCopy(UserAccount::addFields)->set(UserAccount::primaryid)->string($uid);
         $infoData    = $data->purifyCopy(UserInfo::addFields)->set(UserInfo::primaryid)->string($uid);
         $pocketData  = $data->purifyCopy(UserPocket::addFields)->set(UserPocket::primaryid)->string($uid);
@@ -373,12 +377,6 @@ class User extends ASModel {
      */
     public function update( DBValues $data, string $uid ): ASResult
     {
-        $pass = $data->has('password') ? $data->getValue('password') : NULL;
-
-        if($pass){
-            $ENC = new Encrypt(4);
-            $data->set('password')->string($ENC->hashPassword($pass));
-        }
 
         if( $data->has('username') && $this->isConflict('username',$data->getValue('username'),$uid) ){
             return $this->take($data->getValue('username'))->error(600,i18n('USR_UN_EXT'),'User->add');
@@ -573,7 +571,7 @@ class User extends ASModel {
                         "uid"=>Group_Guest,
                         "level"=>GroupLevel_Guest,
                         "type"=>GroupRole_Guest,
-                        "groupname"=>'Guest'
+                        "groupname"=>GroupRole_Guest
                     ]
                 ];
 
@@ -582,9 +580,9 @@ class User extends ASModel {
 
             $primaryJoin = DBJoinParam::convincePrimaryForDetail(UserAccount::class, $this->userid );
 
-            $infoParam   = DBJoinParam::convinceForDetail(UserInfo::class,UserAccount::table.".".UserAccount::primaryid )->asSub('info');
-            $groupParam  = DBJoinParam::convinceForDetail(UserGroup::class,UserAccount::table.".groupid" )->asSub('group');
-            $pocketParam = DBJoinParam::convinceForDetail(UserPocket::class,UserAccount::table.".".UserAccount::primaryid )->asSub('pocket');
+            $infoParam   = DBJoinParam::convinceForDetail(UserInfo::class,UserAccount::primaryid,UserAccount::table )->asSub('info');
+            $groupParam  = DBJoinParam::convinceForDetail(UserGroup::class, 'groupid', UserAccount::table )->asSub('group');
+            $pocketParam = DBJoinParam::convinceForDetail(UserPocket::class,UserAccount::primaryid,UserAccount::table )->asSub('pocket');
 
             $joinParams  = DBJoinParams::init( $primaryJoin )->leftJoin($infoParam)->leftJoin($groupParam)->leftJoin($pocketParam);
 

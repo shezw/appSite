@@ -58,12 +58,12 @@ class Category extends ASModel {
 
         'uid'=>         ['type'=>DBField_String,    'len'=>8,   'nullable'=>0,  'cmt'=>'分类ID' , 'idx'=>DBIndex_Unique ],
         'saasid'=>      ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'所属saas',  'idx'=>DBIndex_Index,],
-        'alias'=>       ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'别称' ,        'idx'=>DBIndex_Unique ],
+        'alias'=>       ['type'=>DBField_String,    'len'=>24,  'nullable'=>1,  'cmt'=>'别称' ,        'idx'=>DBIndex_Unique ],
 
-        'title'=>       ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'分类名' ],
+        'title'=>       ['type'=>DBField_String,    'len'=>64,  'nullable'=>0,  'cmt'=>'分类名' ],
         'authorid'=>    ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'创建人ID' ,        'idx'=>DBIndex_Index ],
         'parentid'=>    ['type'=>DBField_String,    'len'=>8,   'nullable'=>1,  'cmt'=>'上一级ID' ,        'idx'=>DBIndex_Index ],
-        'type'=>        ['type'=>DBField_String,    'len'=>16,  'nullable'=>1,  'cmt'=>'类型' ],
+        'type'=>        ['type'=>DBField_String,    'len'=>32,  'nullable'=>1,  'cmt'=>'类型' ],
 
         'description'=> ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'描述' ],
         'cover'=>       ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'封面' ],

@@ -26,12 +26,12 @@ namespace APS;
  */
 class Encrypt{
 
+    const TYPES = ['ASJson','JSON','json','INT','int','INTEGER','integer','DOUBLE','double','FLOAT','float','BOOL','BOOLEAN','bool','boolean','NULL','null','STRING','string'];
+
 	public $itoa64;             // @ string     # 字符集
 	public $iterationCount;     // @ int        # 迭代深度
 	public $portableHashes;     // @ bool       # 
 	public $randomState;        // @ string     # 随机蔟
-
-	public static $types = ['ASJson','JSON','json','INT','int','INTEGER','integer','DOUBLE','double','FLOAT','float','BOOL','BOOLEAN','bool','boolean','NULL','null','STRING','string'];
     private $random_state;
 
     function __construct( $iterationCount = false , $portableHashes = false ){
@@ -43,15 +43,15 @@ class Encrypt{
 
     }
 
-	public static function shortId( $n=16 ): string
+	public static function shortId( int $n=16 ): string
     { //不大于16位
 
 		$n = $n>=16 ? 16 : $n;
-		return static::radomCode($n);
+		return static::radomCode($n );
 
 	}
 
-	public static function minId( $n=64 ): string
+	public static function minId( int $n = 64 ): string
     { //不大于64位
 
 		$n = $n>=64 ? 64 : $n;
@@ -59,7 +59,7 @@ class Encrypt{
 
 	}
 
-	public static function longId( $n=128 ): string
+	public static function longId( int $n = 128 ): string
     { // 不大于128位
 
 		$n = $n>=128 ? 128 : $n;
@@ -67,7 +67,7 @@ class Encrypt{
 
 	}
 
-	public static function radomNum( $n=511 ): string
+	public static function randomNumber( int $n = 511 ): string
     { // 不大于512位
 
 		$n = $n>=511 ? 511 : $n;
@@ -81,7 +81,7 @@ class Encrypt{
 	public static function timeId( $alis=NULL ): string
     {
 
-		return (isset($alis)?$alis:'').date("YmdHis00").static::radomNum(6);
+		return (isset($alis)?$alis:'').date("YmdHis00").static::randomNumber(6);
 
 	}
 

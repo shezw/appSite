@@ -377,7 +377,7 @@ class Filter{
             // 带有类型和默认值的提取
             // Care about the value type or default value
 
-				if( in_array($v, Encrypt::$types) ){
+				if( in_array($v, Encrypt::TYPES) ){
                 // 只有类型 不含默认值
                 // Value type only
 					

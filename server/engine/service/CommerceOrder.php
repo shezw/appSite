@@ -389,7 +389,7 @@ class CommerceOrder extends ASModel{
      */
     public function beforeAdd( DBValues &$data)
     {
-        $data->set(static::primaryid)->string('O_'.date("ymdHi").Encrypt::radomNum(4));
+        $data->set(static::primaryid)->string('O_'.date("ymdHi").Encrypt::randomNumber(4));
     }
 
 

@@ -146,6 +146,20 @@ return $registUser;
 #### Nginx伪静态( 网站容器、API容器、管理后台路由都需要该支持 )
 
 ```
+
+# 图片裁切服务 Image Crop Service
+location ~ \.(jpg|jpeg|png|webp)!(.*)$ {
+
+    rewrite ^(.*)\.(jpg|jpeg|png|webp)!(.*)$ $1/crop/$3.$2;
+
+    if ( -e $request_filename ) {
+        break;
+    }
+
+    rewrite ^(.*)/crop/(.*)\.(.*)$ $1&ext=.$3&file=$1.$3&method=$2;
+    rewrite ^(/website.*)*$ /api/common/imageCrop$1;
+}
+
 location /favicon.ico {break;}
 location /website/static { break; }
 location /website/theme { break; }

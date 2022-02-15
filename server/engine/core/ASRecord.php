@@ -233,14 +233,14 @@ class ASRecord extends ASModel {
         }
 
         $data = DBValues::init($table)
-            ->set("userid" )->string($userid)
-            ->set("itemid" )->string($itemid)
-            ->set("type"   )->string($type)
-            ->set("status" )->string($status)
-            ->set("event"  )->string($event)
-            ->set("sign"   )->string($sign)
-            ->set("host"   )->string($this->getHost())
-            ->set("ip"     )->string($this->getRealIP())
+            ->set("userid" )->stringIf($userid)
+            ->set("itemid" )->stringIf($itemid)
+            ->set("type"   )->stringIf($type)
+            ->set("status" )->stringIf($status)
+            ->set("event"  )->stringIf($event)
+            ->set("sign"   )->stringIf($sign)
+            ->set("host"   )->stringIf($this->getHost())
+            ->set("ip"     )->stringIf($this->getRealIP())
             ->set("content")->jsonIf($content)
             ->set('saasid')->stringIf(saasId());
 

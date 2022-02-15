@@ -76,6 +76,8 @@ const ManagementDefaultTheme = 'stisla';
 const ManagementDefaultRootPath = 'manager';
 const ManagementDefaultRouteFormat = 'manager/class/action/id';
 
+const DefaultAvatar     = '/website/static/appsiteJS/images/avatar.jpg';
+
 const DBField_Null      = -10;
 const DBField_Boolean   = -1;  # tinyint 1
 
@@ -186,6 +188,25 @@ const ItemTypes = [
     Type_Email, Type_EmailSubject, Type_SMS, Type_HTML, Type_Message, Type_Notify, Type_Normal, Type_Media, Type_Image, Type_Audio, Type_Video, Type_Article, Type_Url, Type_File, Type_Product, Type_Page, Type_Website, Type_Item, Type_payment,
 ];
 
+const i18n_Common = 'COMMON';
+const i18n_Status = 'STATUS';
+const i18n_Type   = 'TYPE';
+const i18n_Constants = 'constants';
+const i18n_Gender    = 'gender';
+const i18n_Featured  = 'isFeatured';
+const i18n_Education = 'education';
+const i18n_Payer     = 'payer';
+const i18n_Country   = 'country';
+const i18n_StatusCode = 'statusCode';
+const i18n_Payment = 'PAYMENT';
+const i18n_Manager = 'manager';
+const i18n_TimeFormat = 'TimeFormat';
+const i18n_Website = 'website';
+const i18n_MySQL = 'mysql';
+const i18n_Redis = 'redis';
+
+const StorageLocation_AliOSS = 2;
+const StorageLocation_LocalStatic = 1;
 
 const TimeFormat_LiteDate   = 'litedate';
 const TimeFormat_FullDate   = 'fulldate';

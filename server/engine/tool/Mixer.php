@@ -20,25 +20,26 @@ class Mixer{
     /**
      * 混合数据与模板
      * Mix data with String template
-     * @version  2.0
-     * @param    array|null               $data           [数据]
-     * @param    string|null              $module         [模板]
+     * @param array|null $data [数据]
+     * @param string|null $module [模板]
+     * @param array|null $constantsData
      * @return   string
+     * @version  2.0
      */
-    public static function mix( array $data = null , string $module = null ): string
+    public static function mix( array $data = null , string $module = null, array $constantsData = null ): string
     {
 
         if (!$data||!$module) return "";
 
-        Mixer::mixLoops( $data, $module );
+        Mixer::mixLoops( $data, $module, $constantsData );
         # 遍历混合循环体
         # Mix loops
 
-        Mixer::mixConditions( $data, $module, true );
+        Mixer::mixConditions( $data, $module, true, $constantsData );
         # 遍历混合if条件块
         # Mix if-condition blocks
 
-        Mixer::mixConditions( $data, $module, false );
+        Mixer::mixConditions( $data, $module, false, $constantsData );
         # 遍历混合not条件块
         # Mix not-condition blocks
 
@@ -46,7 +47,7 @@ class Mixer{
         # 遍历本地化
         # Mix localization blocks
 
-        Mixer::mixFields( $data, $module );
+        Mixer::mixFields( $data, $module, $constantsData );
         # 遍历所有字段
         # Mix all key fields
 
@@ -89,7 +90,7 @@ class Mixer{
         return $result;
     }
 
-    public static function mixLoops( &$data, &$module ){
+    public static function mixLoops( &$data, &$module, &$constantsData = null ){
 
         $Loops = Mixer::getLoops($module);
         if(empty($Loops)){ return ; }
@@ -113,17 +114,17 @@ class Mixer{
                 foreach ($datas as $k => $v) {
                     if(is_numeric($k) && !is_array($v) ){
                         $value = ['IDX'=>$k,'NUMBER'=>$k+1,'value'=>$v];
-                        $mix .= Mixer::mix($value,$single['code']);
+                        $mix .= Mixer::mix($value,$single['code'],$constantsData );
                     }else if( is_numeric($k) && is_array($v) ){
                         $v_ = $v;
                         $v_['IDX']=$k;
                         $v_['NUMBER']=$k+1;
                         $v_['value']=$v;
-                        $mix .= Mixer::mix($v_,$single['code']);
+                        $mix .= Mixer::mix($v_,$single['code'],$constantsData );
                     }else{
                         $v['IDX'] = $k;
                         $v['NUMBER'] = $k+1;
-                        $mix .= Mixer::mix($v,$single['code']);
+                        $mix .= Mixer::mix($v,$single['code'],$constantsData );
                     }
                 }
                 if(isset($single['default'])){ $mix = str_replace('<*'.$single['default'].'*>', '', $mix); }
@@ -140,31 +141,36 @@ class Mixer{
     public static function getLoops( $module ){
 
         $result = [];
-        $dResult= [];
+        $defaultResult= [];
         $struct = [];
 
-        $preg = "/\|\|loop([^\|\|]+)?loop\|\|/S";
+//        $loopPreg = "/\|\|loop([^\|\|]+)?loop\|\|/S";
+        $loopPreg = "/\|\|loop([^\|\|]+|(?R))*loop\|\|/S";  # 递归版本
         # Loop Preg
 
-        $cpreg = "/\?\?(.+?)\?\?/S";
+        $KeyPreg = "/\?\?(.+?)\?\?/S";
         # Condition Preg
 
-        $dpreg = "/\<\*(.+?)\*\>/";
+        $defaultPreg = "/\<\*(.+?)\*\>/";
         # Default Preg
 
-        preg_match_all($preg, $module, $result );
+        $rangePreg = "//";
 
-        $s = $result[1];
+        preg_match_all($loopPreg, $module, $result );
+
+        $s = $result[0];
 
         for ($i=0; $i < count($s) ; $i++) {
 
-            $cstruct = [];
-            preg_match_all($cpreg, $s[$i], $cstruct);
-            preg_match_all($dpreg, $s[$i], $dResult );
-            $key = $cstruct[1][0];
-            $default = $dResult[1] ? $dResult[1][0] : null;
+            $keyStruct = [];
+            preg_match_all($KeyPreg, $s[$i], $keyStruct);
+            preg_match_all($defaultPreg, $s[$i], $defaultResult );
+            $key = $keyStruct[1][0];
+            $default = $defaultResult[1] ? $defaultResult[1][0] : null;
 
-            $struct[]  = ['key'=>$key,'code'=>$s[$i],'default'=>$default];
+            # $struct[]  = ['key'=>$key,'code'=>  $s[$i]  ,'default'=>$default];
+            # $struct[]  = ['key'=>$key,'code'=>  substr($s[$i],6,mb_strlen($s[$i])-12)  ,'default'=>$default]; # 递归
+            $struct[]  = ['key'=>$key,'code'=> preg_replace( "/loop\|\|$/","", preg_replace( "/^\|\|loop/","",$s[$i] ) )  ,'default'=>$default]; # 递归
 
         }
         return $struct;
@@ -197,7 +203,7 @@ class Mixer{
      * @param boolean $ifOrNotMode 肯定/否定判断
      * @return void $module 修改模板
      */
-    public static function mixConditions( array &$data, string &$module, $ifOrNotMode = true ){
+    public static function mixConditions( array &$data, string &$module, $ifOrNotMode = true, &$constantsData = null  ){
 
         $conditionStruct = static::getConditions( $module, $ifOrNotMode );
 
@@ -223,7 +229,7 @@ class Mixer{
                         # 对比属性值
                         # Compare value
 
-                        isset($value['symbol']) && $value['symbol']=='^' && !strstr($value['target'],(string)$data[$key]) ||
+                        isset($value['symbol']) && $value['symbol']=='^' && ( !isset($data[$key]) || !strstr($value['target'],(string)$data[$key])) ||
                         # 是否包含有属性
                         # Contain value
 
@@ -323,7 +329,7 @@ class Mixer{
         return $struct;
     }
 
-    public static function mixFields( &$data, &$module ){
+    public static function mixFields( &$data, &$module, &$constantsData = null  ){
 
         $struct = Mixer::getFields($module);
         if(empty($struct)){ return ; }
@@ -335,6 +341,9 @@ class Mixer{
                 if (isset($data[$key])) {
                     if( is_bool($data[$key]) ){ $data[$key] = $data[$key]?'true':'false'; }
                     $module  =  str_replace($symbol, (gettype($data[$key])=='array') ? json_encode($data[$key],JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK) : $data[$key], $module);
+                }elseif( isset($constantsData) && isset($constantsData[$key]) ){
+                    if( is_bool($constantsData[$key]) ){ $constantsData[$key] = $constantsData[$key]?'true':'false'; }
+                    $module  =  str_replace($symbol, (gettype($constantsData[$key])=='array') ? json_encode($constantsData[$key],JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK) : $constantsData[$key], $module);
                 }else{
                     $module  =  str_replace($symbol, '', $module);
                 }

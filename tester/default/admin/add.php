@@ -12,9 +12,9 @@ use APS\User;
 
 class add extends ASTester{
 
-    protected static $groupLevelRequirement = 90000;
-    public $mode = 'JSON';
-    public $scope = 'public';
+    const groupLevelRequirement = GroupLevel_SuperAdmin;
+    const mode = ASAPI_Mode_Json;
+    const scope = ASAPI_Scope_Public;
 
     public function runTest(): ASResult
     {

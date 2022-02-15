@@ -12,6 +12,8 @@ class Banner extends ASModel {
     const table     = "item_banner";
     const comment   = '横幅/轮播图';
     const primaryid = "uid";
+    const alias     = 'banner';
+
     const addFields = [
         'uid','saasid','position',
         'title','cover','link',

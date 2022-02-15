@@ -95,9 +95,9 @@ class DBJoinParam{
      * @param string $bindTo
      * @return DBJoinParam
      */
-    public static function convinceForJoin( string $ModelClass, string $bindTo ): DBJoinParam
+    public static function convinceForJoin( string $ModelClass, string $bindTo, string $at ): DBJoinParam
     {
-        $joinParam = static::init( $ModelClass::table, $ModelClass::primaryid, $bindTo );
+        $joinParam = static::init( $ModelClass::table, $ModelClass::primaryid, "{$at}.{$bindTo}" );
         $joinParam->class = $ModelClass;
 
         return $joinParam;
@@ -134,14 +134,14 @@ class DBJoinParam{
         return $this->getWith( $this->class::overviewFields );
     }
 
-    public static function convinceForDetail( string $ModelClass, string $bindTo ): DBJoinParam
+    public static function convinceForDetail( string $ModelClass, string $bindTo, string $at ): DBJoinParam
     {
-        return static::convinceForJoin($ModelClass,$bindTo)->getDetail();
+        return static::convinceForJoin($ModelClass,$bindTo, $at)->getDetail();
     }
 
-    public static function convinceForList( string $ModelClass, string $bindTo ): DBJoinParam
+    public static function convinceForList( string $ModelClass, string $bindTo, string $at ): DBJoinParam
     {
-        return static::convinceForJoin($ModelClass,$bindTo)->getList();
+        return static::convinceForJoin($ModelClass,$bindTo, $at)->getList();
     }
 
 

@@ -254,20 +254,21 @@ class ASDB extends ASObject{
      * getValidKeys
      * @param    array          $dataList           [数据数组]
      * @return   array                              [key数组]
+     * @deprecated
      */
-//    public function getValidKeys( array $dataList ):array {
-//
-//        $keys = [];
-//
-//        for ($i=0; $i < count($dataList); $i++) {
-//
-//            foreach ($dataList[$i] as $key => $value) {
-//
-//                if( !in_array($key, $keys)){ $keys[] = $key; }
-//            }
-//        }
-//        return $keys;
-//    }
+    public function getValidKeys( array $dataList ):array {
+
+        $keys = [];
+
+        for ($i=0; $i < count($dataList); $i++) {
+
+            foreach ($dataList[$i] as $key => $value) {
+
+                if( !in_array($key, $keys)){ $keys[] = $key; }
+            }
+        }
+        return $keys;
+    }
 
     /**
      * update 更新数据
@@ -530,7 +531,7 @@ class ASDB extends ASObject{
         $this->sign("ASDB->check");
 
         if( !$conditions->isOrdered() ){
-            $conditions->orderBy('createtime');
+            $conditions->orderBy('createtime', DBOrder_DESC);
         }
         $conditions->limitWith(0,1);
 
@@ -561,74 +562,6 @@ class ASDB extends ASObject{
     }
 
     # Fusion Request 混合查询
-
-    /**
-     * 联合查询模式计数 joinCount
-     * @param JoinPrimaryParams $primaryParams  [primaryParams]
-     * @param JoinParams[] $joinParams     [array of joinParams]
-     * @return   ASResult
-     * @mark     优化条件说明 https://shezw.com/backend/113/MYSQL多表联合查询
-     */
-//    public function joinCount( JoinPrimaryParams $primaryParams, array $joinParams ): ASResult
-//    {
-//
-//        $table      = $primaryParams->table;
-//        $primaryKey = $primaryParams->key;
-//        $countKey   = "";
-//
-//        # 判断优化条件
-//        // $ignorePrimary = !$filters && !$conditions; # 主表无关
-//        $groups = [];
-//        if(isset($primaryParams['group'])){
-//            $groups[$table] = $primaryParams['group'];
-//        }
-//
-//        if(!empty($primaryParams->count)){
-//            foreach ( $primaryParams->count as $i => $c ){
-//                $countKey .= ($countKey ? "," : "") . $table.'.'.$c;
-//            }
-//        }
-//
-//        $query  = !empty($primaryParams->count) ? "SELECT COUNT({$primaryParams->table}.{$primaryParams->count[0]}) " : "SELECT COUNT(*)";
-//
-//        $query .= " FROM ".$table;
-//
-//        if( !empty($joinParams) ){
-//            foreach ($joinParams as $i => $jParams) {
-//
-//                $query .= isset($jParams->conditions) ? " LEFT JOIN ".$jParams->table : "";
-//
-//                $key    = $jParams->key ?? $primaryParams->key;   # 默认为主表key
-//                $bind   = $jParams->bind;         # 当该组数据并不是与主表key进行绑定时，可以进行自定义绑定
-//
-//                $query .= isset($jParams->conditions) ? (" ON " . ($bind ?? "{$table}.{$primaryKey}") . " = {$jParams->table}.{$key}") : '';
-//
-//            }
-//        }
-//
-//        # 主表条件
-//        $where = $primaryParams->conditions ? "WHERE".static::spliceCondition($primaryParams->conditions,null,$table) : "";
-//
-//        # 副表条件
-//        foreach ($joinParams as $i => $jParams) {
-//
-//            $__ = (!$where && $i===0) ? " WHERE " : " AND ";
-//            $where .= isset($jParams->conditions) ? $__.static::spliceCondition($jParams->conditions,null,$jParams->table) : "" ;
-//        }
-//
-//        # 默认保留主表
-//        $query .= " $where";
-//        $query .= $countKey ? " GROUP BY {$countKey} " :'';
-//        $query  = $countKey ? " SELECT COUNT(*) FROM ( $query ) AS TMP" : $query ;
-//
-//        $DB = $this->query($query);
-//
-//        if (!$DB){ return $this->take($query)->error(550,mysqli_error($this->connect) ?? 'SQL Connect failed');}
-//
-//        $result = mysqli_fetch_array($DB)[0];
-//
-//        return $this->take((int)$result)->success(0,i18n('SYS_ANA_SUC'));
-//    }
 
 
     /**
@@ -663,7 +596,7 @@ class ASDB extends ASObject{
         $query = " SELECT " . $joinParams->export();
 
         $DB = $this->query($query);
-//var_dump($query);
+
         if (!$DB){ return $this->take($query)->error(550,mysqli_error($this->connect) ?? 'SQL Connect failed');}
         if ( mysqli_num_rows($DB) === 0 ){ return $this->take(false)->error(400,i18n('SYS_GET_NON')); }
 
@@ -677,6 +610,75 @@ class ASDB extends ASObject{
 
     }
 
+
+    /**
+     * 联合查询模式计数 joinCount
+     * @param JoinPrimaryParams $primaryParams  [primaryParams]
+     * @param JoinParams[] $joinParams     [array of joinParams]
+     * @return   ASResult
+     * @link     https://shezw.com/backend/113/MYSQL%E5%A4%9A%E8%A1%A8%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2?from=appsiteresourcecode 优化条件说明 多表联合查询
+     * @deprecated
+     */
+    public function joinCount( JoinPrimaryParams $primaryParams, array $joinParams ): ASResult
+    {
+
+        $table      = $primaryParams->table;
+        $primaryKey = $primaryParams->key;
+        $countKey   = "";
+
+        # 判断优化条件
+        // $ignorePrimary = !$filters && !$conditions; # 主表无关
+        $groups = [];
+        if(isset($primaryParams['group'])){
+            $groups[$table] = $primaryParams['group'];
+        }
+
+        if(!empty($primaryParams->count)){
+            foreach ( $primaryParams->count as $i => $c ){
+                $countKey .= ($countKey ? "," : "") . $table.'.'.$c;
+            }
+        }
+
+        $query  = !empty($primaryParams->count) ? "SELECT COUNT({$primaryParams->table}.{$primaryParams->count[0]}) " : "SELECT COUNT(*)";
+
+        $query .= " FROM ".$table;
+
+        if( !empty($joinParams) ){
+            foreach ($joinParams as $i => $jParams) {
+
+                $query .= isset($jParams->conditions) ? " LEFT JOIN ".$jParams->table : "";
+
+                $key    = $jParams->key ?? $primaryParams->key;   # 默认为主表key
+                $bind   = $jParams->bind;         # 当该组数据并不是与主表key进行绑定时，可以进行自定义绑定
+
+                $query .= isset($jParams->conditions) ? (" ON " . ($bind ?? "{$table}.{$primaryKey}") . " = {$jParams->table}.{$key}") : '';
+
+            }
+        }
+
+        # 主表条件
+        $where = $primaryParams->conditions ? "WHERE".static::spliceCondition($primaryParams->conditions,null,$table) : "";
+
+        # 副表条件
+        foreach ($joinParams as $i => $jParams) {
+
+            $__ = (!$where && $i===0) ? " WHERE " : " AND ";
+            $where .= isset($jParams->conditions) ? $__.static::spliceCondition($jParams->conditions,null,$jParams->table) : "" ;
+        }
+
+        # 默认保留主表
+        $query .= " $where";
+        $query .= $countKey ? " GROUP BY {$countKey} " :'';
+        $query  = $countKey ? " SELECT COUNT(*) FROM ( $query ) AS TMP" : $query ;
+
+        $DB = $this->query($query);
+
+        if (!$DB){ return $this->take($query)->error(550,mysqli_error($this->connect) ?? 'SQL Connect failed');}
+
+        $result = mysqli_fetch_array($DB)[0];
+
+        return $this->take((int)$result)->success(0,i18n('SYS_ANA_SUC'));
+    }
 
     /**
      * https://shezw.com/backend/113/MYSQL多表联合查询
@@ -700,187 +702,188 @@ class ASDB extends ASObject{
      * @mark   SELECT *,COUNT(relation_combine.relationid) as count_unit FROM relation_combine
      *         LEFT JOIN item_scene ON relation_combine.itemid = item_scene.sceneid
      *         GROUP BY relation_combine.itemid,relation_combine.itemtype AND relation_combine.itemtype='scene'
+     * @deprecated
      */
-//    public function joinGet( JoinPrimaryParams $primaryParams, array $joinParams, int $page = 1 , int $size = 25 , string $sort = null ):ASResult{
-//
-//        if( count($joinParams) == 0 ){
-//            return $this->error(600,'joinParams is empty');
-//        }
-//
-//        $this->sign("ASDB->joinGet");
-//        $filtered = 0;
-//
-//        $alias = [];
-//
-//        $query = "SELECT ";
-//        $query.= static::spliceFields($primaryParams->fields,$primaryParams->table);
-//
-//        $table = $primaryParams->table;
-//        $primaryKey = $primaryParams->key;
-//
-//        $groups = []; # GROUP BY FILTER
-//        if( !empty($primaryParams->group) ){
-//            $groups[$primaryParams->table] = $primaryParams->group;
-//        }
-//
-//        $counts = []; # COUNT( FIELD )
-//        if(!empty($primaryParams->count)){
-//            $counts[$primaryParams->table] = $primaryParams->count;
-//        }
-//
-//        $sums = []; # SUM( FIELD ) AS SUM_FIELD
-//        if(!empty($primaryParams->sum)){
-//            $sums[$primaryParams->table] = $primaryParams->sum;
-//        }
-//
-//        foreach ($joinParams as $i => $jParams ) {
-//
-//            if(isset($jParams->alias)){ $alias[] = $jParams->alias; }
-//            if(!empty($jParams->sum)){
-//                $sums[$jParams->table] = [];
-//                foreach ( $jParams->sum as $k => $s ){
-//                    $sums[$jParams->table][] = [$s,$jParams->sumAs[$k]];
-//                }
-//            }
-//            if(!empty($jParams->count)){
-//                $counts[$jParams->table] = [];
-//                foreach ( $jParams->count as $k => $s ){
-//                    $counts[$jParams->table][] = [$s,$jParams->countAs[$k]];
-//                }
-//            }
-//            if(!empty($jParams->groupConditions)){
-//                $groups[$jParams->table] = $jParams->groupConditions;
-//            }
-//
-//            $selections = static::spliceFields($jParams->fields,$jParams->table,null,$jParams->alias);
-//            $query .= ', '.$selections;
-//        }
-//
-//        if( !empty($counts) ){
-//
-//            $countSelect = "";
-//
-//            foreach ($counts as $_table => $key) {
-//
-//                foreach ($key as $k => $g) {
-//
-//                    $countSelect .= ", COUNT({$_table}.{$g[0]}) AS {$g[1]}";
-//                }
-//            }
-//            $query.= $countSelect;
-//        }
-//
-//
-//        if( !empty($sums) ){
-//
-//            $sumSelect = "";
-//
-//            foreach ($sums as $_table => $key) {
-//
-//                foreach ($key as $k => $g) {
-//
-//                    $sumSelect .= ", SUM({$_table}.{$g[0]}) AS {$g[1]}";
-//                }
-//            }
-//            $query.= $sumSelect;
-//        }
-//
-//        $query.= " FROM ".$table;
-//
-//        foreach ($joinParams as $i => $jParams) {
-//
-//            $query .= " LEFT JOIN ".$jParams->table;
-//
-//            $key    = $jParams->key  ?? $primaryKey; # 默认为主表key
-//            $bind   = $jParams->bind ?? null;       # 当该组数据并不是与主表key进行绑定时，可以进行自定义绑定
-//
-//            $query .= " ON " . ($bind ?? "{$table}.{$primaryKey}") . " = {$jParams->table}.{$key}";
-//
-//            $query .= $jParams->filters ? " AND ".static::spliceCondition($jParams->filters,null,$jParams->table) : '';
-//
-//            if( !empty($jParams->group) ){
-//
-//                $groupby = "";
-//
-//                foreach ($jParams->group as $k => $g) {
-//
-//                    $groupby .= $groupby ? ',' : '';
-//                    $groupby .= " {$jParams->table}.{$g} ";
-//                }
-//                $query .= " GROUP BY $groupby ";
-//                $filtered ++;
-//            }
-//        }
-//
-//        # 主表条件
-//        $where  = $primaryParams->conditions ?
-//            ( $filtered ? " AND " : " WHERE " ).static::spliceCondition($primaryParams->conditions,null,$primaryParams->table) : "";
-//
-//        # 副表条件
-//        foreach ($joinParams as $i => $jParams) {
-//
-//            $__ = (!$where && $i===0) ? " WHERE " : " AND ";
-//            $where .= isset($jParams->conditions) ? $__.static::spliceCondition($jParams->conditions,null,$jParams->table) : "" ;
-//        }
-//
-//        $query .= $where;
-//
-//        if( !empty($groups) ){
-//
-//            $groupby = "";
-//
-//            foreach ($groups as $g_table => $group) {
-//
-//                foreach ($group as $k => $g) {
-//
-//                    $groupby .= $groupby ? ',' : '';
-//                    $groupby .= " $g_table.$g ";
-//                }
-//            }
-//            $query .= " GROUP BY $groupby ";
-//        }
-//
-//        $start  = ($page-1)*$size;
-//
-//        $size   = $size>1000 ? 1000 : $size;
-//        $start  = $start<0  ? 0   : $start;  // 开始不能小于0
-//
-//        $query .= $sort  ?  " ORDER BY $sort" : '';
-//        $query .= ' LIMIT '.$start.','.$size;
-//
-//        $DB = $this->query($query);
-//
-//        if (!$DB){ return $this->take($query)->error(550,mysqli_error($this->connect) ?? 'SQL Connect failed');}
-//        if ( mysqli_num_rows($DB) === 0 ){ return $this->take(false)->error(400,i18n('SYS_GET_NON')); }
-//
-//        $result = [];
-//        $re = mysqli_fetch_all($DB,true);
-//
-//        foreach ( $re as $r ) {
-//
-//            if(!empty($alias)){
-//
-//                foreach ($alias as $i => $a) {
-//
-//                    $aliasData = [];
-//
-//                    foreach ($r as $key => $value) {
-//
-//                        if(strstr($key, $a."$")){
-//                            unset($r[$key]);
-//                            $aliasData[str_replace($a."$", "", $key)] = $value;
-//                        }
-//                    }
-//                    $r[$a] = $aliasData;
-//                }
-//            }
-//
-//            $result[] = $r;
-//        }
-//
-//        return $this->take($result)->success(i18n('SYS_GET_SUC'));
-//
-//    }
+    public function joinGet( JoinPrimaryParams $primaryParams, array $joinParams, int $page = 1 , int $size = 25 , string $sort = null ):ASResult{
+
+        if( count($joinParams) == 0 ){
+            return $this->error(600,'joinParams is empty');
+        }
+
+        $this->sign("ASDB->joinGet");
+        $filtered = 0;
+
+        $alias = [];
+
+        $query = "SELECT ";
+        $query.= static::spliceFields($primaryParams->fields,$primaryParams->table);
+
+        $table = $primaryParams->table;
+        $primaryKey = $primaryParams->key;
+
+        $groups = []; # GROUP BY FILTER
+        if( !empty($primaryParams->group) ){
+            $groups[$primaryParams->table] = $primaryParams->group;
+        }
+
+        $counts = []; # COUNT( FIELD )
+        if(!empty($primaryParams->count)){
+            $counts[$primaryParams->table] = $primaryParams->count;
+        }
+
+        $sums = []; # SUM( FIELD ) AS SUM_FIELD
+        if(!empty($primaryParams->sum)){
+            $sums[$primaryParams->table] = $primaryParams->sum;
+        }
+
+        foreach ($joinParams as $i => $jParams ) {
+
+            if(isset($jParams->alias)){ $alias[] = $jParams->alias; }
+            if(!empty($jParams->sum)){
+                $sums[$jParams->table] = [];
+                foreach ( $jParams->sum as $k => $s ){
+                    $sums[$jParams->table][] = [$s,$jParams->sumAs[$k]];
+                }
+            }
+            if(!empty($jParams->count)){
+                $counts[$jParams->table] = [];
+                foreach ( $jParams->count as $k => $s ){
+                    $counts[$jParams->table][] = [$s,$jParams->countAs[$k]];
+                }
+            }
+            if(!empty($jParams->groupConditions)){
+                $groups[$jParams->table] = $jParams->groupConditions;
+            }
+
+            $selections = static::spliceFields($jParams->fields,$jParams->table,null,$jParams->alias);
+            $query .= ', '.$selections;
+        }
+
+        if( !empty($counts) ){
+
+            $countSelect = "";
+
+            foreach ($counts as $_table => $key) {
+
+                foreach ($key as $k => $g) {
+
+                    $countSelect .= ", COUNT({$_table}.{$g[0]}) AS {$g[1]}";
+                }
+            }
+            $query.= $countSelect;
+        }
+
+
+        if( !empty($sums) ){
+
+            $sumSelect = "";
+
+            foreach ($sums as $_table => $key) {
+
+                foreach ($key as $k => $g) {
+
+                    $sumSelect .= ", SUM({$_table}.{$g[0]}) AS {$g[1]}";
+                }
+            }
+            $query.= $sumSelect;
+        }
+
+        $query.= " FROM ".$table;
+
+        foreach ($joinParams as $i => $jParams) {
+
+            $query .= " LEFT JOIN ".$jParams->table;
+
+            $key    = $jParams->key  ?? $primaryKey; # 默认为主表key
+            $bind   = $jParams->bind ?? null;       # 当该组数据并不是与主表key进行绑定时，可以进行自定义绑定
+
+            $query .= " ON " . ($bind ?? "{$table}.{$primaryKey}") . " = {$jParams->table}.{$key}";
+
+            $query .= $jParams->filters ? " AND ".static::spliceCondition($jParams->filters,null,$jParams->table) : '';
+
+            if( !empty($jParams->group) ){
+
+                $groupby = "";
+
+                foreach ($jParams->group as $k => $g) {
+
+                    $groupby .= $groupby ? ',' : '';
+                    $groupby .= " {$jParams->table}.{$g} ";
+                }
+                $query .= " GROUP BY $groupby ";
+                $filtered ++;
+            }
+        }
+
+        # 主表条件
+        $where  = $primaryParams->conditions ?
+            ( $filtered ? " AND " : " WHERE " ).static::spliceCondition($primaryParams->conditions,null,$primaryParams->table) : "";
+
+        # 副表条件
+        foreach ($joinParams as $i => $jParams) {
+
+            $__ = (!$where && $i===0) ? " WHERE " : " AND ";
+            $where .= isset($jParams->conditions) ? $__.static::spliceCondition($jParams->conditions,null,$jParams->table) : "" ;
+        }
+
+        $query .= $where;
+
+        if( !empty($groups) ){
+
+            $groupby = "";
+
+            foreach ($groups as $g_table => $group) {
+
+                foreach ($group as $k => $g) {
+
+                    $groupby .= $groupby ? ',' : '';
+                    $groupby .= " $g_table.$g ";
+                }
+            }
+            $query .= " GROUP BY $groupby ";
+        }
+
+        $start  = ($page-1)*$size;
+
+        $size   = $size>1000 ? 1000 : $size;
+        $start  = $start<0  ? 0   : $start;  // 开始不能小于0
+
+        $query .= $sort  ?  " ORDER BY $sort" : '';
+        $query .= ' LIMIT '.$start.','.$size;
+
+        $DB = $this->query($query);
+
+        if (!$DB){ return $this->take($query)->error(550,mysqli_error($this->connect) ?? 'SQL Connect failed');}
+        if ( mysqli_num_rows($DB) === 0 ){ return $this->take(false)->error(400,i18n('SYS_GET_NON')); }
+
+        $result = [];
+        $re = mysqli_fetch_all($DB,true);
+
+        foreach ( $re as $r ) {
+
+            if(!empty($alias)){
+
+                foreach ($alias as $i => $a) {
+
+                    $aliasData = [];
+
+                    foreach ($r as $key => $value) {
+
+                        if(strstr($key, $a."$")){
+                            unset($r[$key]);
+                            $aliasData[str_replace($a."$", "", $key)] = $value;
+                        }
+                    }
+                    $r[$a] = $aliasData;
+                }
+            }
+
+            $result[] = $r;
+        }
+
+        return $this->take($result)->success(i18n('SYS_GET_SUC'));
+
+    }
 
 
     /* Database io 表相关操作 */
@@ -1207,139 +1210,6 @@ class ASDB extends ASObject{
     }
 
 
-    /**
-     * 根据结构化数据自动填充至数据库
-     * autoInsertData
-     * @param  array  $dataWithStruct
-     * @param  string $base
-     * @return ASResult
-     */
-//    public function autoInsertData( array $dataWithStruct, string $base = null ): ASResult
-//    {
-//
-//        if( isset($base) ){ $this->selectDB($base); }
-//        $addResult = [];
-//
-//        foreach ( $dataWithStruct as $class => $dataList ){
-//
-//            foreach ( $dataList as $i => $data ){
-//
-//                $addResult[] = $class::common()->add( $data );
-//            }
-//        }
-//        return $this->take($addResult)->feedback();
-//    }
-
-
-    /**
-     * 分词搜索计数 (自然语言)  需要fulltext索引
-     * natureCount Require fulltext index
-     * @param          $target
-     * @param  string  $value
-     * @param  string  $table
-     * @param  null    $conditions
-     * @return ASResult
-     */
-//    public function natureCount( $target, string $value, string $table, $conditions = null): ASResult
-//    {
-//
-//        return $this->natureSearch($target,$value,$table,$conditions,null,true);
-//    }
-
-    /**
-     * 分词搜索 (自然语言)  需要fulltext索引
-     * natureSearch Require fulltext index
-     * @param  array   $target      具有分词索引的目标字段. The target fields has fulltext index
-     * @param  string  $value
-     * @param  string  $table
-     * @param  string|array|null    $conditions
-     * @param  string|array|null    $fields
-     * @param  bool    $isCounting
-     * @return ASResult
-     * @mark   SELECT id,namecn FROM customer WHERE MATCH (namecn,nameen) AGAINST ('测试' IN NATURAL LANGUAGE MODE)
-     */
-//    public function natureSearch( $target, string $value, string $table, $conditions = null, $fields = null, bool $isCounting = false  ): ASResult
-//    {
-//
-//        $this->sign($isCounting ? "ASDB->natureCount" : "ASDB->natureSearch");
-//
-//        if (count($target)>5){ return $this->take($target)->error(8000,'Too many arguments! Limited with 5.');}
-//
-//        $query = ' (';
-//        for ($i=0;$i<count($target);$i++) {
-//            $name = $target[$i];
-//            $query.= $i>0 ? " OR " : '' ;
-//            $query.=" MATCH ( {$name} ) AGAINST ('{$value}' IN NATURAL LANGUAGE MODE) ";
-//        }
-//        $query.= ') ';
-//
-//        $conditions = ($conditions ? " $conditions AND " : "").$query;
-//
-//        return $isCounting ? $this->count($table,$conditions) : $this->get($fields,$table,$conditions);
-//
-//    }
-
-
-    /**
-     * 分词搜索 计数(布尔)
-     * booleanCount
-     * @param  array   $target
-     * @param  array   $valueList
-     * @param  string  $table
-     * @return ASResult
-     * @mark   valueList ['+value','-value','~value','>value','<value']
-     */
-//    public function booleanCount(array $target, array $valueList, string $table ): ASResult
-//    {
-//
-//        return $this->booleanSearch($target,$valueList,$table,null,true);
-//    }
-
-
-    /**
-     * 分词搜索 (布尔)
-     * booleanSearch
-     * @param  array   $target
-     * @param  array   $valueList
-     * @param  string  $table
-     * @param  null    $fields
-     * @param  bool    $isCounting
-     * @return ASResult
-     * @mark   valueList ['+value','-value','~value','>value','<value']
-     */
-//    public function booleanSearch(array $target, array $valueList, string $table ,$fields = null, bool $isCounting = false ): ASResult
-//    {
-//
-//        $this->sign($isCounting ? "ASDB->booleanCount" : "ASDB->booleanSearch" );
-//
-//        if (count($target)>3) {
-//            return $this->take($target)->error(8000,'Too many arguments! Limited with 3.');
-//        }
-//
-//        if (count($valueList)>5) {
-//            return $this->take($valueList)->error(8000,'Too many arguments! Limited with 5.');
-//        }
-//
-//        $conditions='MATCH (';
-//
-//        for ($i=0;$i<count($target);$i++) {
-//            $name = $target[$i];
-//            $conditions.= $i>0 ? ", " : '' ;
-//            $conditions.= "$name";
-//        }
-//
-//        $conditions.=") AGAINST ( '";
-//
-//        for ($j=0;$j<count($valueList);$j++) {
-//            $conditions.= ' '.$valueList[$j];
-//        }
-//
-//        $conditions.="' IN BOOLEAN MODE)";
-//
-//        return $isCounting ? $this->count($table,$conditions) : $this->get($fields,$table,$conditions);
-//
-//    }
-
 
 ## Static functions
 ## 静态方法
@@ -1398,136 +1268,137 @@ class ASDB extends ASObject{
      * @return   string                                   语句 Query String
      *
      * table 用于join模式 处理JOIN关系,会在字段前添加表前缀
+     * @deprecated
      */
-//    public static function spliceCondition( $params = null , array $filter = null, string $table = null ){
-//
-//        if(!$params){ return ""; }
-//        if (gettype($params) == 'string' ){ return $params; }
-//
-//        $condition = '';
-//        $count     = 0;
-//
-//        $params = Filter::addslashesAll($params);
-//        if ($filter) { $params = Filter::purify($params,$filter); }
-//
-//        $params = Filter::removeInvalid($params);
-//
-//        foreach ($params as $key => $value) {
-//
-//            if (isset($value)) {
-//
-//                $condition .= $count>0 ? ' AND ' : ' ';
-//
-//                if($key==="keyword"||$key==="KEYWORD"){
-//
-//                    if(isset($value['value'])){
-//
-//                        $val = $value['value'];
-//
-//                        $condition .= ' (';
-//                        for ($i=0;$i<count($value['target']);$i++) {
-//                            $name = $value['target'][$i];
-//                            $condition .= $i>0 ? " OR " : '' ;
-//                            $condition .=' MATCH (';
-//                            $condition .= $table ? " $table." : ' ';
-//                            $condition .= "$name";
-//                            $condition .= ") AGAINST ('$val' IN NATURAL LANGUAGE MODE) ";
-//                        }
-//                        $condition .= ') ';
-//
-//                    }else{
-//
-//                        $condition .= ' MATCH( ';
-//                        $condition .= $table ? " $table." : ' ';
-//                        $condition .= 'title';
-//                        $condition .= ") AGAINST ('$value' IN NATURAL LANGUAGE MODE) ";
-//                    }
-//
-//                }else if(gettype($value)=='array' && count($value) == count($value,1)){
-//
-//                    $condition .= " (";
-//                    for ($i=0; $i <count($value) ; $i++) {
-//
-//                        $condition .= ($i!==0?' OR ':'');
-//                        $condition .= $table ? " $table." : ' ';
-//                        $condition .= "$key";
-//
-//                        if(static::hasSymbol($value[$i])){
-//                            $symbol_   = static::getSymbol($value[$i],true);
-//                            $symbol    = static::getSymbol($value[$i],false);
-//                            $value[$i] = str_replace($symbol_, '', $value[$i]);
-//                            $condition.= $symbol;
-//                        }else{
-//                            $condition.= "=";
-//                        }
-//
-//                        $condition .= static::generateQueryValue($value[$i]);
-//                    }
-//                    $condition .= ") ";
-//
-//                }else if(static::hasSymbol($value)){
-//
-//                    $symbol_ = static::getSymbol($value,true);
-//                    $symbol  = static::getSymbol($value,false);
-//                    $value   = str_replace($symbol_, '', $value);
-//
-//                    if( $symbol_ != '[[FIND]]' && $symbol_ != '[[QUERY]]' ){
-//
-//                        $condition .= $table ? " $table." : ' ';
-//                    }
-//
-//                    if($symbol_=='[[IN]]'){
-//                        $values = explode(',', $value);
-//                        $V = '';
-//                        for ($i=0; $i < count($values); $i++) {
-//
-//                            $V .= $i==0 ? '' : ',';
-//                            $V .= Encrypt::isNumber($values[$i]) ? $values[$i] : "'{$values[$i]}'";
-//
-//                        }
-//                        $condition .= "{$key} {$symbol} ({$V}) " ;
-//
-//                    }else if( $symbol_ == '[[BETWEEN]]' ){
-//
-//                        $value = str_replace(",", " AND ", $value);
-//                        $condition .= $key.$symbol.$value;
-//
-//                    }else if( $symbol_ == '[[FIND]]' ){
-//
-//                        $condition .= " {$symbol}( '{$value}' ,";
-//                        $condition .= $table ? " $table." : ' ';
-//                        $condition .= " {$key} )";
-//
-//                    }else if( $symbol_ == '[[QUERY]]' ){
-//
-//                        $condition .= " {$key} {$value} ";
-//
-//                    }else if( strstr($symbol_,'>') || strstr($symbol_, '<') ){
-//
-//                        $condition .=  "{$key} {$symbol} {$value} " ;
-//
-//                    }else{
-//
-//                        $condition .= (Encrypt::isNumber($value) && $value!==0 ) || $value==='null' ? "{$key} {$symbol} {$value} " : "{$key} {$symbol} '{$value}' " ;
-//                    }
-//
-//                }else if( $value === 'IS_NULL' ){
-//
-//                    $condition .= $table ? " {$table}." : ' ';
-//                    $condition .= "{$key} IS NULL " ;
-//
-//                }else{
-//
-//                    $condition .= $table ? " $table." : ' ';
-//                    $condition .= !is_string($value) && (Encrypt::isNumber($value) && $value!==0 ) ? "{$key}={$value} " : "{$key}='{$value}' " ;
-//
-//                }
-//                $count++;
-//            }
-//        }
-//
-//        return $condition;
-//    }
+    public static function spliceCondition( $params = null , array $filter = null, string $table = null ){
+
+        if(!$params){ return ""; }
+        if (gettype($params) == 'string' ){ return $params; }
+
+        $condition = '';
+        $count     = 0;
+
+        $params = Filter::addslashesAll($params);
+        if ($filter) { $params = Filter::purify($params,$filter); }
+
+        $params = Filter::removeInvalid($params);
+
+        foreach ($params as $key => $value) {
+
+            if (isset($value)) {
+
+                $condition .= $count>0 ? ' AND ' : ' ';
+
+                if($key==="keyword"||$key==="KEYWORD"){
+
+                    if(isset($value['value'])){
+
+                        $val = $value['value'];
+
+                        $condition .= ' (';
+                        for ($i=0;$i<count($value['target']);$i++) {
+                            $name = $value['target'][$i];
+                            $condition .= $i>0 ? " OR " : '' ;
+                            $condition .=' MATCH (';
+                            $condition .= $table ? " $table." : ' ';
+                            $condition .= "$name";
+                            $condition .= ") AGAINST ('$val' IN NATURAL LANGUAGE MODE) ";
+                        }
+                        $condition .= ') ';
+
+                    }else{
+
+                        $condition .= ' MATCH( ';
+                        $condition .= $table ? " $table." : ' ';
+                        $condition .= 'title';
+                        $condition .= ") AGAINST ('$value' IN NATURAL LANGUAGE MODE) ";
+                    }
+
+                }else if(gettype($value)=='array' && count($value) == count($value,1)){
+
+                    $condition .= " (";
+                    for ($i=0; $i <count($value) ; $i++) {
+
+                        $condition .= ($i!==0?' OR ':'');
+                        $condition .= $table ? " $table." : ' ';
+                        $condition .= "$key";
+
+                        if(static::hasSymbol($value[$i])){
+                            $symbol_   = static::getSymbol($value[$i],true);
+                            $symbol    = static::getSymbol($value[$i],false);
+                            $value[$i] = str_replace($symbol_, '', $value[$i]);
+                            $condition.= $symbol;
+                        }else{
+                            $condition.= "=";
+                        }
+
+                        $condition .= static::generateQueryValue($value[$i]);
+                    }
+                    $condition .= ") ";
+
+                }else if(static::hasSymbol($value)){
+
+                    $symbol_ = static::getSymbol($value,true);
+                    $symbol  = static::getSymbol($value,false);
+                    $value   = str_replace($symbol_, '', $value);
+
+                    if( $symbol_ != '[[FIND]]' && $symbol_ != '[[QUERY]]' ){
+
+                        $condition .= $table ? " $table." : ' ';
+                    }
+
+                    if($symbol_=='[[IN]]'){
+                        $values = explode(',', $value);
+                        $V = '';
+                        for ($i=0; $i < count($values); $i++) {
+
+                            $V .= $i==0 ? '' : ',';
+                            $V .= Encrypt::isNumber($values[$i]) ? $values[$i] : "'{$values[$i]}'";
+
+                        }
+                        $condition .= "{$key} {$symbol} ({$V}) " ;
+
+                    }else if( $symbol_ == '[[BETWEEN]]' ){
+
+                        $value = str_replace(",", " AND ", $value);
+                        $condition .= $key.$symbol.$value;
+
+                    }else if( $symbol_ == '[[FIND]]' ){
+
+                        $condition .= " {$symbol}( '{$value}' ,";
+                        $condition .= $table ? " $table." : ' ';
+                        $condition .= " {$key} )";
+
+                    }else if( $symbol_ == '[[QUERY]]' ){
+
+                        $condition .= " {$key} {$value} ";
+
+                    }else if( strstr($symbol_,'>') || strstr($symbol_, '<') ){
+
+                        $condition .=  "{$key} {$symbol} {$value} " ;
+
+                    }else{
+
+                        $condition .= (Encrypt::isNumber($value) && $value!==0 ) || $value==='null' ? "{$key} {$symbol} {$value} " : "{$key} {$symbol} '{$value}' " ;
+                    }
+
+                }else if( $value === 'IS_NULL' ){
+
+                    $condition .= $table ? " {$table}." : ' ';
+                    $condition .= "{$key} IS NULL " ;
+
+                }else{
+
+                    $condition .= $table ? " $table." : ' ';
+                    $condition .= !is_string($value) && (Encrypt::isNumber($value) && $value!==0 ) ? "{$key}={$value} " : "{$key}='{$value}' " ;
+
+                }
+                $count++;
+            }
+        }
+
+        return $condition;
+    }
 
     /**
      * 生成赋值语句
@@ -1648,29 +1519,31 @@ class ASDB extends ASObject{
      * @param    string                     $input          [输入]
      * @param    bool                       $returnKey      [是否输出源符号]
      * @return   string                                   [操作符号]
+     * @deprecated
      */
-//    private static function getSymbol( string $input, bool $returnKey = false ): string
-//    {
-//
-//        $symbol = '';
-//        foreach (static::symbols as $key => $value) {
-//            $symbol = strstr($input, $key) ? ($returnKey?$key:$value) : $symbol ;
-//        }
-//
-//        return $symbol;
-//    }
+    private static function getSymbol( string $input, bool $returnKey = false ): string
+    {
+
+        $symbol = '';
+        foreach ( QuerySymbols as $i => $sym ) {
+            $symbol = strstr($input, $sym ) ? ($returnKey? $sym : str_replace('[[','',$sym)) : $symbol ;
+        }
+
+        return $symbol;
+    }
 
     /**
      * 检测是否含有操作符 hasSymbol
      * @param    string                   $input          [输入]
      * @return   bool                                  [是否]
+     * @deprecated
      */
-//    private static function hasSymbol( string $input ):bool{
-//        $c = 0;
-//        foreach (static::symbols as $key => $value) {
-//            $c += strstr($input, $key) ? 1 : 0;
-//        }
-//        return $c>0;
-//    }
+    private static function hasSymbol( string $input ):bool{
+        $c = 0;
+        foreach ( QuerySymbols as $i => $sym) {
+            $c += strstr($input, $sym) ? 1 : 0;
+        }
+        return $c>0;
+    }
 
 }

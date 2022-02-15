@@ -18,8 +18,8 @@ use APS\Management;
 include_once dirname(__DIR__).'/server/autoload.php';
 
 define('SITE_DIR' , __DIR__.'/');
-define('MANAGER_BASIC_DIR',SITE_DIR.'basic/');
-define('MANAGER_CUSTOM_DIR',SITE_DIR.'custom/');
+define('SITE_ROUTE_DEFAULT',SITE_DIR.'route/default/');
+define('SITE_ROUTE_CUSTOM',SITE_DIR.'route/custom/');
 define('THEME_DIR', SITE_DIR .'themes/'. (getConfig("theme",RouteScopeManagement) ?? ManagementDefaultTheme).'/' );
 
 $website = new Management(getConfig('MANAGER_ROUTE_FORMAT') ?? ManagementDefaultRouteFormat );
@@ -30,7 +30,7 @@ $website = new Management(getConfig('MANAGER_ROUTE_FORMAT') ?? ManagementDefault
 //_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' ,true );
 //_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN'  );
 
-
+//var_dump(\APS\CommerceProduct::class);
 /**
  * 引入对应文件
 
@@ -60,12 +60,12 @@ if( isset($website->route['action']) ) {  # Class Action
     $filePath = 'page/dashboard.php';
 }
 
-if(file_exists(MANAGER_CUSTOM_DIR.$filePath)){
-    include MANAGER_CUSTOM_DIR.$filePath;
-}else if(file_exists( MANAGER_BASIC_DIR.$filePath )){
-    include MANAGER_BASIC_DIR.$filePath;
+if(file_exists(SITE_ROUTE_CUSTOM.$filePath)){
+    include SITE_ROUTE_CUSTOM.$filePath;
+}else if(file_exists( SITE_ROUTE_DEFAULT.$filePath )){
+    include SITE_ROUTE_DEFAULT.$filePath;
 }else{
-    file_exists(MANAGER_BASIC_DIR.'page/404.php') && $website->to404();
-    APS\Mixer::debug("<h1>404 Page Not found.</h1><p>This page not validable or not exists.</p><a href='/'>Back Home</a>");
+    file_exists(SITE_ROUTE_DEFAULT.'page/404.php') && $website->to404();
+    APS\Mixer::debug("<h1>404 Page Not found.</h1><p>This page not reachable or not exists.</p><a href='/'>Back Home</a>");
 }
 

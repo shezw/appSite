@@ -13,6 +13,8 @@ class Page extends ASModel
     const table     = "item_page";
     const comment   = '页面';
     const primaryid = "uid";
+    const alias     = 'page';
+
     const addFields = [
         'uid', 'alias','saasid','authorid',
         'title','cover', 'introduce',

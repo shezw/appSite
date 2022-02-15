@@ -81,5 +81,21 @@ class UserAccount extends ASModel {
     ];
 
 
+    public function beforeAdd(DBValues &$data)
+    {
+        if ( $data->has('password') ){
+            $encrypt = new Encrypt(4);
+            $data->set('password')->string( $encrypt->hashPassword($data->getValue('password')) );
+        }
+    }
+
+
+    public function beforeUpdate(DBValues &$data)
+    {
+        if ( $data->has('password') ){
+            $encrypt = new Encrypt(4);
+            $data->set('password')->string( $encrypt->hashPassword($data->getValue('password')) );
+        }
+    }
 
 }

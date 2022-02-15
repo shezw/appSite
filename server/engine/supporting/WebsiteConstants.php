@@ -38,6 +38,7 @@ class WebsiteConstants{
         $this->StaticPath = getConfig('STATIC_PATH') ?? "{$this->SitePath}website/static/";
 //        $this->Title  = getConfig('title',$scope);
         $this->SiteTitle  = getConfig('title',$scope);
+        $this->Description = getConfig('description',$scope);
 
         $this->Theme = $theme;
         $this->ThemeDir = SITE_DIR."{$this->Theme}/";

@@ -6,6 +6,8 @@ namespace APS;
  * 联合查询参数 - 主
  * JoinPrimaryParams
  * @package APS\core\ASDB
+ *
+ * @deprecated
  */
 class JoinPrimaryParams{
 

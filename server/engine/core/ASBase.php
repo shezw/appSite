@@ -139,15 +139,16 @@ abstract class ASBase extends ASObject{
      * DBJoinCount
      * @param  JoinPrimaryParams  $primaryParams
      * @param  JoinParams[]  $joinParams
+     * @deprecated
      */
-//	protected function DBJoinCount( JoinPrimaryParams $primaryParams, array $joinParams )
-//    {
-//        $params = [
-//            'primaryParams'=>$primaryParams,'joinParams'=>$joinParams
-//        ];
-//        $this->params = $params;
-//        $this->result = $this->getDB()->joinCount($primaryParams,$joinParams);
-//    }
+	protected function DBJoinCount( JoinPrimaryParams $primaryParams, array $joinParams )
+    {
+        $params = [
+            'primaryParams'=>$primaryParams,'joinParams'=>$joinParams
+        ];
+        $this->params = $params;
+        $this->result = $this->getDB()->joinCount($primaryParams,$joinParams);
+    }
 
     /**
      * 联合查询计数 (新)
@@ -168,16 +169,17 @@ abstract class ASBase extends ASObject{
      * @param  int          $page
      * @param  int          $size
      * @param  string|null  $sort
+     * @deprecated
      */
-//	protected function DBJoinGet( JoinPrimaryParams $primaryParams, array $joinParams, int $page = 1, int $size = 20, string $sort = null )
-//    {
-//
-//        $params = [
-//            'primaryParams'=>$primaryParams,'joinParams'=>$joinParams,'page'=>$page,'size'=>$size,'sort'=>$sort
-//        ];
-//        $this->params = $params;
-//        $this->result = $this->getDB()->joinGet($primaryParams,$joinParams,$page,$size,$sort);
-//    }
+	protected function DBJoinGet( JoinPrimaryParams $primaryParams, array $joinParams, int $page = 1, int $size = 20, string $sort = null )
+    {
+
+        $params = [
+            'primaryParams'=>$primaryParams,'joinParams'=>$joinParams,'page'=>$page,'size'=>$size,'sort'=>$sort
+        ];
+        $this->params = $params;
+        $this->result = $this->getDB()->joinGet($primaryParams,$joinParams,$page,$size,$sort);
+    }
 
     /**
      * 联合查询 (新)

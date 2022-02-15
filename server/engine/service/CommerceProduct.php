@@ -12,6 +12,7 @@ class CommerceProduct extends ASModel{
     const table     = "commerce_product";
     const comment   = '电商-产品';
     const primaryid = "uid";
+    const alias     = 'product';
 
     const addFields = [
         'uid','saasid','categoryid','authorid',

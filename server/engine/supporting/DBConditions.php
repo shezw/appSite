@@ -112,7 +112,7 @@ class DBConditions
      * @param string $DBConditions_ORDER
      * @return $this
      */
-    public function orderBy( string $field, string $DBConditions_ORDER ): DBConditions
+    public function orderBy( string $field, string $DBConditions_ORDER = DBOrder_DESC ): DBConditions
     {
         $this->order = $field;
         $this->order_orientation = $DBConditions_ORDER;

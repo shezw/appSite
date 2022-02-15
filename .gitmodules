@@ -13,3 +13,6 @@
 [submodule "server/library/pluploadHandler"]
 	path = server/library/pluploadHandler
 	url = https://github.com/shezw/plupload-handler-php
+[submodule "server/library/phpImage"]
+	path = server/library/phpImage
+	url = https://github.com/shezw/Image
