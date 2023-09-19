@@ -165,6 +165,7 @@ class ASRedis extends ASObject{
 	 */
 	public function cache( $params, $value , int $expireDuration = 3600 ): bool
     {
+        if (!$this->connected) return false;
 
 		$this->sign('ASRedis->cache');
 
@@ -182,6 +183,7 @@ class ASRedis extends ASObject{
 	 */
 	public function has( $params ): bool
     {
+        if (!$this->connected) return false;
 
 		$this->sign('ASRedis->has');
 		$hashID = is_string($params) ? $params : Encrypt::hashID($params);
@@ -196,6 +198,7 @@ class ASRedis extends ASObject{
 	 */
 	public function read( $params ): ASResult
     {
+        if (!$this->connected) return $this->error(500,"Redis not connected");
 
 		$this->sign('ASRedis->read');
 		$hashID = is_string($params) ? $params : Encrypt::hashID($params);
@@ -223,6 +226,7 @@ class ASRedis extends ASObject{
 	 */
 	public function track(string $setid, string $uniqueId, $hashID ): bool
     {
+        if (!$this->connected) return false;
 
 		if( gettype($hashID) == 'array' ){ $hashID = is_string($hashID) ? $hashID : Encrypt::hashID($hashID); }
 		return $this->connection->sAdd("$setid:$uniqueId",$hashID);
@@ -241,6 +245,7 @@ class ASRedis extends ASObject{
 	 */
 	public function clear( string $setid, string $uniqid ): bool
     {
+        if (!$this->connected) return true;
 
 		$this->sign('ASRedis->clear');
 
@@ -264,6 +269,7 @@ class ASRedis extends ASObject{
 	 * @return   string|false
 	 */
 	public function get( string $key ){
+        if (!$this->connected) return null;
 		return $this->connection->get($key);
 	}
 
@@ -277,6 +283,7 @@ class ASRedis extends ASObject{
      */
 	public function set( $key , $value , int $expireDuration = 0 ): bool
     {
+        if (!$this->connected) return false;
 
 		if( $expireDuration>0 ){
 
@@ -290,6 +297,7 @@ class ASRedis extends ASObject{
 	}
 
 	public function increase( $key , $number = 1 ){
+        if (!$this->connected) return 0;
 
 		return gettype($number)=='double' ? $this->connection->incrByFloat( $key , $number ) : $this->connection->incrBy( $key , $number );
 
@@ -297,18 +305,21 @@ class ASRedis extends ASObject{
 
 	public function remove( $key ): int
     {
+        if (!$this->connected) return 0;
 
 		return $this->connection->del($key);
 
 	}
 
 	public function timeRemain($key){
+        if (!$this->connected) return false;
 
 		return $this->connection->ttl($key);
 
 	}
 
 	public function isExist( $key ){
+        if (!$this->connected) return false;
 
 		return $this->connection->exists($key);
 
@@ -329,6 +340,7 @@ class ASRedis extends ASObject{
 
 	public function analysisKeys(): array
     {
+        if (!$this->connected) return [];
 
 		$keys = $this->connection->keys('*');
 
@@ -344,6 +356,7 @@ class ASRedis extends ASObject{
 	}
 
 	public function info( bool $listArray = false ){
+        if (!$this->connected) return false;
 
 		$info = $this->connection->info();
 
@@ -360,6 +373,7 @@ class ASRedis extends ASObject{
 
 	public function flush(): bool
     {
+        if (!$this->connected) return true;
 
 		return $this->connection->flushDb();
 

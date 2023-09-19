@@ -178,8 +178,8 @@ define("CONFIG",[
 
     'INNER_UPLOADER'=>[
 
-        'KEYID'         => {{uploaderKey}} ,
-        'KEYSECRET'     => {{uploaderSecret}} ,
+        'KEYID'         => '{{uploaderKey}}' ,
+        'KEYSECRET'     => '{{uploaderSecret}}' ,
     ],
 
     'ALIYUN'=>[

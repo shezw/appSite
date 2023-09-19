@@ -53,12 +53,11 @@ function newDataStruct( array $tableClasses, bool $autoRemoveTable = false ): ar
  */
 function clearDataStruct( array $tableClasses ): array
 {
-    $this->connect();
     $dropResult = [];
 
     for ( $i=0; $i< count($tableClasses); $i++ ){
 
-        $dropResult[] = $this->dropTable($tableClasses[$i]::table);
+        $dropResult[] = _ASDB()->dropTable($tableClasses[$i]::table);
     }
     return $dropResult;
 }
