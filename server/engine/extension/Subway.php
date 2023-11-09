@@ -67,7 +67,7 @@ class Subway extends ASModel{
         'title'=>       ['type'=>DBField_String,    'len'=>32,  'nullable'=>0,  'cmt'=>'分类名'],
         'description'=> ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'描述'],
         'cover'=>       ['type'=>DBField_String,    'len'=>255, 'nullable'=>1,  'cmt'=>'封面'],
-        'gallery'=>     ['type'=>DBField_RichText,  'len'=>-1,  'nullable'=>1,  'cmt'=>'相册'],
+        'gallery'=>     ['type'=>DBField_Json,      'len'=>-1,  'nullable'=>1,  'cmt'=>'相册'],
 
         'location'=>    ['type'=>DBField_Location,  'len'=>-1,  'nullable'=>0,  'cmt'=>'定位 GeomFromWKB'  ,      'idx'=>DBIndex_Spatial ],
         'lng'=>         ['type'=>DBField_Decimal,   'len'=>'14,10', 'nullable'=>0,  'cmt'=>'经度',    'dft'=>0, ],
