@@ -235,17 +235,17 @@ class Wechat extends ASObject{
     public function oauthLogin( $params , $scope = 'common' ): ASResult
     {
 
-        $userInfo = isset($params['unionid'])||isset($params['openid']) ? $params : $this->getInfo($params,'miniProgram');
-        $wechatid = $userInfo['unionid'] ?? $userInfo['openid'];
+        $tryGetUserInfo = isset($params['unionid'])||isset($params['openid']) ? $params : $this->getInfo($params);
 
-        if ( !User::common()->has(DBConditions::init()->where('wechatid')->equal($wechatid) ) ) { # 未注册
+        $userInfo = $tryGetUserInfo->getContent();
+        $weChatID = $userInfo['unionid'] ?? $userInfo['openid'];
+
+        if ( !UserInfo::common()->has(DBConditions::init()->where('wechatid')->equal($weChatID) ) ) { # 未注册
 
             if (isset($userInfo)) {
-                try {
-                    $avatar = AliyunOSS::common()->uploadUrlFile($userInfo['headimgurl']??$userInfo['avatarUrl']);
-                }catch (OssException $e) { }
+                $avatar = AliyunOSS::common()->uploadUrlFile($userInfo['headimgurl']??$userInfo['avatarUrl'])->getContentOr(null);
                 $data = DBValues::init('avatar')->stringIf($avatar)
-                    ->set('wechatid')->string($wechatid)
+                    ->set('wechatid')->string($weChatID)
                     ->set('nickname')->stringIf($userInfo['nickname'] ?? $userInfo['nickName'])
                     ->set('country')->stringIf($userInfo['country'])
                     ->set('province')->stringIf($userInfo['province'])
@@ -253,8 +253,8 @@ class Wechat extends ASObject{
                     ->set('gender')->stringIf($userInfo['sex'] ?? $userInfo['gender']);
             }
 
-            // start regist
-            $addUser =  isset($data) ? User::common()->add($data) : User::common()->add( DBValues::init('wechatid')->string($wechatid) ) ;
+            // start register
+            $addUser =  isset($data) ? User::common()->add($data) : User::common()->add( DBValues::init('wechatid')->string($weChatID) ) ;
 
             if (!$addUser->isSucceed()){ return $addUser;}
 
@@ -263,7 +263,7 @@ class Wechat extends ASObject{
         }else{
 
             // start login
-            $getUserid = User::common()->getUserid('wechatid',$wechatid);
+            $getUserid = User::common()->getUserid('wechatid',$weChatID);
 
             if (!$getUserid->isSucceed()){ return $getUserid;}
 
@@ -295,16 +295,16 @@ class Wechat extends ASObject{
     {
 
         $userInfo = isset($params['unionid'])||isset($params['openid']) ? $params : $this->getInfo($params,'bindWechat');
-        $wechatid = $userInfo['unionid'] ?? $userInfo['openid'];
+        $weChatID = $userInfo['unionid'] ?? $userInfo['openid'];
 
-        if ( !User::common()->has(DBConditions::init()->where('wechatid')->equal($wechatid) ) ) { # 未注册
+        if ( !User::common()->has(DBConditions::init()->where('wechatid')->equal($weChatID) ) ) { # 未注册
 
-            $bind = User::common()->update( DBValues::init('wechatid')->string($wechatid), $params['userid']);
+            $bind = User::common()->update( DBValues::init('wechatid')->string($weChatID), $params['userid']);
             return $bind->isSucceed() ? $this->success(i18n('SYS_SUC')) :$this->error(500,'Bind Failed') ;
 
         }else{
 
-            return $this->take($wechatid)->error(601,'ERROR_WX_BOUND','WEIXIN::bind');
+            return $this->take($weChatID)->error(601,'ERROR_WX_BOUND','WEIXIN::bind');
         }
     }
 

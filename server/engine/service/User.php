@@ -42,6 +42,17 @@ class User extends ASModel {
         'point','balance','type',
     ];
 
+    const listFields = [
+        'uid','username','email','mobile','saasid',
+        'nickname','avatar','cover','description',
+        'groupid','gender','areaid','status','createtime','lasttime'
+    ];
+    const publicListFields = [
+        'uid','username','saasid',
+        'nickname','avatar','description',
+        'groupid','gender','areaid','status','createtime','lasttime'
+    ];
+
     const filterFields = [
         # Account
         'uid','username','email','mobile','saasid',
