@@ -115,7 +115,7 @@ class Wechat extends ASObject{
      * @param  string  $callbackURI
      * @return ASResult | void
      */
-    public function getInfo($params, string $callbackURI = 'wxLogin' ): ASResult
+    public function getInfo($params, string $callbackURI = 'api/account/loginByWechat' ): ASResult
     {
 
         if (isset($params['code'])) {
@@ -132,15 +132,15 @@ class Wechat extends ASObject{
      * @param          $params
      * @param  string  $callbackURI
      */
-    public function oauthRequest( $params, string $callbackURI = 'api/account/wxLogin' ){
+    public function oauthRequest( $params, string $callbackURI = 'api/account/loginByWechat' ){
 
         $device   = isset($params['device']) ? $params['device'] : 'mobile';
         $isPc     = $device!=='mobile';
-        $wechat   = $isPc ? new Oauth($this->getConfig()) : new \WeChat\Oauth($this->getConfig());
+        $wechat   = $isPc ? new \WeOpen\Oauth($this->getConfig()) : new \WeChat\Oauth($this->getConfig());
 
         if( !strstr($params['callbackurl'], '://')){ $params['callbackurl'] = str_replace('http:/','http://',str_replace('https:/', 'https://', $params['callbackurl'])); }
 
-        $redirect = getConfig('API_HOST').$callbackURI.'?callbackurl='.$params['callbackurl'].'&device='.$device;
+        $redirect = getConfig('MAIN_PATH').$callbackURI.'?callbackurl='.$params['callbackurl'].'&device='.$device;
         $redirect.= isset($params['userid']) ? '&userid='.$params['userid'] : '';
 
         _ASRecord()->add(['content'=>['params'=>$params,'redirect'=>$redirect,'callbackURI'=>$callbackURI,'server'=>$_SERVER],'event'=>'Wechat->oauthRequest']);
