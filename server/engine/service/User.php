@@ -671,7 +671,7 @@ class User extends ASModel {
 
         if ( !$LIST->isSucceed()){ return $this->error(400,i18n('USR_NON'),'User->getUserid'); }
 
-        return $this->take($LIST->getContent()[0]['uid'])->success(i18n('USR_GET_SUC'),'User->getUserid');
+        return $this->take($LIST->getContent()[0]['uid']??$LIST->getContent()[0]['userid'])->success(i18n('USR_GET_SUC'),'User->getUserid');
     }
 
     /**
