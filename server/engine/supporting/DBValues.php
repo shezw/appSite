@@ -17,8 +17,9 @@ class DBValues{
 
     private $pointer = 0;
 
-    public static function init( string $field ): DBValues {
+    public static function init( string $field = null ): DBValues {
         $values = new static();
+        if (!$field) return $values;
         return $values->set( $field );
     }
 

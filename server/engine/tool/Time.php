@@ -37,7 +37,7 @@ class Time{
 	function __construct( int $specifiedTime = null )
 	{
 
-        $this->now       = microtime(true);
+        $this->now       = (int)floor(microtime(true));
 		$this->time      = $specifiedTime ?? $this->now;
 	}
 

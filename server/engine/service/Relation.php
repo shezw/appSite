@@ -77,7 +77,7 @@ class Relation extends ASModel{
     public function bind( string $itemid, string $itemtype, string $relationId, string $relationType, string $type = null, $rate = null ):ASResult{
 
         $values =
-            DBValues::init(static::table)
+            DBValues::init()
             ->set('itemid')->string($itemid)
             ->set('itemtype')->string($itemtype)
             ->set('relationid')->string($relationId)

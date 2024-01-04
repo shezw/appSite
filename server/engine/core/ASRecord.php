@@ -232,7 +232,7 @@ class ASRecord extends ASModel {
             $content = $content->toArray();
         }
 
-        $data = DBValues::init($table)
+        $data = DBValues::init()
             ->set("userid" )->stringIf($userid)
             ->set("itemid" )->stringIf($itemid)
             ->set("type"   )->stringIf($type)
