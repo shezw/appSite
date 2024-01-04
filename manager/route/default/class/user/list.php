@@ -7,6 +7,7 @@ use APS\Encrypt;
 use APS\Filter;
 use APS\User;
 use APS\Website;
+use manager\userList;
 
 $website->requireLogin('manager/login');
 $website->requireGroupLevel(GroupLevel_Admin, 'manager/insufficient');
@@ -19,7 +20,7 @@ $website->params['itemClass'] = User::class;
 $website->params['filters'] = Filter::purify($website->params, User::filterFields);
 $website->params['filters']['groupid'] = Group_Registered;
 
-$callResult = ASAPI::systemInit(manager\itemList::class, $website->params, $website->user)->run();
+$callResult = ASAPI::systemInit(userList::class, $website->params, $website->user)->run();
 
 $website->setSubData('userList', $callResult->isSucceed() ? $callResult->getContent()['list'] : null);
 $website->setSubData('customJS',"

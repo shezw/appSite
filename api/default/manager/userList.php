@@ -10,6 +10,7 @@ use APS\ASResult;
 use APS\Category;
 use APS\Time;
 use APS\User;
+use APS\UserAccount;
 
 /**
  * 通用列表查询
@@ -31,8 +32,8 @@ class userList extends \APS\ASAPI{
         $size    = $this->params['size'] ?? 20;
         $order   = $this->params['order'] ?? 'createtime DESC';
 
-        $getCount =  User::common()->countByArray($filters) ?? ASResult::shared();
-        $getList  =  User::common()->listByArray( $filters, $page, $size, $order) ?? ASResult::shared();
+        $getCount =  UserAccount::common()->countByArray($filters) ?? ASResult::shared();
+        $getList  =  UserAccount::common()->listByArray( $filters, $page, $size, $order) ?? ASResult::shared();
 
         $list = [];
         $maxPage = (int)(($getCount->getContent() - 1 )/ $size + 1);
