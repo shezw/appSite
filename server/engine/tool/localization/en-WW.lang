@@ -698,6 +698,9 @@ return [
         'operation'=>'Operation',
         'more'=>'More',
 
+        'list'=>'List',
+        'add'=>'Add',
+        'edit'=>'Edit',
         'trash'=>'Trash',
         'accept'=>'Accept',
         'delete'=>'Delete',
@@ -822,7 +825,13 @@ return [
 
 
         'sidebar_dashboard'=>'Dashboard',
-
+        'sidebar_commerce'=>'commerce',
+        'sidebar_productAdd'=>'productAdd',
+        'sidebar_productList'=>'productList',
+        'sidebar_payment'=>'payment',
+        'sidebar_shipping'=>'shipping',
+        'sidebar_coupon'=>'coupon',
+        'sidebar_order'=>'order',
         'sidebar_content'=>'Content Management',
         'sidebar_article'=>'Article',
         'sidebar_articleAdd'=>'New',
@@ -834,6 +843,7 @@ return [
         'sidebar_category'=>'Category',
         'sidebar_categoryAdd'=>'New',
         'sidebar_categoryList'=>'List',
+        'sidebar_comment'=>'comment',
 
         'sidebar_systemManage'=>'System Management',
         'sidebar_systemSetting'=>'System Setting',
@@ -842,9 +852,13 @@ return [
         'sidebar_systemSettingApiTest'=>'API Test',
         'sidebar_systemSettingModel'=>'Model Manage',
 
+        'sidebar_appsite'=>'AppSiteJS',
         'sidebar_AppsiteJS'=>'AppSiteJS',
         'sidebar_AppsiteJSFormer'=>'Form',
         'sidebar_AppsiteJSGUI'=>'GUI',
+        'sidebar_developer'=>'Developer',
+        'sidebar_apiTest'=>'API Test',
+        'sidebar_templates'=>'模版管理',
 
         'sidebar_operationManage'=>'Operation Management',
         'sidebar_user'=>'User',
