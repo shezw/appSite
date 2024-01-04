@@ -11,6 +11,7 @@ use APS\ASResult;
 use APS\Category;
 use APS\Time;
 use APS\User;
+use APS\UserAccount;
 
 /**
  * 通用列表查询
@@ -52,13 +53,13 @@ class itemList extends ASAPI{
         for ( $i = 0; $i < count($list['list']); $i ++ ){
 
             if( isset($list['list'][$i]['authorid']) ){
-                $author = User::common()->overview( $list['list'][$i]['authorid'] );
+                $author = UserAccount::common()->overview( $list['list'][$i]['authorid'] );
                 $list['list'][$i]['author'] = $author->isSucceed() ? $author->getContent() : null;
                 if(isset($list['list'][$i]['author'])) $list['list'][$i]['author']['avatar'] = $list['list'][$i]['author']['avatar'] ?? getConfig('defaultAvatar','WEBSITE');
             }
 
             if( isset($list['list'][$i]['userid']) ){
-                $author = User::common()->overview( $list['list'][$i]['userid'] );
+                $author = UserAccount::common()->overview( $list['list'][$i]['userid'] );
                 $list['list'][$i]['user'] = $author->isSucceed() ? $author->getContent() : null;
                 isset($list['list'][$i]['user']) && $list['list'][$i]['user']['avatar'] = $list['list'][$i]['user']['avatar'] ?? getConfig('defaultAvatar','MANAGER');
             }
