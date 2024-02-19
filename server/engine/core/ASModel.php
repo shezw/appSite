@@ -325,10 +325,10 @@ abstract class ASModel extends ASBase{
      * 查询唯一数据详情
      * Get detail by itemid
      * @param  string  $uid
-     * @param  bool    $public
+     * @param bool $public
      * @return ASResult
      */
-	public function detail(string $uid , $public = false ): ASResult
+	public function detail(string $uid , bool $public = false ): ASResult
     {
         $this->RedisHash = [$uid,$public];
 
@@ -534,91 +534,6 @@ abstract class ASModel extends ASBase{
     }
 
     /**
-     * 多表联合统计
-	 * joinCount
-	 * @param    array                    $filters        [主表条件]
-     * @param  JoinParams[]|array|string[]   $mergeJoins
-     * @param  JoinParams[]|array|string[]   $subJoins
-	 * @return   ASResult
-     *
-     * @deprecated
-	 */
-	public function joinCount(  array $filters = null, array $mergeJoins = null, array $subJoins = null ): ASResult
-    {
-	    $primaryParams = JoinPrimaryParams::common(static::class);
-	    if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
-		return $this->advancedJoinCount( $primaryParams ,$mergeJoins,$subJoins );
-	}
-//
-//	public function countByQuickJoin(DBJoinParams $joinParams)
-//    {
-//
-//    }
-
-
-    /**
-     * 多表联合查询统计 完整模式
-     * advancedJoinCount
-     * @param  JoinPrimaryParams $primaryParams
-     * @param  JoinParams[]|array|string[]   $mergeJoins
-     * @param  JoinParams[]|array|string[]   $subJoins
-     * @return ASResult
-     *
-     * @deprecated
-     */
-	public function advancedJoinCount( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null ): ASResult
-    {
-
-		$this->beforeJoinCount( $primaryParams,$mergeJoins,$subJoins );
-
-		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-
-		$this->DBJoinCount( $primaryParams, $joinParams );
-
-		$this->beforeJoinCountReturn( $this->result );
-
-		return $this->feedback();
-
-	}
-
-    /** @deprecated **/
-	public function beforeJoinCount( JoinPrimaryParams &$filters = null, array &$mergeJoins = null, array &$subJoins = null ){  }
-
-    /** @deprecated **/
-	public function beforeJoinCountReturn( ASResult &$result ){  }
-
-
-	/**
-     * 多表联合检测是否存在
-	 * joinHas
-	 * @param    array|null               $filters        主表条件
-	 * @param    JoinParams[]|null   $joins          合并查询表
-	 * @return   boolean
-     *
-     * @deprecated
-	 */
-	public function joinHas(  array $filters = null, array $joins = null ): bool
-    {
-
-	    $primaryParams = JoinPrimaryParams::common( static::class );
-	    $primaryParams->withResultFilter($filters);
-
-	    $joinParams = [];
-
-		foreach ($joins as $key => $jParams) {
-
-		    if( isset($jParams->conditions) ){
-		        $joinParams[] = $jParams;
-            }
-		}
-
-		$this->DBJoinCount( $primaryParams, $joinParams );
-
-		return $this->result->getContent() > 0;
-
-	}
-
-    /**
      * @param DBConditions $filters  Conditions/Filters for primary table
      * @param DBJoinParam[] $joins   List of DBJoinParams
      * @param int $page
@@ -719,203 +634,6 @@ abstract class ASModel extends ASBase{
     }
 
 
-	/**
-     * 多表联合查询
-	 * joinList
-	 * @param    array|null               $filters        主表条件
-	 * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
-	 * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
-	 * @param    int $page           页
-	 * @param    int $size           大小
-	 * @param    string|null              $sort           排序
-	 * @return   ASResult
-     *
-     * @deprecated => listWithJoin
-	 */
-	public function joinList( array $filters = null, array $mergeJoins = null, array $subJoins = null, int $page = 1, int $size = 20, string $sort = null ): ASResult
-    {
-
-        $primaryParams = JoinPrimaryParams::common(static::class);
-        if( isset($filters) ){ $primaryParams->withResultFilter($filters); }
-
-		return $this->advancedJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
-	}
-
-    /**
-     * Description
-     * advancedJoinList
-     * @param JoinPrimaryParams|null  $primaryParams
-     * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
-     * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
-     * @param  int                          $page
-     * @param  int                          $size
-     * @param  string|null                  $sort
-     * @return ASResult|mixed
-     *
-     * @deprecated
-     */
-	public function advancedJoinList( JoinPrimaryParams $primaryParams = null, array $mergeJoins = null, array $subJoins = null, int $page =1, int $size = 20, string $sort = null ): ASResult
-    {
-
-		$this->RedisHash = [$primaryParams->toArray(),JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins),$page,$size,$sort];
-
-		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
-
-		$this->beforeJoinList($primaryParams,$mergeJoins,$subJoins,$page,$size,$sort);
-
-		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-
-		$this->DBJoinGet( $primaryParams, $joinParams, $page, $size, $sort );
-
-		if($this->result->isSucceed()){
-
-            $list = $this->result->getContent();
-
-            for ($i=0; $i < count($list); $i++) {
-
-                $list[$i] = $this->convert($list[$i]);
-
-                if(isset($subJoins)){
-                    foreach ($subJoins as $key => $jParams) {
-
-                        $CLASS = $jParams->modelClass;
-                        $list[$i][$jParams->alias] = $this->convert($list[$i][$jParams->alias],$CLASS::depthStruct);
-                    }
-                }
-            }
-            $this->result->setContent($list);
-
-			$this->_cache();
-		}
-
-		$this->beforeJoinListReturn($this->result);
-
-		return $this->feedback();
-
-	}
-
-	/** @deprecated **/
-	public function beforeJoinList( JoinPrimaryParams &$primaryParams = null, array &$mergeJoins = null, array &$subJoins = null, int &$page=1, int &$size=25, string &$sort = null ){  }
-
-	/** @deprecated **/
-	public function beforeJoinListReturn( ASResult &$result ){  }
-
-
-    /**
-     * 多表联合详情
-     * joinDetail
-     * @param  string      $uid      索引ID
-     * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
-     * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
-     * @return   ASResult
-     *
-     * @deprecated -> detailWithJoin
-     */
-	public function joinDetail(string $uid, array $mergeJoins = null, array $subJoins = null ): ASResult
-    {
-
-		$this->RedisHash = [$uid,JoinParams::listToArrayList($mergeJoins),JoinParams::listToArrayList($subJoins)];
-
-		if( static::rds_auto_cache && $this->_hasCache() ){ return $this->_getCache(); }
-
-		$this->beforeJoinDetail($uid,$mergeJoins,$subJoins);
-
-		$primaryParams = JoinPrimaryParams::common(static::class)->get(static::detailFields)->withResultFilter([static::primaryid=>$uid]);
-
-		$joinParams = array_merge( static::fillJoinParams($mergeJoins),static::fillJoinParams($subJoins,true) );
-
-		$this->DBJoinGet( $primaryParams, $joinParams, 1, 1 );
-		$this->setId($uid);
-
-		if($this->result->isSucceed()){
-
-			$detail = $this->convert($this->result->getContent()[0]);
-
-            if(isset($subJoins)){
-                foreach ($subJoins as $key => $jParams) {
-
-                    $CLASS = $jParams->modelClass;
-                    $detail[$jParams->alias] = $this->convert($detail[$jParams->alias],$CLASS::depthStruct);
-                }
-            }
-
-			$this->result->setContent( $detail );
-			static::rds_auto_cache && $this->_cache();
-		}
-
-		$this->beforeJoinDetailReturn($this->result);
-
-		return $this->feedback();
-	}
-
-    /**
-     * 查询前参数处理
-     * beforeJoinDetail
-     * @param  string      $uid
-     * @param    JoinParams[]|array|string[]  $mergeJoins     合并查询表
-     * @param    JoinParams[]|array|string[]  $subJoins       合并查询表(子集)
-     */
-	public function beforeJoinDetail(string &$uid, array &$mergeJoins = null, array &$subJoins = null ){  }
-	public function beforeJoinDetailReturn( ASResult &$result ){  }
-
-
-	/**
-     * @deprecated
-     *
-     * 自动完善JOIN参数
-	 * fillJoinParams
-     * @param    JoinParams[]|array|string[]  $joins      参数
-     *                                                    Quick Mode  ['APS\UserInfo','APS\UserGroup']
-     *                                                    k-v   Mode  ['info'=>'APS\UserInfo','group'=>'APS\UserGroup']
-     *                                                    Full  Mode  [ JoinParams,JoinParams... ]
-	 * @param    bool                        $isSubJoin   是否作为子集结果
-	 * @return   array                                    结果参数
-	 */
-	public function fillJoinParams( array $joins = null , bool $isSubJoin = false ): array
-    {
-
-		$joinParamsArray = [];
-
-		if( !isset($joins) ){ return $joinParamsArray; }
-
-		foreach ($joins as $k => $v) {
-
-		    # 提供三种模式 Quick, k-v, Full
-
-            if( is_integer($k) && is_string($v) ){
-
-                # Quick Mode 快速模式
-                $joinParam = JoinParams::init( $v );
-
-                if( $isSubJoin ){
-                    $joinParam->asSubData( $v );
-                }
-
-            }else if( is_string($k) && is_string($v) ){
-
-                # K-v Mode
-                $joinParam = JoinParams::init( $v );
-
-                if( $isSubJoin ){
-                    $joinParam->asSubData( $k );
-                }
-            }else if( is_integer($k) && gettype($v)=='object' && get_class($v)=='APS\JoinParams' ){
-
-                # Full mode
-                $joinParam = $v;
-                if( $isSubJoin ){
-                    $joinParam->asSubData( $joinParam->alias ?? $joinParam->modelClass );
-                }
-            }else{
-                _ASError()->add(ASResult::shared(800,'Not valid params',$v));
-            }
-
-			$joinParamsArray[] = $joinParam;
-		}
-		return $joinParamsArray;
-	}
-
-
     /**
      * 是否支持缓存(Redis)
      * Is cache(Redis) supported in environment
@@ -929,10 +647,10 @@ abstract class ASModel extends ASBase{
     /**
      * 是否存在对应缓存数据
      * _hasCache
-     * @param  string|null  $hash  缓存哈希
+     * @param string|null $hash  缓存哈希
      * @return bool
      */
-    public function _hasCache( $hash = null ): bool
+    public function _hasCache(string $hash = null ): bool
     {
         return $this->_isCacheEnabled() && $this->getRedis()->has( $hash ?? $this->RedisHash );
     }
@@ -940,10 +658,11 @@ abstract class ASModel extends ASBase{
     /**
      * 取出缓存
      * Get cache from Redis server
-     * @param  string|null  $hash
-     * @return mixed
+     * @param string|null $hash
+     * @return ASResult
      */
-    public function _getCache( $hash = null ){
+    public function _getCache(string $hash = null ): ASResult
+    {
         return ASResult::fromArray($this->getRedis()->read( $hash ?? $this->RedisHash )->getContent());
     }
 
@@ -988,18 +707,6 @@ abstract class ASModel extends ASBase{
         if(!$this->getRedis()->isEnabled()){ return false; }
         return $this->getRedis()->clear($set,$id);
     }
-
-
-	// 搜索
-//	public function search( string $keyword, array $filters = null , int $page=1, int $size=25, string $sort = null ): ASResult
-//    {
-//
-//		$filters = $filters ? $filters : [];
-//		$filters['KEYWORD'] = $keyword;
-//
-//		return $this->list($filters,$page,$size,$sort);
-//	}
-
 
     /**
      * 根据定义的数据结构 转化数据
