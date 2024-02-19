@@ -583,7 +583,7 @@ class CommerceOrder extends ASModel{
                 return $this->take($uid)->error(305,i18n('SYS_CAL_SUC'),'CommerceOrder->payback');
             }
 
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'status'  => $callback->getStatus(),
                 'itemid'  => $uid,
                 'type'    => 'order',
@@ -729,7 +729,7 @@ class CommerceOrder extends ASModel{
 
         $progress = $this->getDB()->update($data,static::table,$conditions);
         $progress->isSucceed() ?  :
-        _ASRecord()->add([
+        _ASRecord()->save([
             'type'     => 'order',
             'status'   => $progress->isSucceed() ? 0 : 5500,
             'content'  => $userid,

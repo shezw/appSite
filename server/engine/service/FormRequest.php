@@ -108,7 +108,7 @@ class FormRequest extends ASModel{
 
         $DB = $this->get('applycall',$requestid);
 
-        _ASRecord()->add([
+        _ASRecord()->save([
             'itemid'=>$requestid,
             'type'=>'request',
             'event'=>'APPLYCALL',
@@ -147,7 +147,7 @@ class FormRequest extends ASModel{
 
             $DB = $this->get('rejectcall',$requestid);
 
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'itemid'=>$requestid,
                 'type'=>'request',
                 'event'=>'REJECTCALL',

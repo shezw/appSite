@@ -202,7 +202,7 @@ abstract class ASBase extends ASObject{
      */
     protected function record( string $event = null , string $sign = null, $content = null )
     {
-        static::record_enabled && _ASRecord()->add([
+        static::record_enabled && _ASRecord()->save([
             'itemid'   => $this->id,
             'type'     => static::table,
             'content'  => $content ?? $this->params,

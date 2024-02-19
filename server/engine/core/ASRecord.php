@@ -185,7 +185,7 @@ class ASRecord extends ASModel {
     /**
      * 添加记录
      * add record to database
-     * @param  array   $_           数组参数形式
+     * @param array|null $_           数组参数形式
      *                 - int     $status      状态码
      *                 - string  $itemid      操作对象id
      *                 - string  $type        记录类型
@@ -193,10 +193,10 @@ class ASRecord extends ASModel {
      *                 - string  $userid      用户id
      *                 - string  $sign        操作签名
      *                 - string  $recordType  记录分类
-     * @param  bool    $saveToFile  以文件形式记录
+     * @param bool $saveToFile  以文件形式记录
      * @return ASResult
      */
-    public function add( $_ = null, $saveToFile = false ): ASResult
+    public function save(array $_ = null, bool $saveToFile = false ): ASResult
     {
         if(!getConfig("RECORD_ENABLE")){ return $this->success("RECORDER CONF IS NOT ENABLED","RECORD->add"); }
 
@@ -258,19 +258,19 @@ class ASRecord extends ASModel {
     /**
      * 进行文件记录
      * log by file
-     * @param  array   $_
-     * @param  int     $status
-     * @param  string  $itemid
-     * @param  string  $type
-     * @param  array   $content
-     * @param  string  $category
-     * @param  string  $userid
-     * @param  string  $sign
+     * @param array|null $_
+     * @param int|null $status
+     * @param string|null $itemid
+     * @param string|null $type
+     * @param array|null $content
+     * @param string|null $category
+     * @param string|null $userid
+     * @param string|null $sign
      * @return ASResult
      */
-    public function log( $_ = null, $status = null, $itemid = null, $type = null, $content = null, $category=null, $userid = null, $sign = null ): ASResult
+    public function log(array $_ = null, int $status = null, string $itemid = null, string $type = null, array $content = null, string $category=null, string $userid = null, string $sign = null ): ASResult
     {
-        return $this->add($_,true );
+        return $this->save($_,true );
     }
 
     /**
@@ -301,10 +301,10 @@ class ASRecord extends ASModel {
      * 生成记录行数据
      * generateLogLine
      * @param          $content
-     * @param  string  $mode
+     * @param string $mode
      * @return string
      */
-    public static function generateLogLine( $content , $mode = 'json' ): string
+    public static function generateLogLine($content , string $mode = 'json' ): string
     {
 
         switch ($mode) {

@@ -148,7 +148,7 @@ class AliyunOSS extends ASModel{
 
         if ($authorizationBase64 == '' || $pubKeyUrlBase64 == '') {
 
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'content' => 'OSS error authorization!',
                 'status' => 702,
                 'event' => 'AliyunOSS_callback',
@@ -235,7 +235,7 @@ class AliyunOSS extends ASModel{
             # 返回媒体ID
             $data['content']['uid'] = $newMedia->getContentOr(null);
 
-            _ASRecord()->add(['content' => $data, 'event' => 'AliyunOSS_CALLBACK', 'sign' => 'AliyunOSS->callback']);
+            _ASRecord()->save(['content' => $data, 'event' => 'AliyunOSS_CALLBACK', 'sign' => 'AliyunOSS->callback']);
 
             header("Content-Type: application/json");
             echo json_encode($data);
@@ -243,7 +243,7 @@ class AliyunOSS extends ASModel{
 
         } else {  // 验证失败
 
-            _ASRecord()->add(['content' => $body, 'status' => 700, 'event' => 'AliyunOSS_CALLBACK', 'sign' => 'AliyunOSS->callback']);
+            _ASRecord()->save(['content' => $body, 'status' => 700, 'event' => 'AliyunOSS_CALLBACK', 'sign' => 'AliyunOSS->callback']);
             header("http/1.1 403 Forbidden");
             exit();
         }
@@ -271,7 +271,7 @@ class AliyunOSS extends ASModel{
 
         // 再次失败则加入系统错误日志
         if (!$file->isSucceed()) {
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'category' => 'system',
                 'status' => 500,
                 'event' => 'OSS_FILE_GETFAL',

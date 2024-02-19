@@ -61,7 +61,7 @@ class loginByFacebook extends ASAPI
         $user = new User( $userid,$authorize->getContent()['token'], $authorize->getContent()['scope'] );
         $user->toSession((getConfig('id','WEBSITE') ?? 'APPSITE') . '_w');
 
-        _ASRecord()->add([
+        _ASRecord()->save([
             'itemid'=>$userid,
             'type'=>'user',
             'event'=>'USER_LOGIN_FACEBOOK',

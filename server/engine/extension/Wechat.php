@@ -143,7 +143,7 @@ class Wechat extends ASObject{
         $redirect = getConfig('MAIN_PATH').$callbackURI.'?callbackurl='.$params['callbackurl'].'&device='.$device;
         $redirect.= isset($params['userid']) ? '&userid='.$params['userid'] : '';
 
-        _ASRecord()->add(['content'=>['params'=>$params,'redirect'=>$redirect,'callbackURI'=>$callbackURI,'server'=>$_SERVER],'event'=>'Wechat->oauthRequest']);
+        _ASRecord()->save(['content'=>['params'=>$params,'redirect'=>$redirect,'callbackURI'=>$callbackURI,'server'=>$_SERVER],'event'=>'Wechat->oauthRequest']);
 
         $oauthUrl = $wechat->getOauthRedirect($redirect,time(),$isPc?'snsapi_login':'snsapi_userinfo');
 
@@ -170,7 +170,7 @@ class Wechat extends ASObject{
                 try {
                     $user = $wechat->getUserInfo($result['access_token'], $result['openid']);
 
-                    _ASRecord()->add(['content'=>$user,'event'=>'WECHAT_GET_USERINFO']);
+                    _ASRecord()->save(['content'=>$user,'event'=>'WECHAT_GET_USERINFO']);
 
                     return $this->take($user)->success('SYS_GET_SUC','Wechat->oauthCallback');
 
@@ -272,7 +272,7 @@ class Wechat extends ASObject{
 
         $authorize = AccessToken::common()->addToken( $userid, $scope );
 
-        _ASRecord()->add([
+        _ASRecord()->save([
             'itemid'=>$userid,
             'type'=>'user',
             'event'=>'USER_LOGIN_WECHAT',
@@ -369,7 +369,7 @@ class Wechat extends ASObject{
 
             $data = static::getResultData($result);
 
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'category'=>'system',
                 'content'=>$data,
                 'event'=>'WECHATPAY_CALLBACK',
@@ -385,7 +385,7 @@ class Wechat extends ASObject{
 
         } catch (InvalidResponseException $e) {
 
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'status'=>-10,
                 'content'=>$e,
                 'event'=>'WECHAT_PAYMENT_CALL',
@@ -464,7 +464,7 @@ class Wechat extends ASObject{
 
             if( !$call->isSucceed() ){
 
-                _ASRecord()->add(['content'=>$call,'status'=>12345,'event'=>'REFUND_CALLBACK']);
+                _ASRecord()->save(['content'=>$call,'status'=>12345,'event'=>'REFUND_CALLBACK']);
 
                 return $this->error(12345,'业务逻辑错误','Wechat->refundCallback:call');
             }

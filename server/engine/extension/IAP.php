@@ -69,7 +69,7 @@ class IAP extends ASObject {
                 $status = $data['status'] ?? 553;
                 $message = ['IAP_VAD_FAL'];
 
-                _ASRecord()->add(['content'=>$data,'itemid'=>$in_app['product_id'],'status'=>$data['status']??20000,'event'=>'IAP_VERIFY','sign'=>'validReceiptData']);
+                _ASRecord()->save(['content'=>$data,'itemid'=>$in_app['product_id'],'status'=>$data['status']??20000,'event'=>'IAP_VERIFY','sign'=>'validReceiptData']);
             }
 
             if( $status == 21007 && !$isSandbox ){

@@ -24,7 +24,7 @@ class SMS extends ASObject{
 
         if (!$beginVerify->isSucceed()) {
 
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'status'=>500,
                 'content'=>$beginVerify,
                 'event'=>'SERVER_INIT',
@@ -70,7 +70,7 @@ class SMS extends ASObject{
                 $sms  = new AliyunSMS();
                 $send = $sms->send($smsParams);
 
-                _ASRecord()->add([
+                _ASRecord()->save([
                     'type'     => 'SMS',
                     'status'   => ( $send->Message == 'OK' || $send->Code == 'OK' ) ? 0 : 20008,
                     'content'  => $smsParams,

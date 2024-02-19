@@ -40,7 +40,7 @@ class innerCallback extends ASAPI{
             if( $callResult->isSucceed() ){
                 $success ++ ;
             }else{
-                _ASRecord()->add([
+                _ASRecord()->save([
                     'type'  =>'callback',
                     'status'=>788,
                     'content'=>['callbacks'=>$callbacks,'step'=>$i,'errors'=>$callResult],
@@ -55,7 +55,7 @@ class innerCallback extends ASAPI{
                 return $this->take(json_encode($callbackRemain,JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK))->error($callResult->getStatus(),$callResult->getMessage());
             }
         }
-        _ASRecord()->add([
+        _ASRecord()->save([
             'type'   =>'callback',
             'content'=>$callbacks,
             'event'=>'innerCallback'

@@ -192,7 +192,7 @@ class CommercePayment extends  ASModel{
 
         if(!$callback->isSucceed()){
 
-            _ASRecord()->add([
+            _ASRecord()->save([
                 'category'=>'system',
                 'content'=>$callback,
                 'status'=>12345,
