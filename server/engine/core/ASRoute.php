@@ -108,9 +108,6 @@ class ASRoute extends ASObject{
         $_INPUTS = array_merge($INPUTS,$_POST,$_GET);
 
         $this->params = $_INPUTS;
-//        $this->params = Filter::stripslashes_array($_INPUTS);
-//        var_dump($this->params);
-//        $this->convertParams();
     }
 
     /**

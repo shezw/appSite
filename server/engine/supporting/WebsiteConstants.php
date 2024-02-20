@@ -31,12 +31,10 @@ class WebsiteConstants{
     {
         $this->SiteDir = SITE_DIR;
         $this->SitePath = getConfig('SITE_PATH') ?? '/';
-//        $this->StaticPath = $this->SitePath . 'static/';
 
         $this->RootPath = $rootPath;
 
         $this->StaticPath = getConfig('STATIC_PATH') ?? "{$this->SitePath}website/static/";
-//        $this->Title  = getConfig('title',$scope);
         $this->SiteTitle  = getConfig('title',$scope);
         $this->Description = getConfig('description',$scope);
 
@@ -50,8 +48,6 @@ class WebsiteConstants{
 
         $this->Lang = _I18n()->currentLang();
 
-
-//        var_dump($this);
     }
 
     public function setRootPath( string $rootPath ):WebsiteConstants

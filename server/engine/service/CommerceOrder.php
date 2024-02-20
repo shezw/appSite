@@ -493,20 +493,6 @@ class CommerceOrder extends ASModel{
     }
 
 
-    /**
-     * 订单列表 合并用户信息
-     * listWithUserInfo
-     * @param               $params
-     * @param  int          $page
-     * @param  int          $size
-     * @param  string|NULL  $sort
-     * @return ASResult
-     */
-//    public function listWithUserInfo( $params, int $page = 1, int $size=20, string $sort = null ): ASResult
-//    {
-//        return $this->joinList( $params, null, [JoinParams::init(UserInfo::class)->at('userid')->equalTo('commerce_order.userid')->asSubData('user')], $page , $size , $sort);
-//    }
-
 
     //// 订单回调
 
@@ -728,10 +714,10 @@ class CommerceOrder extends ASModel{
         $conditions = DBConditions::init('status')->equal('pending')->and('expire')->less($time)->and('userid')->equalIf($userid)->and('saasid')->equalIf(saasId());
 
         $progress = $this->getDB()->update($data,static::table,$conditions);
-        $progress->isSucceed() ?  :
+        !$progress->isSucceed() &&
         _ASRecord()->save([
             'type'     => 'order',
-            'status'   => $progress->isSucceed() ? 0 : 5500,
+            'status'   => 5500,
             'content'  => $userid,
             'event'    => 'CLEAR_EXPIRE_ORDER',
             'sign'     => 'ORDER::clearExpire',

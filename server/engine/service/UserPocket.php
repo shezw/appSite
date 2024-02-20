@@ -98,7 +98,7 @@ class UserPocket extends ASModel{
     {
         $data->purify( static::addFields );
         $data->set(static::primaryid)->string($this->userid);
-//var_dump($data);
+
         return $this->add($data);
     }
 

@@ -405,6 +405,9 @@ class User extends ASModel {
             return $this->take($data->getValue('appleUUID') )->error(600,i18n('USR_AP_EXT'),'User->add');
         }
 
+        $accountUpdate = false;
+        $infoUpdate = false;
+
         if ( $data->hasKeyIn( UserAccount::updateFields ) ){
             $accountUpdate = true;
             $updateAccount = UserAccount::common()->update( $data, $uid );
@@ -460,44 +463,6 @@ class User extends ASModel {
         return $this->success();
     }
 
-
-    // 检测用户授权是否正确
-//    public function checkAuth( string $status=null, int $level = 0 ): ASResult
-//    {
-//
-////        if( !$this->access-> )
-////        $CHECK = ACCESS::checkToken($userid,$token);
-////        if ( !isset($userid) || $userid=='false' || !RESULT::isSucceed($CHECK) ) {
-////            return RESULT::feedback($CHECK['status']==308 ? 9998 : 9999,['AUTH_VER_FAL'],$userid,'checkAuth');
-////        }
-//
-//        // status check
-//        if(!isset($status) && $level==0 ){ return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkAuth'); }
-//        if ($this->detail['status']!=='enabled') {
-//            return $this->error(9001,i18n('AUTH_BLOCK'),'User->checkAuth');
-//        }
-//
-//        if ( $this->getUserInfo('level') < $level ) {
-//            return $this->error(9900,i18n('AUTH_LEVEL_LOW'),'User->checkAuth');
-//        }
-//
-//        return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkAuth');
-//    }
-
-    /**
-     * 检测用户权限级别
-     * @param int $level
-     * @return ASResult
-     */
-//    public function checkLevel(int $level = 0 ): ASResult
-//    {
-//
-//        if ( $this->getUserInfo('level') < $level ) {
-//            return $this->error(9900,i18n('AUTH_LEVEL_LOW'),'User->checkLevel');
-//        }
-//
-//        return $this->take($this->userid)->success(i18n('AUTH_SUC'),'User->checkLevel');
-//    }
 
 
     /**

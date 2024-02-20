@@ -11,12 +11,11 @@
 
 require_once __DIR__.'/autoload.php';
 
-//\APS\User::common()->add(['username'=>'zeyu','password'=>'20202020','groupid'=>'800']);
-
-//\APS\UserGroup::common()->update(['menuaccess'=>['operation','setting','settingApiTest']],'300');
-
 _ASRoute()->setMode(ASAPI_Mode_RAW);
 _ASRoute()->GoodSay(false);
 
+// clear redis cache
 //_ASRedis()->flush();
+
+// force set language
 //_I18n()->setLang($_GET['i18n'] ?? $_SESSION['i18n'] ?? 'zh-CN' , true );

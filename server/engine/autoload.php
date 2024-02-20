@@ -28,7 +28,7 @@ use APS\DBFilter;
 use APS\I18n;
 use APS\User;
 
-define( 'EngineRegisterDict' , [
+const EngineRegisterDict = [
     'tool'=>[             /** 工具层 */
 
         'Time',           # 时间
@@ -174,7 +174,7 @@ define( 'EngineRegisterDict' , [
         'JoinParams',
         'JoinPrimaryParams',
     ]
-]);
+];
 
 /** Alias for Global Objects */
 

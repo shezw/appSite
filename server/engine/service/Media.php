@@ -111,6 +111,8 @@ class Media extends ASModel{
             case StorageLocation_AliOSS:
                 $removeFile = AliyunOSS::common()->removeFile($url);
                 break;
+            default:
+                return $this->error( 506, "media storage method not found" );
         }
 
         if(!$removeFile->isSucceed()){ return $removeFile; }
