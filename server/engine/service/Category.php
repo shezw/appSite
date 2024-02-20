@@ -87,7 +87,7 @@ class Category extends ASModel {
      * @param DBConditions|null $moreFilters
      * @return ASResult
      */
-    public function listChild( string $uid, $page = 1, $size = 50, $sort = null, DBConditions $moreFilters = null ):ASResult{
+    public function listChild(string $uid, int $page = 1, int $size = 50, $sort = null, DBConditions $moreFilters = null ):ASResult{
 
         $moreFilters = $moreFilters ?? DBConditions::init(static::table);
         $moreFilters->and('parentid')->equal($uid);

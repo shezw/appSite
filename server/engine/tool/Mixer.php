@@ -73,7 +73,7 @@ class Mixer{
 
                 if (isset($data[$key])) {
 
-                    $result = Mixer::mixField($data[$key],$struct[$key]);
+                    $result = Mixer::mixField($data[$key], $value);
                     # 递归子数据
                 }
             }else{
@@ -203,7 +203,7 @@ class Mixer{
      * @param boolean $ifOrNotMode 肯定/否定判断
      * @return void $module 修改模板
      */
-    public static function mixConditions( array &$data, string &$module, $ifOrNotMode = true, &$constantsData = null  ){
+    public static function mixConditions(array &$data, string &$module, bool $ifOrNotMode = true, &$constantsData = null  ){
 
         $conditionStruct = static::getConditions( $module, $ifOrNotMode );
 
@@ -277,7 +277,8 @@ class Mixer{
         }
     }
 
-    public static function getConditions( string $module, bool $ifOrNotMode = true){
+    public static function getConditions( string $module, bool $ifOrNotMode = true): array
+    {
 
         $result = [];
         $dResult= [];
